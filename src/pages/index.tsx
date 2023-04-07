@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { User } from '../types/User';
+import { User } from "~/types/User";
 
 import { createContext, useContext, useState } from "react";
 import LoginComponent from "~/Components/LoginPage/LoginComponent";
