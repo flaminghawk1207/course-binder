@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import jwt from 'jsonwebtoken'
-import { useRouter } from "next/router";
-import { userSetter } from "~/types/User";
-import Select from 'react-select'
+import { User } from "~/types/User";
 import { useForm } from 'react-hook-form';
 
+export type userSetter = Dispatch<SetStateAction<User | null>>
 interface signUpForm {
     firstName: string,
     lastName: string,
@@ -13,15 +12,13 @@ interface signUpForm {
     role: string,
 }
 
-const SignUpComponent = () => {
+const SignUpComponent = ({ redirectToSignIn } : {redirectToSignIn: () => void}) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
         setError,
     } = useForm<signUpForm>();
-
-    const router = useRouter();
 
     const signup = async (data: signUpForm) => {
         const res = await fetch('/api/signup', {
@@ -36,7 +33,7 @@ const SignUpComponent = () => {
         if(created) {
             // To return to the sign-in page
             // Possibly can be replaced with switch "tabs" in login component
-            router.reload();
+            redirectToSignIn()
         } else {
             setError('email', { type: "used", message: "Email already in use"})
         }
@@ -162,20 +159,34 @@ const SignInComponent = ({ setUser } : { setUser: userSetter }) => {
 const LoginComponent = ({ setUser } : { setUser: userSetter }) => {
     const [signIn, setSignIn] = useState(true);
 
-    // Probably use MUI?
-    const getScreen = () => {
-        if(signIn) {
-            return <SignInComponent setUser={setUser}/>
-        } else {
-            return <SignUpComponent/>
-        }
-    }
-
     return (
-        <>
-            <button onClick={() => setSignIn(!signIn)}>Switch</button>
-            {getScreen()}
-        </>
+        <div className="h-screen w-full flex mx-auto items-center">
+            <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-red-200 shadow-lg rounded px-8 py-12">
+                <div id="login-button-group" className="flex mb-4 w-full bg-blue-500">
+                    <button
+                    className={`${
+                        signIn
+                        ? "bg-indigo-500 text-white"
+                        : "bg-indigo-200 text-indigo-700"
+                    } py-2 px-4 rounded-l flex-1`}
+                    onClick={() => setSignIn(true)}
+                    >
+                    Sign In
+                    </button>
+                    <button
+                    className={`${
+                        !signIn
+                        ? "bg-indigo-500 text-white"
+                        : "bg-indigo-200 text-indigo-700"
+                    } py-2 px-4 rounded-r flex-1`}
+                    onClick={() => setSignIn(false)}
+                    >
+                    Sign Up
+                    </button>
+                </div>
+                {signIn ? <SignInComponent setUser={setUser} /> : <SignUpComponent redirectToSignIn={() => setSignIn(true)} />}
+            </div>
+        </div>
     )
 }
 
