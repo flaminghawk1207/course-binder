@@ -111,19 +111,23 @@ const SignUpComponent = ({ redirectToSignIn } : {redirectToSignIn: () => void}) 
     )
 }
 
+interface signInForm {
+    email: string,
+    password: string,
+}
 const SignInComponent = ({ setUser } : { setUser: userSetter }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
         setError,
-    } = useForm<signUpForm>();
+    } = useForm<signInForm>();
 
     // temporary state before login
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
 
-    const signin = async (data: signUpForm) => {
+    const signin = async (data: signInForm) => {
         // call the api and get JWT
         const res = await fetch('/api/signin', {
             method: "POST",
@@ -171,7 +175,6 @@ const SignInComponent = ({ setUser } : { setUser: userSetter }) => {
             <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
             <br/>
             <button onClick={handleSubmit(signin)}>Sign In</button>
-            {/* <input type="button" value="Login" onClick={() => signin(email, password)}/> */}
         </div>
     )
 }
