@@ -29,13 +29,11 @@ const SignUpComponent = ({ redirectToSignIn } : {redirectToSignIn: () => void}) 
             body: JSON.stringify(data)
         }).then(t => t.json())
 
-        const created = res.created
-        if(created) {
-            // To return to the sign-in page
-            // Possibly can be replaced with switch "tabs" in login component
+        if(!res.error) {
             redirectToSignIn()
         } else {
-            setError('email', { type: "used", message: "Email already in use"})
+            alert(res.error)
+            console.log(res.error)
         }
     }
 
@@ -123,10 +121,6 @@ const SignInComponent = ({ setUser } : { setUser: userSetter }) => {
         setError,
     } = useForm<signInForm>();
 
-    // temporary state before login
-    const [email, setEmail] = useState<string>("")
-    const [password, setPassword] = useState<string>("")
-
     const signin = async (data: signInForm) => {
         // call the api and get JWT
         const res = await fetch('/api/signin', {
@@ -137,20 +131,15 @@ const SignInComponent = ({ setUser } : { setUser: userSetter }) => {
             body: JSON.stringify(data)
         }).then(t => t.json())
     
-        const token = res.token
-
         // Set the user from the returned JWT
-        if(token) {
-            const tokenDecoded = jwt.decode(token) as { [key: string]: string }
+        if(!res.error) {
             setUser({
-                id: tokenDecoded.id as string,
-                name: tokenDecoded.name as string,
-                email: tokenDecoded.email as string,
-                token: token as string,
-                role: tokenDecoded.role as string,
+                name: res.name as string,
+                email: res.email as string,
             })
         } else {
-            alert("Invalid credentials")
+            alert(res.error.code)
+            console.log(res.error)
         }
     }
 
@@ -164,7 +153,7 @@ const SignInComponent = ({ setUser } : { setUser: userSetter }) => {
                         value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
                         message: "Invalid email address", }
                 })}
-                type="text" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                type="text" name="email"/>
             <br/>
             {errors.email && errors.email.type == "required" && 
             <><span className='text-red-700'>This field is required</span><br /></>}
@@ -172,7 +161,11 @@ const SignInComponent = ({ setUser } : { setUser: userSetter }) => {
             <><span className='text-red-700'>{errors.email.message}</span><br /></>}
             <br/>
             <label>Password:</label>
-            <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <input 
+                {...register("password", { 
+                    required: "This field is required"
+                })}
+                type="text"/>
             <br/>
             <button onClick={handleSubmit(signin)}>Sign In</button>
         </div>
