@@ -5,7 +5,12 @@ import { z } from "zod";
  * built with invalid env vars.
  */
 const server = z.object({
-  DATABASE_URL: z.string().url(),
+  FIREBASE_APIKEY: z.string().min(1),
+  FIREBASE_AUTHDOMAIN: z.string().min(1),
+  FIREBASE_PROJECTID: z.string().min(1),
+  FIREBASE_STORAGEBUCKET: z.string().min(1),
+  FIREBASE_MESSAGINGSENDERID: z.string().min(1),
+  FIREBASE_APPID: z.string().min(1),
   NODE_ENV: z.enum(["development", "test", "production"]),
   JSON_WEB_TOKEN_SECRET: z.string().min(1),
 });
@@ -25,10 +30,14 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
-  DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   JSON_WEB_TOKEN_SECRET: process.env.JSON_WEB_TOKEN_SECRET,
-  // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+  FIREBASE_APIKEY: process.env.FIREBASE_APIKEY,
+  FIREBASE_AUTHDOMAIN: process.env.FIREBASE_AUTHDOMAIN,
+  FIREBASE_PROJECTID: process.env.FIREBASE_PROJECTID,
+  FIREBASE_STORAGEBUCKET: process.env.FIREBASE_STORAGEBUCKET,
+  FIREBASE_MESSAGINGSENDERID: process.env.FIREBASE_MESSAGINGSENDERID,
+  FIREBASE_APPID: process.env.FIREBASE_APPID,
 };
 
 // Don't touch the part below
