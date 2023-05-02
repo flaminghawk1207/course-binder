@@ -12,7 +12,6 @@ const server = z.object({
   FIREBASE_MESSAGINGSENDERID: z.string().min(1),
   FIREBASE_APPID: z.string().min(1),
   NODE_ENV: z.enum(["development", "test", "production"]),
-  JSON_WEB_TOKEN_SECRET: z.string().min(1),
 });
 
 /**
@@ -31,7 +30,6 @@ const client = z.object({
  */
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
-  JSON_WEB_TOKEN_SECRET: process.env.JSON_WEB_TOKEN_SECRET,
   FIREBASE_APIKEY: process.env.FIREBASE_APIKEY,
   FIREBASE_AUTHDOMAIN: process.env.FIREBASE_AUTHDOMAIN,
   FIREBASE_PROJECTID: process.env.FIREBASE_PROJECTID,
