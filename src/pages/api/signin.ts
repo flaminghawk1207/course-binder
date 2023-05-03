@@ -46,5 +46,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     res.json({
         name: userInfo?.firstName,
         email: userInfo?.email,
+        role: userInfo?.role,
     })
 }
