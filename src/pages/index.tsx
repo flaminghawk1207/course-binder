@@ -39,5 +39,5 @@ export default Home;
 
 const SampleChild = () => {
   const user = useContext(UserContext);
-  return <div>Hello {user?.name}! from child</div>
+  return <div>Hello {user?.name}! from child. You are a {user?.role}.</div>
 }
