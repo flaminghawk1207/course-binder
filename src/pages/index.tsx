@@ -8,14 +8,16 @@ import LoginComponent from "~/Components/LoginPage/LoginComponent";
 export const UserContext = createContext<User | null>(null);
 
 const Home: NextPage = () => {
-  
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setLoading] = useState(false);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   // Show login screen if user is not defined
   if(!user) {
-    return <LoginComponent setUser={setUser}/>
+    return <LoginComponent setUser={setUser} setLoading={setLoading}/>
   }
-
   // Main App UI
   return (
     <UserContext.Provider value={user}>

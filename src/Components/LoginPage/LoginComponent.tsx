@@ -8,7 +8,7 @@ interface signInForm {
     email: string,
     password: string,
 }
-const SignInComponent = ({ setUser, setResetPwd } : { setUser: userSetter, setResetPwd: any }) => {
+const SignInComponent = ({ setUser, setResetPwd,setLoading } : { setUser: userSetter, setResetPwd: any, setLoading:any}) => {
     const {
         register,
         handleSubmit,
@@ -16,6 +16,7 @@ const SignInComponent = ({ setUser, setResetPwd } : { setUser: userSetter, setRe
     } = useForm<signInForm>();
 
     const signin = async (data: signInForm) => {
+        setLoading(true);
         // call the signin API and get the user info
         const res = await fetch('/api/signin', {
             method: "POST",
@@ -36,6 +37,7 @@ const SignInComponent = ({ setUser, setResetPwd } : { setUser: userSetter, setRe
             alert(res.error.code)
             console.log(res.error)
         }
+        setLoading(false);
     }
 
     return (
@@ -120,12 +122,12 @@ const ForgotPwd = ({ setResetPwd } : {setResetPwd: any}) => {
     )
 }
 
-const LoginComponent = ({ setUser } : { setUser: userSetter }) => {
+const LoginComponent = ({ setUser, setLoading} : { setUser: userSetter,setLoading: any }) => {
     const [resetPwd, setResetPwd] = useState(false);
     return (
         <div className="h-screen w-full flex mx-auto items-center">
             <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-red-200 shadow-lg rounded px-8 py-12">
-                {!resetPwd ? <SignInComponent setUser={setUser} setResetPwd={setResetPwd}/>
+                {!resetPwd ? <SignInComponent setUser={setUser} setLoading={setLoading} setResetPwd={setResetPwd}/>
                             : <ForgotPwd setResetPwd={setResetPwd}/>}
                 
             </div>
