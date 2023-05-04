@@ -1,5 +1,6 @@
 import { type AppType } from "next/dist/shared/lib/utils";
 import "~/styles/globals.css";
+
 import { createContext, useState } from "react";
 import { User } from "~/types/User";
 

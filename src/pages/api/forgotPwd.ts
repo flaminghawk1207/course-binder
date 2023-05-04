@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {sendPasswordResetEmail, signInWithEmailAndPassword} from "firebase/auth";
-import { firebase_app, firestore_db } from "~/server/firebase";
-import {getAuth} from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { firebase_app } from "~/server/firebase";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     if(!req.body) {

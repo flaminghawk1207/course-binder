@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { userSetter } from "~/types/internal";
+import { apiReq } from "~/utils";
 
 const ForgotPassword: NextPage = () => {
     let router = useRouter();
@@ -14,13 +14,7 @@ const ForgotPassword: NextPage = () => {
 
     const handleResetPwd = async (data: {email: string}) => {
         // call the signin API and get the user info
-        const res = await fetch('/api/forgotPwd', {
-            method: "POST",
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(t => t.json())
+        const res = await apiReq('forgotPwd', data)
     
         // Set the user from the info in response
         if(!res.error) {

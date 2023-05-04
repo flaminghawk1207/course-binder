@@ -3,6 +3,7 @@ import { userSetter } from "~/types/internal";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { apiReq } from "~/utils";
 
 interface signInForm {
     email: string,
@@ -18,15 +19,9 @@ const Login: NextPage<{setUser: userSetter}> = ({setUser}) => {
 
     let router = useRouter();
 
-    const signin = async (data: signInForm) => {
+    const login = async (data: signInForm) => {
         // call the signin API and get the user info
-        const res = await fetch('/api/signin', {
-            method: "POST",
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(t => t.json())
+        const res = await apiReq('login', data)
     
         // Set the user from the info in response
         if(!res.error) {
@@ -68,7 +63,7 @@ const Login: NextPage<{setUser: userSetter}> = ({setUser}) => {
                         })}
                         type="text"/>
                     <br/>
-                    <button onClick={handleSubmit(signin)}>Sign In</button>
+                    <button onClick={handleSubmit(login)}>Sign In</button>
                     <br/>
                     <Link href={'/forgotPassword'}>Forgot password?</Link>
                 </div>

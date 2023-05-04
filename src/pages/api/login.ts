@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {signInWithEmailAndPassword} from "firebase/auth";
-import { firebase_app, firestore_db } from "~/server/firebase";
+import { firebase_app } from "~/server/firebase";
 import {getAuth} from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { getUserInfo } from "~/server/db";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     if(!req.body) {
@@ -25,23 +25,17 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     if (!user) {
         return
     }
-    const userInfoSnapshot = await getDocs(
-        query(
-            collection(firestore_db, "users"),
-            where("email", "==", email)
-        )
-    ).then((snapshot) => snapshot)
-    .catch((err) => {
-        console.log(err);
-        res.json({ error: err });
-        return null;
-    });
+    
+    const userInfo = await getUserInfo(email)
+        .catch((err) => {
+            console.log(err);
+            res.json({ error: err });
+            return null;
+        });
 
-    if(!userInfoSnapshot || userInfoSnapshot.empty) {
+    if (!userInfo) {
         return
     }
-    
-    const userInfo = userInfoSnapshot.docs[0]?.data();
 
     res.json({
         name: userInfo?.firstName,

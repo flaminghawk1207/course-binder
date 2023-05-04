@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./_app";
 import { userSetter } from "~/types/internal";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
@@ -16,15 +15,11 @@ const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
     return <div>Loading...</div>;
   }
 
-  console.log(user);
-
   // Show login screen if user is not defined
-  if(!user) {
-    // return <LoginComponent setUser={setUser} setLoading={setLoading}/>
-    useEffect(() => {
-      router.push("/login");
-    });
-  }
+  useEffect(() => {
+    if(!user) router.push("/login");
+  })
+
   // Main App UI
   return (
     <>
@@ -39,7 +34,6 @@ const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
           <button onClick={() => setUser(null)}>Logout</button>
           <SampleChild/>
         </div>
-        <Link href={"/hello"}>Hello</Link>
       </main>
     </>
   );
