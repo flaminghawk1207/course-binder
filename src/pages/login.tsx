@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { apiReq } from "~/utils";
-
+import { useState } from "react";
 interface signInForm {
     email: string,
     password: string,
@@ -18,8 +18,12 @@ const Login: NextPage<{setUser: userSetter}> = ({setUser}) => {
     } = useForm<signInForm>();
 
     let router = useRouter();
-
+    const [isLoading, setLoading] = useState(false);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
     const login = async (data: signInForm) => {
+        setLoading(true);
         // call the signin API and get the user info
         const res = await apiReq('login', data)
     
@@ -35,6 +39,7 @@ const Login: NextPage<{setUser: userSetter}> = ({setUser}) => {
             alert(res.error.code)
             console.log(res.error)
         }
+        setLoading(false);
     }
 
     return (
