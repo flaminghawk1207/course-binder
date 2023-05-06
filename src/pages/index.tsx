@@ -10,17 +10,20 @@ const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
 
   const router = useRouter();
 
-  const [isLoading, setLoading] = useState(false);
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   // Show login screen if user is not defined
   useEffect(() => {
     if(!user) router.push("/login");
   })
-
+  useEffect(() => {
+    if(!user) {
+      router.push("/index");
+    } else if (user.role === "faculty") {
+      router.push("/FacultyDisplayPage");
+    }
+  }, [user])
   // Main App UI
+  
   return (
     <>
       <Head>
@@ -34,7 +37,9 @@ const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
           <button onClick={() => setUser(null)}>Logout</button>
           <SampleChild/>
         </div>
+
       </main>
+
     </>
   );
 };
