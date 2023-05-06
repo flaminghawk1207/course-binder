@@ -1,16 +1,19 @@
 import { type NextPage } from "next";
-import { userSetter } from "~/types/internal";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { apiReq } from "~/utils";
 import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "~/contexts/UserProvider";
+
 interface signInForm {
     email: string,
     password: string,
 }
 
-const Login: NextPage<{setUser: userSetter}> = ({setUser}) => {
+const Login: NextPage = () => {
+    const { login } = useContext(UserContext);
     const {
         register,
         handleSubmit,
@@ -28,14 +31,15 @@ const Login: NextPage<{setUser: userSetter}> = ({setUser}) => {
     <span className="sr-only">Loading...</span>
 </div>);
   }
-    const login = async (data: signInForm) => {
+    const handleLogin = async (data: signInForm) => {
         setLoading(true);
+
         // call the signin API and get the user info
         const res = await apiReq('login', data)
     
         // Set the user from the info in response
         if(!res.error) {
-            setUser({
+            login({
                 name: res.name as string,
                 email: res.email as string,
                 role: res.role as string,
@@ -74,7 +78,7 @@ const Login: NextPage<{setUser: userSetter}> = ({setUser}) => {
                         })}
                         type="text"/>
                     <br/>
-                    <button onClick={handleSubmit(login)}>Sign In</button>
+                    <button onClick={handleSubmit(handleLogin)}>Sign In</button>
                     <br/>
                     <Link href={'/forgotPassword'}>Forgot password?</Link>
                 </div>

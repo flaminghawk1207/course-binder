@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useContext, useState, useEffect } from 'react';
-import { UserContext } from './_app';
+import { UserContext } from '~/contexts/UserProvider';
 import { apiReq } from "~/utils";
 import NavBar from "~/Components/NavBar";
 import CreateCourseView from "~/Components/CreateCourseView";
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import login from './api/login';
 
 const FacultyDisplayPage: NextPage = () => {
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [resObject, setResObject] = useState<any>();
   const router = useRouter(); 
 

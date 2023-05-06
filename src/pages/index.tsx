@@ -1,15 +1,13 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "./_app";
-import { userSetter } from "~/types/internal";
+import { useContext, useEffect } from "react";
+import { UserContext } from "~/contexts/UserProvider";
 import { useRouter } from "next/router";
 
-const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
-  const user = useContext(UserContext);
+const Home: NextPage = () => {
+  const {user, logout} = useContext(UserContext);
 
   const router = useRouter();
-
 
   // Show login screen if user is not defined
   useEffect(() => {
@@ -34,7 +32,7 @@ const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           Hello {user?.name}!
-          <button onClick={() => setUser(null)}>Logout</button>
+          <button onClick={logout}>Logout</button>
           <SampleChild/>
         </div>
 
@@ -47,6 +45,6 @@ const Home: NextPage<{setUser: userSetter}> = ({setUser}) => {
 export default Home;
 
 const SampleChild = () => {
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
   return <div>Hello {user?.name}! from child. You are a {user?.role}.</div>
 }
