@@ -13,8 +13,15 @@ const Home: NextPage = () => {
   useEffect(() => {
     if(!user) router.push("/login");
   })
-
+  useEffect(() => {
+    if(!user) {
+      router.push("/index");
+    } else if (user.role === "faculty") {
+      router.push("/facultyDisplayPage");
+    }
+  }, [user])
   // Main App UI
+  
   return (
     <>
       <Head>
@@ -28,7 +35,9 @@ const Home: NextPage = () => {
           <button onClick={logout}>Logout</button>
           <SampleChild/>
         </div>
+
       </main>
+
     </>
   );
 };

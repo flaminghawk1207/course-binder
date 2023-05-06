@@ -17,3 +17,25 @@ export const getUserInfo = async (email: string) => {
 
     return userInfo;
 }
+
+export const getfacultyInfo = async (email:string) => {
+    const facultyInfoSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channels"),
+            where("member_emails", 'array-contains', email)
+        )
+    );
+
+    if(!facultyInfoSnapshot || facultyInfoSnapshot.empty) {
+        throw new Error("Faculty does not belong to any channels");
+    }
+    
+    // const userInfo = userInfoSnapshot.docs[0]?.data();
+    const facultyCourseInfoLength = facultyInfoSnapshot.docs.length;
+    var facultyCourseInfoArray = [];
+    for (let i = 0; i < facultyCourseInfoLength; i++) {
+        facultyCourseInfoArray.push(facultyInfoSnapshot.docs[i]?.data())
+    }
+
+    return facultyCourseInfoArray;
+}
