@@ -154,7 +154,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 />}
                 renderOption={(props, option: User) => {
                     return (
-                        <div className="flex flex-row w-full">
+                        <div key={option.email} className="flex flex-row w-full">
                             <p className="w-3/4">{option.firstName}</p>
                             <Button key={option.email} onClick={() => addUserToChannel(option)} className="w-1/4">
                                 +
@@ -167,7 +167,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     )
 }
 
-const AddChannelButtonDialog = () => {
+const AddChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => void}) => {
     type FormValues = {
         channel_name: string;
         channel_code: string;
@@ -202,6 +202,7 @@ const AddChannelButtonDialog = () => {
         } else {
             alert("Channel creation failed")
         }
+        refreshChannels();
         closeDialog();
     };
 
@@ -284,8 +285,9 @@ const AdminManageChannel: NextPage = () => {
                     onChange={(event, value) => {setSelectedChannel(value)}}
                     defaultValue={null}
                     className="m-auto ml-10 w-2/5"
+                    isOptionEqualToValue={(option: Channel, value: Channel) => option.channel_code === value.channel_code}
                 />
-                <AddChannelButtonDialog/>
+                <AddChannelButtonDialog refreshChannels={refreshChannels}/>
             </div>
             {
                 selectedChannel ?
