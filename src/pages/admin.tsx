@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import NavBar from "~/Components/NavBar";
 import AdminManageChannel from "~/Components/adminManageChannel";
-import { ChannelType, NavItem } from "~/types";
+import { NavItem } from "~/types";
 const AdminView: NextPage = () => {
 
     const navItems: NavItem[] = [

@@ -10,19 +10,19 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     const email = req.body;
 
-    const facultyCourseInfo = await getfacultyInfo(email)
+    const channels = await getfacultyInfo(email)
         .catch((err) => {
             console.log(err);
             res.json({ error: err });
             return null;
         });
 
-    if (!facultyCourseInfo) {
+    if (!channels) {
         return
     }    
 
     res.json({
-        facultyCourseObject : facultyCourseInfo
+        facultyChannels : channels
     })
 
 };
