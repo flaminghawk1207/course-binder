@@ -1,6 +1,6 @@
 import React from "react";
 import { createContext, useState } from "react";
-import { User } from "~/types/User";
+import { User } from "~/types";
 
 type UserContextType = {
     user: User | null,                  // User object

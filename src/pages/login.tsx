@@ -40,7 +40,8 @@ const Login: NextPage = () => {
         // Set the user from the info in response
         if(!res.error) {
             login({
-                name: res.name as string,
+                firstName: res.firstName as string,
+                lastName: res.lastName as string,
                 email: res.email as string,
                 role: res.role as string,
             })
