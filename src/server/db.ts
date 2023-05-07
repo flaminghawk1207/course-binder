@@ -1,5 +1,6 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { firestore_db } from "./firebase";
+import { Channel } from "~/types";
 
 export const getUserInfo = async (email: string) => {
     const userInfoSnapshot = await getDocs(
@@ -38,4 +39,37 @@ export const getfacultyInfo = async (email:string) => {
     }
 
     return facultyCourseInfoArray;
+}
+
+export const getAllChannels = async () => {
+    const channelsSnapshot = await getDocs(
+        collection(firestore_db, "channels")
+    );
+
+    console.log(channelsSnapshot);
+
+    if(!channelsSnapshot || channelsSnapshot.empty) {
+        throw new Error("Channels not found");
+    }
+
+    const channels = channelsSnapshot.docs.map(doc => doc.data()) as Channel[];
+
+    return channels;
+}
+
+export const getUsersInEmailList = async (email_list: string[]) => {
+    const usersSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "users"),
+            where("email", "in", email_list)
+        )
+    );
+
+    if(!usersSnapshot || usersSnapshot.empty) {
+        throw new Error("Users not found");
+    }
+
+    const users = usersSnapshot.docs.map(doc => doc.data());
+
+    return users;
 }
