@@ -13,13 +13,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         const channels = await getAllChannels();
         res.json(channels);
     } else if (req.body.type == "ADD_USER_TO_CHANNEL") {
-        const newChannel = await addUserToChannel(req.body.channel_code, req.body.email);
-        res.json(newChannel);
+        const status = await addUserToChannel(req.body.channel_code, req.body.email, req.body.role);
+        res.json(status);
     } else if (req.body.type == "REMOVE_USER_FROM_CHANNEL") {
-        const newChannel = await removeUserFromChannel(req.body.channel_code, req.body.email);
-        res.json(newChannel);
+        const status = await removeUserFromChannel(req.body.channel_code, req.body.email);
+        res.json(status);
     } else if (req.body.type =="CREATE_CHANNEL") {
-        const status = await createChannel({ ...req.body.data, member_emails: [] } as Channel);
+        const status = await createChannel(req.body.data as Channel);
         res.json(status);
     } else {
         res.json({

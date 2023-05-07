@@ -3,6 +3,7 @@ import {signInWithEmailAndPassword} from "firebase/auth";
 import { firebase_app } from "~/server/firebase";
 import {getAuth} from "firebase/auth";
 import { getUserInfo } from "~/server/db";
+import { CourseBinderError, User } from "~/types";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     if(!req.body) {
@@ -17,8 +18,15 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const user = await signInWithEmailAndPassword(getAuth(firebase_app), email, password)
                         .then((userCredential) => userCredential.user)
                         .catch((err) => {
+                            if(err.code === "auth/user-not-found") {
+                                res.json({
+                                    errorType: "USER_NOT_FOUND",
+                                    message: "No account found with the given email"
+                                })
+                            } else {
+                                res.json(err);
+                            }
                             console.log(err);
-                            res.json({ error: err });
                             return null;
                         });
     
@@ -27,9 +35,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     }
     
     const userInfo = await getUserInfo(email)
-        .catch((err) => {
+        .catch((err: CourseBinderError) => {
             console.log(err);
-            res.json({ error: err });
+            res.json(err);
             return null;
         });
 
@@ -37,10 +45,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         return
     }
 
-    res.json({
-        firstName: userInfo?.firstName,
-        lastName: userInfo?.lastName,
-        email: userInfo?.email,
-        role: userInfo?.role,
-    })
+    res.json(userInfo as User);
 }

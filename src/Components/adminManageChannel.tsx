@@ -11,43 +11,52 @@ import { type NextPage } from "next";
 import { Dispatch, Fragment, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Channel, User } from "~/types";
+import { Channel, ChannelRole, User } from "~/types";
 import { apiReq } from "~/utils";
 
-const UsersList = ({
-    channelMembers, 
-    selectedChannel, 
-    setSelectedChannel, 
-    refreshChannels
-}: { 
-    channelMembers: User[], 
-    selectedChannel: Channel | null, 
-    setSelectedChannel: Dispatch<SetStateAction<Channel | null>>,
-    refreshChannels: () => Promise<void>
-}) => {
-    const [users, setUsers] = useState<User[]>([]);
+const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
+    const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
     const [open, setOpen] = useState(false);
-    const loading = open && users.length === 0;
+    const loading = open && suggestedUsers.length === 0;
+
+    const [channelUsers, setChannelUsers] = useState<User[]>([]);
+    const [channelUsersRoles, setChannelUsersRoles] = useState<ChannelRole[]>([]);
 
     useEffect(() => {
-        if(!selectedChannel) setUsers([]);
-        else refreshUsers();
+        if(!selectedChannel) {
+            setChannelUsers([]);
+            setSuggestedUsers([]);
+        } else {
+            refreshChannelUsers();
+            refreshSuggestedUsers();
+        }
     }, [selectedChannel]);
 
     useEffect(() => {
-        if(open && !users.length){
+        if(open && !suggestedUsers.length){
             (async () => {
-                await refreshUsers();
+                await refreshSuggestedUsers();
             })();
         }
     }, [open]);
 
-    const refreshUsers = async () => {
-        const allUsers = await apiReq("users", {
-            type: "USERS_NOT_IN_EMAIL_LIST",
-            email_list: selectedChannel?.member_emails,
+    const refreshChannelUsers = async () => {
+        if(!selectedChannel) return;
+        const { channel_users, channel_roles } = await apiReq("users", { 
+            type: "USERS_IN_CHANNEL", 
+            channel_code: selectedChannel?.channel_code
         });
-        setUsers(allUsers);
+        setChannelUsers(channel_users);
+        setChannelUsersRoles(channel_roles);
+    }
+
+    const refreshSuggestedUsers = async () => {
+        if(!selectedChannel) return;
+        const suggested_users = await apiReq("users", {
+            type: "USERS_NOT_IN_CHANNEL",
+            channel_code: selectedChannel?.channel_code
+        });
+        setSuggestedUsers(suggested_users);
     }
 
     const addUserToChannel = async (user: User) => {
@@ -58,13 +67,18 @@ const UsersList = ({
                 return;
             }
 
-            const newChannel = await apiReq("channels", {
+            const status = await apiReq("channels", {
                 type: "ADD_USER_TO_CHANNEL",
                 channel_code: selectedChannel.channel_code,
-                email: user.email
+                email: user.email,
+                role: "faculty" // TODO: add role selection
             });
-            setSelectedChannel(newChannel as Channel);
-            await refreshChannels();
+            if(!status){
+                alert("Failed to add user to channel");
+                return;
+            }
+            await refreshChannelUsers();
+            await refreshSuggestedUsers();
         }
     }
 
@@ -76,13 +90,17 @@ const UsersList = ({
                 return;
             }
 
-            const newChannel = await apiReq("channels", {
+            const status = await apiReq("channels", {
                 type: "REMOVE_USER_FROM_CHANNEL",
                 channel_code: selectedChannel.channel_code,
                 email: user.email
             });
-            setSelectedChannel(newChannel as Channel);
-            await refreshChannels();
+            if(!status){
+                alert("Failed to remove user from channel");
+                return;
+            }
+            await refreshChannelUsers();
+            await refreshSuggestedUsers();
         }
     }
 
@@ -95,11 +113,11 @@ const UsersList = ({
                 <h3 className="w-1/4 text-center">Role</h3>
             </div>
             {
-                channelMembers.map((user) => {
+                channelUsers.map((user, index) => {
                     return (
                         <div key={user.email} className="flex flex-row">
                             <p className="w-2/4 text-center">{user.firstName}</p>
-                            <p className="w-1/4 text-center">{user.role}</p>
+                            <p className="w-1/4 text-center">{channelUsersRoles[index]}</p>
                             <Button onClick={() => removeUserFromChannel(user)} className="w-1/4">
                                 <DeleteIcon className="bg-white text-red-700"/>
                             </Button>
@@ -108,7 +126,7 @@ const UsersList = ({
                 })
             }
             <Autocomplete
-                options={users}
+                options={suggestedUsers}
                 open={open}
                 onOpen={() => {
                     setOpen(true);
@@ -151,22 +169,21 @@ const UsersList = ({
 
 const AddChannelButtonDialog = () => {
     type FormValues = {
-        channelName: string;
-        channelCode: string;
-        department: string;
+        channel_name: string;
+        channel_code: string;
+        channel_department: string;
     }
     const {
         register,
         handleSubmit,
-        setValue,
         clearErrors,
         reset,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
-            channelName: "",
-            channelCode: "",
-            department: "",
+            channel_name: "",
+            channel_code: "",
+            channel_department: "",
         },
     });
     const [open, setOpen] = useState(false);
@@ -202,30 +219,30 @@ const AddChannelButtonDialog = () => {
             <DialogContent>
                 <label>Channel Name:</label>
                 <input 
-                    {...register("channelName", { 
+                    {...register("channel_name", { 
                         required: "This field is required"
                     })}
                     type="text"/>
                 <br/>
-                {errors.channelName && errors.channelName.type == "required" && 
+                {errors.channel_name && errors.channel_name.type == "required" && 
                 <><span className='text-red-700'>This field is required</span><br /></>}
                 <label>Channel Code:</label>
                 <input 
-                    {...register("channelCode", { 
+                    {...register("channel_code", { 
                         required: "This field is required",
                     })}
                     type="text"/>
                 <br/>
-                {errors.channelCode && errors.channelCode.type == "required" && 
+                {errors.channel_code && errors.channel_code.type == "required" && 
                 <><span className='text-red-700'>This field is required</span><br /></>}
                 <label>Department:</label>
                 <input 
-                    {...register("department", { 
+                    {...register("channel_department", { 
                         required: "This field is required",
                     })}
                     type="text"/>
                 <br/>
-                {errors.department && errors.department.type == "required" && 
+                {errors.channel_department && errors.channel_department.type == "required" && 
                 <><span className='text-red-700'>This field is required</span><br /></>}
                 <br/>
             </DialogContent>
@@ -245,8 +262,7 @@ const AdminManageChannel: NextPage = () => {
     useEffect(() => {
         (async () => {
             if(!channels.length) {
-                const allChannels = await apiReq("channels", {type: "ALL_CHANNELS"});
-                setChannels(allChannels);
+                await refreshChannels();
             }
         })();
     }, []);
@@ -255,22 +271,6 @@ const AdminManageChannel: NextPage = () => {
         const allChannels = await apiReq("channels", {type: "ALL_CHANNELS"});
         setChannels(allChannels);
     }
-
-    const [channelMembers, setChannelMembers] = useState<User[]>([]); 
-    useEffect(() => {
-        (async () => {
-            if(selectedChannel){
-                console.log(selectedChannel)
-                const members = await apiReq("users", { 
-                    type: "USERS_FROM_EMAIL_LIST", 
-                    email_list: selectedChannel.member_emails
-                });
-                setChannelMembers(members);
-            } else {
-                setChannelMembers([]);
-            }
-        })();
-    }, [selectedChannel]);
 
     return (
         <div id="main-view" className="flex flex-col h-screen w-full bg-black">
@@ -295,10 +295,7 @@ const AdminManageChannel: NextPage = () => {
                             Current course code: {selectedChannel? selectedChannel.channel_code : "None"}
                         </div>
                         <UsersList 
-                            channelMembers={channelMembers}
-                            selectedChannel={selectedChannel}
-                            setSelectedChannel={setSelectedChannel}
-                            refreshChannels={refreshChannels}/>
+                            selectedChannel={selectedChannel}/>
                     </div>
                 :
                     <div className="w-full h-4/5 text-center bg-blue-300">Select a Channel</div>

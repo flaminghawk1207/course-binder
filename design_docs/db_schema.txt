@@ -1,0 +1,18 @@
+Collection name: users
+Fields:
+    email: string
+    firstName: string
+    lastName: string
+    role: string
+
+Collection name: channels
+Fields:
+    channel_code: string
+    channel_name: string
+    channel_department: string
+
+Collection name: channelMemberRelationship
+Fields
+    channel_code: string (primary key of channels)
+    email: string (primary key of users)
+    channel_role: string

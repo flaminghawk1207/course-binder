@@ -19,17 +19,15 @@ const FacultyDisplayPage: NextPage = () => {
     }
 
     (async()=>{
-      let { facultyCourseObject: facultyCourses } = await apiReq('facultyCourseDetails', user?.email)
-      facultyCourses = facultyCourses as Channel[];
-      console.log(facultyCourses);
-      facultyCourses = facultyCourses.map((elem: Channel) => {
+      let { facultyChannels } = await apiReq('facultyCourseDetails', user?.email)
+      facultyChannels = facultyChannels as Channel[];
+      facultyChannels = facultyChannels.map((elem: Channel) => {
         return {
           "label": elem.channel_code,
           "component": CreateCourseView (elem.channel_name, elem.channel_code, elem.channel_department)
         } as NavItem
       })
-      setResObject( facultyCourses );
-      console.log(facultyCourses);
+      setResObject( facultyChannels );
     })()
   },[])
 

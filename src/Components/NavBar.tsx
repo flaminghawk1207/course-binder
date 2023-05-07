@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChannelType, NavItem } from '~/types';
+import { NavItem } from '~/types';
 import { Button, Typography } from '@mui/material';
 
 const NavBar = ({items} : {items : Array<NavItem>}) => {
