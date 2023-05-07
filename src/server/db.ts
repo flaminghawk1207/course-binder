@@ -105,7 +105,7 @@ export const getUsersNotInEmailList = async (email_list: string[]) => {
     return users;
 }
 
-export const addUserToChannel = async (channel_code: string, email: string) => {
+const getChannelWithCode = async (channel_code: string) => {
     const channelSnapshot = await getDocs(
         query(
             collection(firestore_db, "channels"),
@@ -117,60 +117,50 @@ export const addUserToChannel = async (channel_code: string, email: string) => {
         throw new Error("Channel not found");
     }
 
-    const channel = channelSnapshot.docs[0];
+    const channelDoc = channelSnapshot.docs[0];
 
-    const new_member_emails = [...channel?.data().member_emails, email];
-
-    if(!channel) {
+    if(!channelDoc) {
         throw new Error("Channel not found");
     }
+
+    return channelDoc;
+}
+
+export const addUserToChannel = async (channel_code: string, email: string) => {
+    const channelDoc = await getChannelWithCode(channel_code);
     
-    await updateDoc(channel.ref,
+    const new_member_emails = [...channelDoc?.data().member_emails, email];
+
+    await updateDoc(channelDoc.ref,
         {
             member_emails: new_member_emails
         }
     )
 
     return {
-        ...channel.data(),
+        ...channelDoc.data(),
         member_emails: new_member_emails
     };
 }
 
 export const removeUserFromChannel = async (channel_code: string, email: string) => {
-    const channelSnapshot = await getDocs(
-        query(
-            collection(firestore_db, "channels"),
-            where("channel_code", "==", channel_code)
-        )
-    );
-
-    if(!channelSnapshot || channelSnapshot.empty) {
-        throw new Error("Channel not found");
-    }
-
-    const channel = channelSnapshot.docs[0];
-
-    const new_member_emails = channel?.data().member_emails.filter((member_email: string) => member_email !== email);
-
-    if(!channel) {
-        throw new Error("Channel not found");
-    }
+    const channelDoc = await getChannelWithCode(channel_code);
     
-    await updateDoc(channel.ref,
+    const new_member_emails = channelDoc?.data().member_emails.filter((member_email: string) => member_email !== email);
+
+    await updateDoc(channelDoc.ref,
         {
             member_emails: new_member_emails
         }
     )
 
     return {
-        ...channel.data(),
+        ...channelDoc.data(),
         member_emails: new_member_emails
     };
 }
 
 export const createChannel = async (channel: Channel) => {
-    console.log(channel);
     const status = await addDoc(collection(firestore_db, "channels"), channel);
 
     if(!status) {
