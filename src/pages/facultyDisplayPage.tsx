@@ -5,11 +5,11 @@ import { apiReq } from "~/utils";
 import NavBar from "~/Components/NavBar";
 import CreateCourseView from "~/Components/CreateCourseView";
 import { useRouter } from 'next/router';
-import login from './api/login';
+import { Channel, NavItem } from '~/types';
 
 const FacultyDisplayPage: NextPage = () => {
   const { user } = useContext(UserContext);
-  const [resObject, setResObject] = useState<any>();
+  const [resObject, setResObject] = useState<NavItem[]>();
   const router = useRouter(); 
 
   useEffect(()=>{
@@ -19,21 +19,25 @@ const FacultyDisplayPage: NextPage = () => {
     }
 
     (async()=>{
-      let { facultyCourseObject } = await apiReq('facultyCourseDetails', user?.email);
-      facultyCourseObject.map ((elem:any) => elem.ChannelComponent = CreateCourseView (elem.channel_name, elem.channel_code, elem.channel_department))
-      setResObject( { facultyCourses : facultyCourseObject });
-      console.log({facultyCourseObject});
+      let { facultyCourseObject: facultyCourses } = await apiReq('facultyCourseDetails', user?.email)
+      facultyCourses = facultyCourses as Channel[];
+        
+      facultyCourses = facultyCourses.map((elem: Channel) => {
+        return {
+          "label": elem.channel_code,
+          "component": CreateCourseView (elem.channel_name, elem.channel_code, elem.channel_department)
+        } as NavItem
+      })
+      setResObject( facultyCourses );
+      console.log(facultyCourses);
     })()
   },[])
 
+  if(!resObject) return <>Loading...</>;
+
   return (
     <div>
-    {/* <h1>Welcome to the Faculty Display Page!</h1>
-    <p>Your role is: {user?.role}</p>  */}
-    {/* {resObject?.facultyCourses.map((elem : any) => <h1>{elem.channel_name}</h1>)} */}
-    {/* <NavBar items = [] /> */}
-    <NavBar items = {resObject?.facultyCourses} />
-
+      <NavBar items = {resObject} />
     </div>
   );
 };

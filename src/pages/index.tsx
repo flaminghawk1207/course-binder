@@ -11,11 +11,8 @@ const Home: NextPage = () => {
 
   // Show login screen if user is not defined
   useEffect(() => {
-    if(!user) router.push("/login");
-  })
-  useEffect(() => {
     if(!user) {
-      router.push("/index");
+      router.push("/login");
     } else if (user.role === "faculty") {
       router.push("/facultyDisplayPage");
     }
@@ -31,7 +28,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          Hello {user?.name}!
+          Hello {user?.firstName}!
           <button onClick={logout}>Logout</button>
           <SampleChild/>
         </div>
@@ -46,5 +43,5 @@ export default Home;
 
 const SampleChild = () => {
   const { user } = useContext(UserContext);
-  return <div>Hello {user?.name}! from child. You are a {user?.role}.</div>
+  return <div>Hello {user?.firstName}! from child. You are a {user?.role}.</div>
 }
