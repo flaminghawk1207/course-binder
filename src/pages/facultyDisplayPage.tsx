@@ -21,7 +21,7 @@ const FacultyDisplayPage: NextPage = () => {
     (async()=>{
       let { facultyCourseObject: facultyCourses } = await apiReq('facultyCourseDetails', user?.email)
       facultyCourses = facultyCourses as Channel[];
-        
+      console.log(facultyCourses);
       facultyCourses = facultyCourses.map((elem: Channel) => {
         return {
           "label": elem.channel_code,

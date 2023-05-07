@@ -27,7 +27,7 @@ export const getfacultyInfo = async (email:string) => {
         )
     );
 
-    if(!facultyInfoSnapshot || facultyInfoSnapshot.empty) {
+    if(!facultyInfoSnapshot) {
         throw new Error("Faculty does not belong to any channels");
     }
     
@@ -37,7 +37,7 @@ export const getfacultyInfo = async (email:string) => {
     for (let i = 0; i < facultyCourseInfoLength; i++) {
         facultyCourseInfoArray.push(facultyInfoSnapshot.docs[i]?.data())
     }
-
+    console.log(facultyCourseInfoArray);
     return facultyCourseInfoArray;
 }
 
