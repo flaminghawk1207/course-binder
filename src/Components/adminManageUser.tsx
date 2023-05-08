@@ -142,7 +142,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                 className="absolute m-auto ml-10 w-4/5 bottom-10"
                 renderInput={(params) => <TextField
                     {...params}
-                    label="Add Users"
+                    label="Add to Channels"
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
@@ -323,7 +323,7 @@ const AdminManageUser: NextPage = () => {
                     options={users}
                     getOptionLabel={(option: User) => option.firstName}
                     renderInput={(params) => <TextField {...params} 
-                                                label="Search Channel"
+                                                label="Search Users"
                                                 variant="outlined"/>}
                     onChange={(event, value) => {setSelectedUser(value)}}
                     defaultValue={null}
