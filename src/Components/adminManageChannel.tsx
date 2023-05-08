@@ -167,7 +167,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     )
 }
 
-const AddChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => void}) => {
+const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => void}) => {
     type FormValues = {
         channel_name: string;
         channel_code: string;
@@ -287,7 +287,7 @@ const AdminManageChannel: NextPage = () => {
                     className="m-auto ml-10 w-2/5"
                     isOptionEqualToValue={(option: Channel, value: Channel) => option.channel_code === value.channel_code}
                 />
-                <AddChannelButtonDialog refreshChannels={refreshChannels}/>
+                <CreateChannelButtonDialog refreshChannels={refreshChannels}/>
             </div>
             {
                 selectedChannel ?
