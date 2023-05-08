@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { firebase_app } from "~/server/firebase";
-import { getAllUsers, getUsersRolesInChannel, getChannelsWithoutUser, createUser } from "~/server/db";
+import { getAllUsers, getUsersRolesInChannel, createUser, getUsersNotInChannel } from "~/server/db";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     if(!req.body) {
@@ -17,7 +15,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         const users = await getAllUsers();
         res.json(users);
     } else if (req.body.type == "USERS_NOT_IN_CHANNEL") {
-        const users = await getChannelsWithoutUser(req.body.channel_code);
+        const users = await getUsersNotInChannel(req.body.channel_code);
         res.json(users);
     } else if (req.body.type == "CREATE_USER") {
         const user = await createUser(req.body.data, req.body.password);
