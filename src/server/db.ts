@@ -271,7 +271,9 @@ export const createChannel = async (channel: Channel) => {
     return true;
 }
 
+// TODO: Check if email already exists
 export const createUser = async (user: User, password: string) => {
+    console.log(user, password)
     const authUser = await createUserWithEmailAndPassword(getAuth(firebase_app), user.email, password)
                             .then((userCredential) => {
                                 return userCredential.user;
