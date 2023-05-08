@@ -1,6 +1,7 @@
 import { addDoc, collection, deleteDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { firestore_db } from "./firebase";
+import { firebase_app, firestore_db } from "./firebase";
 import { Channel, ChannelRole, CourseBinderError, ErrorType, User } from "~/types";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 export const getUserInfo = async (email: string) => {
     const userInfoSnapshot = await getDocs(
@@ -118,6 +119,47 @@ export const getUsersRolesInChannel = async (channel_code: string) => {
     return {channel_users: userInfos, channel_roles};
 }
 
+export const getChannelsRolesWithUser = async (email: string) => {
+    console.log(email)
+    const channelsWithUserSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channelMemberRelationship"),
+            where("email", "==", email)
+        )
+    );
+
+    console.log("Here")
+
+    if(!channelsWithUserSnapshot) {
+        throw new Error("Firestore error when retrieving user emails");
+    }
+
+    const channelCodesWithUser = channelsWithUserSnapshot.docs.map(doc => doc.data().channel_code) as string[];
+
+    if(channelCodesWithUser.length == 0) {
+        return {user_channels: [], channel_roles: []};
+    }
+
+    const channelInfosSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channels"),
+            where("channel_code", "in", channelCodesWithUser)
+        )
+    );
+
+    if(!channelInfosSnapshot) {
+        throw new Error("Firestore error when retrieving user info");
+    }
+
+    const channelInfos = channelInfosSnapshot.docs.map(doc => doc.data()) as Channel[];
+
+    const channel_roles = channelInfos.map(channel => {
+        const channelMemberRelationship = channelsWithUserSnapshot.docs.find(doc => doc.data().channel_code == channel.channel_code);
+        return channelMemberRelationship?.data().channel_role;
+    }) as ChannelRole[];
+    return {user_channels: channelInfos, channel_roles};
+}
+
 export const getUsersNotInChannel = async (channel_code: string) => {
     const userInChannelEmailsSnapshot = await getDocs(
         query(
@@ -149,6 +191,39 @@ export const getUsersNotInChannel = async (channel_code: string) => {
 
     const userInfos = userInfosSnapshot.docs.map(doc => doc.data()) as User[];
     return userInfos;
+}
+
+export const getChannelsWithoutUser = async (email: string) => {
+    const channelsWithUserSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channelMemberRelationship"),
+            where("email", "==", email)
+        )
+    );
+
+    if(!channelsWithUserSnapshot) {
+        throw new Error("Firestore error when retrieving user emails");
+    }
+
+    const channelsCodesWithUser = channelsWithUserSnapshot.docs.map(doc => doc.data().channel_code) as string[];
+
+    if(channelsCodesWithUser.length == 0) {
+        return getAllChannels();
+    }
+    
+    const channelInfosSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channels"),
+            where("channel_code", "not-in", channelsCodesWithUser)
+        )
+    );
+
+    if(!channelInfosSnapshot) {
+        throw new Error("Firestore error when retrieving user info");
+    }
+
+    const channelInfos = channelInfosSnapshot.docs.map(doc => doc.data()) as Channel[];
+    return channelInfos;
 }
 
 export const addUserToChannel = async (channel_code: string, email: string, channel_role: string) => {
@@ -189,6 +264,27 @@ export const removeUserFromChannel = async (channel_code: string, email: string)
 
 export const createChannel = async (channel: Channel) => {
     const status = await addDoc(collection(firestore_db, "channels"), channel);
+
+    if(!status) {
+        return false;
+    }
+    return true;
+}
+
+export const createUser = async (user: User, password: string) => {
+    const authUser = await createUserWithEmailAndPassword(getAuth(firebase_app), user.email, password)
+                            .then((userCredential) => {
+                                return userCredential.user;
+                            })
+                            .catch((error) => {
+                                throw new Error(error.message);
+                            });
+
+    if(!authUser) {
+        throw new Error("Auth user not created");
+    }
+
+    const status = await addDoc(collection(firestore_db, "users"), user);
 
     if(!status) {
         return false;

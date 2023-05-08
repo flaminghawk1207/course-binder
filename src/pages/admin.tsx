@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import NavBar from "~/Components/NavBar";
 import AdminManageChannel from "~/Components/adminManageChannel";
+import AdminManageUser from "~/Components/adminManageUser";
 import { NavItem } from "~/types";
 const AdminView: NextPage = () => {
 
@@ -11,7 +12,7 @@ const AdminView: NextPage = () => {
         },
         {
             label: "Manage Users",
-            component: <></>,
+            component: <AdminManageUser/>,
         },
         {
             label: "View Analytics",

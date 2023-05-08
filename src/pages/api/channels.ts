@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, getAllChannels, removeUserFromChannel } from "~/server/db";
+import { addUserToChannel, createChannel, getAllChannels, getChannelsRolesWithUser, getChannelsWithoutUser, removeUserFromChannel } from "~/server/db";
 import { Channel } from "~/types";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -21,6 +21,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     } else if (req.body.type =="CREATE_CHANNEL") {
         const status = await createChannel(req.body.data as Channel);
         res.json(status);
+    } else if(req.body.type == "CHANNELS_WITH_USER") {
+        const { user_channels, channel_roles } = await getChannelsRolesWithUser(req.body.email);
+        console.log(user_channels, channel_roles);
+        res.json({ user_channels, channel_roles });
+    } else if (req.body.type == "CHANNELS_WITHOUT_USER") {
+        const channels = await getChannelsWithoutUser(req.body.email);
+        res.json(channels);
     } else {
         res.json({
             error: "Invalid request"
