@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, ChannelRole, User } from "~/types";
 import { apiReq } from "~/utils";
+import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton } from "@mui/material";
 
 const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
@@ -106,22 +107,22 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
 
     return (
         <div id='course-users-list' className="relative w-1/3 h-full bg-purple-600 items-center">
-            <h1 className="w-full">Users</h1>
+            <Typography variant="h5" sx={{textAlign:"center",mt:1}} className="w-full">Users</Typography>
 
-            <div className="flex flex-row">
+            <Box className="flex flex-row" sx={{mt:1}}>
                 <h3 className="w-2/4 text-center">Name</h3>
                 <h3 className="w-1/4 text-center">Role</h3>
-            </div>
+            </Box>
             {
                 channelUsers.map((user, index) => {
                     return (
-                        <div key={user.email} className="flex flex-row">
+                        <Box sx={{mt:1}}  key={user.email} className="flex flex-row">
                             <p className="w-2/4 text-center">{user.firstName}</p>
                             <p className="w-1/4 text-center">{channelUsersRoles[index]}</p>
-                            <Button onClick={() => removeUserFromChannel(user)} className="w-1/4">
-                                <DeleteIcon className="bg-white text-red-700"/>
-                            </Button>
-                        </div>
+                            <IconButton onClick={() => removeUserFromChannel(user)} className="w-1/4" size="small">
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
                     )
                 })
             }
@@ -155,7 +156,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 renderOption={(props, option: User) => {
                     return (
                         <div key={option.email} className="flex flex-row w-full">
-                            <p className="w-3/4">{option.firstName}</p>
+                            <Typography sx={{p:2}} className="w-3/4">{option.firstName}</Typography>
                             <Button key={option.email} onClick={() => addUserToChannel(option)} className="w-1/4">
                                 +
                             </Button>
