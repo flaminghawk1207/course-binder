@@ -217,36 +217,41 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
         <div className="w-1/5 h-2/5 m-auto mr-10">
         <Button variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create Channel</Button>
         <Dialog open={open} onClose={closeDialog}>
-            <DialogTitle>Create Channel</DialogTitle>
+            <DialogTitle><Typography textAlign={"center"}>Create Channel</Typography></DialogTitle>
             <DialogContent>
-                <label>Channel Name:</label>
-                <input 
-                    {...register("channel_name", { 
-                        required: "This field is required"
-                    })}
-                    type="text"/>
-                <br/>
-                {errors.channel_name && errors.channel_name.type == "required" && 
-                <><span className='text-red-700'>This field is required</span><br /></>}
-                <label>Channel Code:</label>
-                <input 
-                    {...register("channel_code", { 
-                        required: "This field is required",
-                    })}
-                    type="text"/>
-                <br/>
-                {errors.channel_code && errors.channel_code.type == "required" && 
-                <><span className='text-red-700'>This field is required</span><br /></>}
-                <label>Department:</label>
-                <input 
-                    {...register("channel_department", { 
-                        required: "This field is required",
-                    })}
-                    type="text"/>
-                <br/>
-                {errors.channel_department && errors.channel_department.type == "required" && 
-                <><span className='text-red-700'>This field is required</span><br /></>}
-                <br/>
+                <Box display="flex" sx={{mt:1}}>
+                    <InputLabel>Channel Name:</InputLabel>
+                    <TextField sx={{ml:1.8}} size="small" required
+                        {...register("channel_name", { 
+                            required: "This field is required"
+                        })}
+                        error={errors.channel_name !== undefined}
+                        helperText={errors.channel_name?.message}
+                    />
+                    <br/>
+                </Box>
+                <Box display="flex" sx={{mt:1}}>
+                    <InputLabel>Channel Code:</InputLabel>
+                    <TextField sx={{ml:2.3}} required size="small" 
+                        {...register("channel_code", { 
+                            required: "This field is required",
+                        })}
+                        error={errors.channel_code !== undefined}
+                        helperText={errors.channel_code?.message}
+                    />
+                    <br/>
+                </Box>
+                <Box display="flex" sx={{mt:1}}>
+                    <InputLabel>Department:</InputLabel>
+                    <TextField sx={{ml:4.5}} size="small"  required
+                        {...register("channel_department", { 
+                            required: "This field is required",
+                        })}
+                        error={errors.channel_department !== undefined}
+                        helperText={errors.channel_department?.message}
+                        />
+                    <br/>
+                </Box>
             </DialogContent>
             <DialogActions>
             <Button onClick={closeDialog}>Cancel</Button>

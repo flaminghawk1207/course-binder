@@ -218,7 +218,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
         clearErrors();
         setOpen(false);
     }
-
+    
     return (
         <div className="w-1/5 h-2/5 m-auto mr-10">
         <Button variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create Channel</Button>
@@ -229,51 +229,47 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Typography>
             </DialogTitle>
             <DialogContent>
-                <Box display="flex">
+                <Box display="flex" sx={{mt:1}}>
                     <InputLabel>First Name:</InputLabel>
-                    <Input  sx={{ml:1}}
+                    <TextField  sx={{ml:1}} size="small"
                         {...register("firstName", { 
                             required: "This field is required", 
                         })}
-                        type="text"/>
-                {errors.firstName && 
-                <><span className='text-red-700'>{errors.firstName.message}</span><br /></>}
+                        error={errors.firstName !== undefined}
+                        helperText={errors.firstName?.message}
+                        />
                 </Box>
 
-                <Box display="flex">
+                <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Last Name:</InputLabel>
-                    <Input sx={{ml:1}}
+                    <TextField sx={{ml:1}} size="small"
                         {...register("lastName", { 
                             required: "This field is required", 
                         })}
+                        error={errors.lastName !== undefined}
+                        helperText={errors.lastName?.message}
                         type="text"/>
                     <br/>
-                    {errors.lastName && errors.lastName.type == "required" && 
-                    <><span className='text-red-700'>This field is required</span><br /></>}
                 </Box>
 
-                <Box display="flex">
+                <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Email:</InputLabel>
-                    <Input sx={{ml:5.6, align:"right"}} 
+                    <TextField sx={{ml:5.6, align:"right"}} size="small"
                         {...register("email", { 
                             required: "This field is required",
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
                                 message: "Invalid email address", }
                         })}
-                        type="text"/>
+                        error={errors.email !== undefined}
+                        helperText={errors.email?.message}
+                    />
                     <br/>
-                    {errors.email && errors.email.type == "required" && 
-                    <><span className='text-red-700'>This field is required</span><br /></>}
-                    {errors.email && errors.email.type == "pattern" && 
-                    <><span className='text-red-700'>{errors.email.message}</span><br /></>}
-                    {errors.email && errors.email.type == "used" && 
-                    <><span className='text-red-700'>{errors.email.message}</span><br /></>}
                 </Box>
 
-                <Box display="flex">
+                <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Password:</InputLabel>
-                    <Input sx={{ml:1.7}} 
+                    <TextField sx={{ml:1.7}} size="small"
                         {...register("password", { 
                             required: "This field is required",
                             pattern: {
@@ -281,27 +277,29 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                                 message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
                             }
                         })}
-                        type="text"/>
+                    error={errors.password !== undefined}
+                    helperText={errors.password?.message}
+                    />
                     <br/>
-                    {errors.password && errors.password.type == "required" && 
-                    <><span className='text-red-700'>This field is required</span><br /></>}
-                    {errors.password && errors.password.type == "pattern" && 
-                    <><span className='text-red-700'>{errors.password.message}</span><br /></>}
                 </Box>
 
                 <Box display="flex">
-                    <InputLabel>Role:</InputLabel>
-                    <Select sx={{ml:6}}
-                        {...register("role", { 
-                            required: "This field is required", 
+                    {/* <FormControl className={classes.formControl} error={hasError}> */}
+                        <InputLabel>Role:</InputLabel>
+                        <Select sx={{ml:6, mt:1}} size="small" required
+                            error={errors.role !== undefined}
+                            // helperText={errors.role?.message}
+                            {...register("role", { 
+                                required: "This field is required", 
                         })}>
-                        <MenuItem value="admin">Admin</MenuItem>
-                        <MenuItem value="hod">HOD </MenuItem>
-                        <MenuItem value="faculty">Faculty</MenuItem>
-                    </Select>
-                    <br/>
-                    {errors.role && 
-                    <><span className='text-red-700'>This field is required</span><br /></>}
+                            <MenuItem value="admin">Admin</MenuItem>
+                            <MenuItem value="hod">HOD </MenuItem>
+                            <MenuItem value="faculty">Faculty</MenuItem>
+                        </Select>
+                        <br/>
+                        {errors.role && 
+                        <><span className='text-red-700'>This field is required</span><br /></>}
+                    {/* </FormControl> */}
                 </Box>
 
             </DialogContent>
