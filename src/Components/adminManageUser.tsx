@@ -13,7 +13,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, ChannelRole, User } from "~/types";
 import { apiReq } from "~/utils";
-import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton } from "@mui/material";
+import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormHelperText, FormControl } from "@mui/material";
+// import { FormControl } from '@angular/forms';
 
 const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     const [suggestedChannels, setSuggestedChannels] = useState<Channel[]>([]);
@@ -284,9 +285,9 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Box>
 
                 <Box display="flex">
-                    {/* <FormControl className={classes.formControl} error={hasError}> */}
-                        <InputLabel>Role:</InputLabel>
-                        <Select sx={{ml:6, mt:1}} size="small" required
+                    <InputLabel>Role:</InputLabel>
+                    <FormControl>
+                        <Select sx={{ml:6, mt:1}} size="small" required style={{ width: "240%" }}
                             error={errors.role !== undefined}
                             // helperText={errors.role?.message}
                             {...register("role", { 
@@ -297,9 +298,9 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                             <MenuItem value="faculty">Faculty</MenuItem>
                         </Select>
                         <br/>
-                        {errors.role && 
-                        <><span className='text-red-700'>This field is required</span><br /></>}
-                    {/* </FormControl> */}
+                        {/* {errors.role && 
+                        <><span className='text-red-700'>This field is required</span><br /></>} */}
+                    </FormControl>
                 </Box>
 
             </DialogContent>
