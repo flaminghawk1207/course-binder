@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, ChannelRole, User } from "~/types";
 import { apiReq } from "~/utils";
+import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormHelperText, FormControl } from "@mui/material";
+// import { FormControl } from '@angular/forms';
 
 const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     const [suggestedChannels, setSuggestedChannels] = useState<Channel[]>([]);
@@ -106,23 +108,23 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     }
 
     return (
-        <div id='course-users-list' className="relative w-1/3 h-full bg-purple-600 items-center">
-            <h1 className="w-full">Users</h1>
+        <Box id='course-users-list' className="relative w-1/3 h-full bg-purple-600 items-center">
+            <Typography variant="h5" sx={{textAlign:"center",mt:1}} className="w-full">Users</Typography>
 
-            <div className="flex flex-row">
+            <Box className="flex flex-row" sx={{mt:1}}>
                 <h3 className="w-2/4 text-center">Name</h3>
                 <h3 className="w-1/4 text-center">Role</h3>
-            </div>
+            </Box>
             {
                 userChannels.map((channel, index) => {
                     return (
-                        <div key={channel.channel_code} className="flex flex-row">
+                        <Box sx={{mt:1}} key={channel.channel_code} className="flex flex-row" >
                             <p className="w-2/4 text-center">{channel.channel_code}</p>
                             <p className="w-1/4 text-center">{userChannelsRoles[index]}</p>
-                            <Button onClick={() => removeUserFromChannel(channel)} className="w-1/4">
-                                <DeleteIcon className="bg-white text-red-700"/>
-                            </Button>
-                        </div>
+                            <IconButton onClick={() => removeUserFromChannel(channel)} aria-label="delete" size="small" className="w-1/4">
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+                        </Box>
                     )
                 })
             }
@@ -146,7 +148,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
-                        <Fragment>
+                        <Fragment>                            
                             {loading ? <CircularProgress color="inherit" size={20} /> : null}
                             {params.InputProps.endAdornment}
                         </Fragment>
@@ -156,15 +158,15 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                 renderOption={(props, option: Channel) => {
                     return (
                         <div key={option.channel_code} className="flex flex-row w-full">
-                            <p className="w-3/4">{option.channel_name}</p>
-                            <Button key={option.channel_code} onClick={() => addUserToChannel(option)} className="w-1/4">
+                            <Typography className="w-3/4" sx={{p:2}}>{option.channel_name}</Typography>
+                            <Button size="small" sx={{borderRadius:300}} key={option.channel_code} onClick={() => addUserToChannel(option)} className="w-1/4">
                                 +
                             </Button>
                         </div>
                     )
                 }}
             />
-        </div>
+        </Box>
     )
 }
 
@@ -217,78 +219,90 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
         clearErrors();
         setOpen(false);
     }
-
+    
     return (
         <div className="w-1/5 h-2/5 m-auto mr-10">
         <Button variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create Channel</Button>
         <Dialog open={open} onClose={closeDialog}>
-            <DialogTitle>Create User</DialogTitle>
+            <DialogTitle>
+                <Typography align="center">
+                    Create User
+                </Typography>
+            </DialogTitle>
             <DialogContent>
-                <label>First Name:</label>
-                <input 
-                    {...register("firstName", { 
-                        required: "This field is required", 
-                    })}
-                    type="text"/>
-                <br/>
-                {errors.firstName && 
-                <><span className='text-red-700'>{errors.firstName.message}</span><br /></>}
+                <Box display="flex" sx={{mt:1}}>
+                    <InputLabel>First Name:</InputLabel>
+                    <TextField  sx={{ml:1}} size="small"
+                        {...register("firstName", { 
+                            required: "This field is required", 
+                        })}
+                        error={errors.firstName !== undefined}
+                        helperText={errors.firstName?.message}
+                        />
+                </Box>
 
-                <label>Last Name:</label>
-                <input 
-                    {...register("lastName", { 
-                        required: "This field is required", 
-                    })}
-                    type="text"/>
-                <br/>
-                {errors.lastName && errors.lastName.type == "required" && 
-                <><span className='text-red-700'>This field is required</span><br /></>}
+                <Box display="flex" sx={{mt:1}}>
+                    <InputLabel>Last Name:</InputLabel>
+                    <TextField sx={{ml:1}} size="small"
+                        {...register("lastName", { 
+                            required: "This field is required", 
+                        })}
+                        error={errors.lastName !== undefined}
+                        helperText={errors.lastName?.message}
+                        type="text"/>
+                    <br/>
+                </Box>
 
-                <label>Email:</label>
-                <input 
-                    {...register("email", { 
-                        required: "This field is required",
-                        pattern: {
-                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
-                            message: "Invalid email address", }
-                    })}
-                    type="text"/>
-                <br/>
-                {errors.email && errors.email.type == "required" && 
-                <><span className='text-red-700'>This field is required</span><br /></>}
-                {errors.email && errors.email.type == "pattern" && 
-                <><span className='text-red-700'>{errors.email.message}</span><br /></>}
-                {errors.email && errors.email.type == "used" && 
-                <><span className='text-red-700'>{errors.email.message}</span><br /></>}
+                <Box display="flex" sx={{mt:1}}>
+                    <InputLabel>Email:</InputLabel>
+                    <TextField sx={{ml:5.6, align:"right"}} size="small"
+                        {...register("email", { 
+                            required: "This field is required",
+                            pattern: {
+                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
+                                message: "Invalid email address", }
+                        })}
+                        error={errors.email !== undefined}
+                        helperText={errors.email?.message}
+                    />
+                    <br/>
+                </Box>
 
-                <label>Password:</label>
-                <input 
-                    {...register("password", { 
-                        required: "This field is required",
-                        pattern: {
-                            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                            message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
-                        }
-                    })}
-                    type="text"/>
-                <br/>
-                {errors.password && errors.password.type == "required" && 
-                <><span className='text-red-700'>This field is required</span><br /></>}
-                {errors.password && errors.password.type == "pattern" && 
-                <><span className='text-red-700'>{errors.password.message}</span><br /></>}
+                <Box display="flex" sx={{mt:1}}>
+                    <InputLabel>Password:</InputLabel>
+                    <TextField sx={{ml:1.7}} size="small"
+                        {...register("password", { 
+                            required: "This field is required",
+                            pattern: {
+                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
+                            }
+                        })}
+                    error={errors.password !== undefined}
+                    helperText={errors.password?.message}
+                    />
+                    <br/>
+                </Box>
 
-                <label>Role:</label>
-                <select 
-                    {...register("role", { 
-                        required: "This field is required", 
-                    })}>
-                    <option value="admin">Admin</option>
-                    <option value="hod">HOD</option>
-                    <option value="faculty">Faculty</option>
-                </select>
-                <br/>
-                {errors.role && 
-                <><span className='text-red-700'>This field is required</span><br /></>}
+                <Box display="flex">
+                    <InputLabel>Role:</InputLabel>
+                    <FormControl>
+                        <Select sx={{ml:6, mt:1}} size="small" required style={{ width: "240%" }}
+                            error={errors.role !== undefined}
+                            // helperText={errors.role?.message}
+                            {...register("role", { 
+                                required: "This field is required", 
+                        })}>
+                            <MenuItem value="admin">Admin</MenuItem>
+                            <MenuItem value="hod">HOD </MenuItem>
+                            <MenuItem value="faculty">Faculty</MenuItem>
+                        </Select>
+                        <br/>
+                        {/* {errors.role && 
+                        <><span className='text-red-700'>This field is required</span><br /></>} */}
+                    </FormControl>
+                </Box>
+
             </DialogContent>
             <DialogActions>
             <Button onClick={closeDialog}>Cancel</Button>
@@ -336,9 +350,11 @@ const AdminManageUser: NextPage = () => {
                 selectedUser ?
                     <div id="course-info-view" className="h-4/5 w-full bg-blue-300 flex flex-row">
                         <div id="course-info" className="w-2/3 h-full bg-yellow-300">
-                            Current selected User: {selectedUser? selectedUser.firstName : "None"}<br/>
-                            Last Name: {selectedUser? selectedUser.lastName : "None"}<br/>
-                            Email: {selectedUser? selectedUser.email : "None"}
+                            <Typography>
+                                Current selected User: {selectedUser? selectedUser.firstName : "None"}<br/>
+                                Last Name: {selectedUser? selectedUser.lastName : "None"}<br/>
+                                Email: {selectedUser? selectedUser.email : "None"}
+                            </Typography>
                         </div>
                         <ChannelsList 
                             selectedUser={selectedUser}/>
