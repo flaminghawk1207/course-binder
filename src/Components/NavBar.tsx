@@ -14,6 +14,7 @@ const NavBar = ({items} : {items : Array<NavItem>}) => {
                         variant="outlined" 
                         sx={{mt: 2}} 
                         className="w-full" 
+                        id = {item.label}
                         onClick={() => setCurrentItem(item)}
                     >
                         {item.label}

@@ -222,7 +222,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
     
     return (
         <div className="w-1/5 h-2/5 m-auto mr-10">
-        <Button variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create Channel</Button>
+        <Button id="createUserDialogButton" variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create User</Button>
         <Dialog open={open} onClose={closeDialog}>
             <DialogTitle>
                 <Typography align="center">
@@ -234,7 +234,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                     <InputLabel>First Name:</InputLabel>
                     <TextField  sx={{ml:1}} size="small"
                         {...register("firstName", { 
-                            required: "This field is required", 
+                            required: "First Name is required", 
                         })}
                         error={errors.firstName !== undefined}
                         helperText={errors.firstName?.message}
@@ -245,7 +245,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                     <InputLabel>Last Name:</InputLabel>
                     <TextField sx={{ml:1}} size="small"
                         {...register("lastName", { 
-                            required: "This field is required", 
+                            required: "Last Name is required", 
                         })}
                         error={errors.lastName !== undefined}
                         helperText={errors.lastName?.message}
@@ -257,7 +257,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                     <InputLabel>Email:</InputLabel>
                     <TextField sx={{ml:5.6, align:"right"}} size="small"
                         {...register("email", { 
-                            required: "This field is required",
+                            required: "Email is required",
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
                                 message: "Invalid email address", }
@@ -272,7 +272,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                     <InputLabel>Password:</InputLabel>
                     <TextField sx={{ml:1.7}} size="small"
                         {...register("password", { 
-                            required: "This field is required",
+                            required: "Password is required",
                             pattern: {
                                 value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                                 message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
@@ -286,8 +286,8 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
 
                 <Box display="flex">
                     <InputLabel>Role:</InputLabel>
-                    <FormControl>
-                        <Select sx={{ml:6, mt:1}} size="small" required style={{ width: "240%" }}
+                    {/* <FormControl> */}
+                        <Select sx={{ml:6, mt:1}} size="small" required style={{ width: "72%" }}
                             error={errors.role !== undefined}
                             // helperText={errors.role?.message}
                             {...register("role", { 
@@ -300,13 +300,13 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                         <br/>
                         {/* {errors.role && 
                         <><span className='text-red-700'>This field is required</span><br /></>} */}
-                    </FormControl>
+                    {/* </FormControl> */}
                 </Box>
 
             </DialogContent>
             <DialogActions>
-            <Button onClick={closeDialog}>Cancel</Button>
-            <Button onClick={handleSubmit(createUserandClose)}>Create</Button>
+            <Button id="createUserCancelButton" onClick={closeDialog}>Cancel</Button>
+            <Button id="createUserButton" onClick={handleSubmit(createUserandClose)}>Create</Button>
             </DialogActions>
         </Dialog>
         </div>

@@ -58,6 +58,7 @@ const Login: NextPage = () => {
         <div className="h-screen w-full flex mx-auto items-center">
             <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-red-200 shadow-lg rounded px-8 py-12">
                 <div>
+                    <form>
                     <label>Email:</label>
                     <input 
                         {...register("email", { 
@@ -82,7 +83,8 @@ const Login: NextPage = () => {
                     <br/>
                     <button onClick={handleSubmit(handleLogin)}>Sign In</button>
                     <br/>
-                    <Link href={'/forgotPassword'}>Forgot password?</Link>
+                    <Link id="forgotPasswordLink" href={'/forgotPassword'}>Forgot password?</Link>
+                    </form>
                 </div>
             </div>
         </div>
