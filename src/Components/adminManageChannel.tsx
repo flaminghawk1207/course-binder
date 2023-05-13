@@ -12,7 +12,7 @@ import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, CHANNEL_ROLE, User } from "~/types";
-import { apiReq } from "~/utils";
+import { DEF_TEMPLATE, apiReq } from "~/utils";
 import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormControl } from "@mui/material";
 
 const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
