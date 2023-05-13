@@ -11,7 +11,7 @@ import { type NextPage } from "next";
 import { Dispatch, Fragment, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Channel, ChannelRole, User } from "~/types";
+import { Channel, CHANNEL_ROLE, User } from "~/types";
 import { apiReq } from "~/utils";
 import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormHelperText, FormControl } from "@mui/material";
 // import { FormControl } from '@angular/forms';
@@ -22,7 +22,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     const loading = open && suggestedChannels.length === 0;
 
     const [userChannels, setUserChannels] = useState<Channel[]>([]);
-    const [userChannelsRoles, setUserChannelsRoles] = useState<ChannelRole[]>([]);
+    const [userChannelsRoles, setUserChannelsRoles] = useState<CHANNEL_ROLE[]>([]);
 
     useEffect(() => {
         if(!selectedUser) {
