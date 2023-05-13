@@ -6,6 +6,7 @@ import NavBar from "~/Components/NavBar";
 import { useRouter } from 'next/router';
 import { Channel, NavItem } from '~/types';
 import CourseView from '~/Components/CourseView';
+import { Forbidden } from '~/Components/forbidden';
 
 const FacultyDisplayPage: NextPage = () => {
     const { user } = useContext(UserContext);
@@ -22,6 +23,8 @@ const FacultyDisplayPage: NextPage = () => {
             await refreshChannels();
         })()
     }, [])
+
+    if(!user) return <Forbidden/>;
 
     const refreshChannels = async () => {
         let { facultyChannels } = await apiReq('facultyCourseDetails', user?.email)
