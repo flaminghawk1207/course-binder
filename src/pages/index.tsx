@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useContext, useEffect } from "react";
 import { UserContext } from "~/contexts/UserProvider";
 import { useRouter } from "next/router";
-import { Role } from "~/types";
+import { ROLE } from "~/types";
 
 const Home: NextPage = () => {
   const {user, logout} = useContext(UserContext);
@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if(!user) {
       router.push("/login");
-    } else if (user.role === Role.FACULTY) {
+    } else if (user.role === ROLE.FACULTY) {
       router.push("/facultyDisplayPage");
     }
   }, [user])

@@ -1,7 +1,9 @@
 import { addDoc, collection, deleteDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { firebase_app, firestore_db } from "./firebase";
-import { Channel, ChannelRole, CourseBinderError, ErrorType, User } from "~/types";
+import { firebase_app, firebase_file_storage, firestore_db } from "./firebase";
+import { Channel, CHANNEL_ROLE, CourseBinderError, ERROR_TYPE, FirebaseFile, FirebaseFolder, User } from "~/types";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { StorageReference, deleteObject, getDownloadURL, getMetadata, listAll, ref, uploadBytes, uploadString } from "firebase/storage";
+import formidable from "formidable";
 
 export const getUserInfo = async (email: string) => {
     const userInfoSnapshot = await getDocs(
@@ -13,7 +15,7 @@ export const getUserInfo = async (email: string) => {
 
     if(!userInfoSnapshot || userInfoSnapshot.empty) {
         return {
-            type: ErrorType.USER_NOT_FOUND,
+            type: ERROR_TYPE.USER_NOT_FOUND,
             message: "User not found"
         } as CourseBinderError;
     }
@@ -36,6 +38,10 @@ export const getfacultyInfo = async (email:string) => {
     }
 
     const channelCodes = channelCodesSnapshot.docs.map(doc => doc.data().channel_code) as string[];
+
+    if(channelCodes.length == 0) {
+        return [];
+    }
 
     const channelsInfoSnapshot = await getDocs(
         query(
@@ -115,7 +121,7 @@ export const getUsersRolesInChannel = async (channel_code: string) => {
     const channel_roles = userInfos.map(userInfo => {
         const channelMemberRelationship = userInChannelEmailsSnapshot.docs.find(doc => doc.data().email == userInfo.email);
         return channelMemberRelationship?.data().channel_role;
-    }) as ChannelRole[];
+    }) as CHANNEL_ROLE[];
     return {channel_users: userInfos, channel_roles};
 }
 
@@ -156,7 +162,7 @@ export const getChannelsRolesWithUser = async (email: string) => {
     const channel_roles = channelInfos.map(channel => {
         const channelMemberRelationship = channelsWithUserSnapshot.docs.find(doc => doc.data().channel_code == channel.channel_code);
         return channelMemberRelationship?.data().channel_role;
-    }) as ChannelRole[];
+    }) as CHANNEL_ROLE[];
     return {user_channels: channelInfos, channel_roles};
 }
 
@@ -262,9 +268,40 @@ export const removeUserFromChannel = async (channel_code: string, email: string)
     return true;
 }
 
+export const createDir = async (dirName: string) => {
+    // Adding an empty file inside the directory
+    // Till we figure out some way to create empty directories in firebase storage
+    const storageRef = ref(firebase_file_storage, `${dirName}/_ghostfile`);
+    await uploadBytes(storageRef, new Uint8Array())
+            .then((val) => console.log("DIR created: ", val))
+}
+
+export const createEmptyFile = async (pathName: string) => {
+    // Adding an empty file inside the directory
+    // Till we figure out some way to create empty directories in firebase storage
+    const storageRef = ref(firebase_file_storage, pathName);
+    await uploadBytes(storageRef, new Uint8Array())
+            .then((val) => console.log("DIR created: ", val))
+}
+
+export const getDirName = (channel: Channel) => {
+    let dirName;
+    if(channel.channel_type == "course") {
+        dirName = `${channel.channel_department}/${channel.channel_year}/${channel.channel_code}`
+    } else {
+        dirName = `${channel.channel_type}/Labs/${channel.channel_code}`
+    }
+    return dirName;
+}
+
 export const createChannel = async (channel: Channel) => {
     const status = await addDoc(collection(firestore_db, "channels"), channel);
 
+    const dirName = getDirName(channel);
+
+    await createDir(dirName);
+    await createFolderStructureFromTemplate(dirName);
+    
     if(!status) {
         return false;
     }
@@ -292,4 +329,146 @@ export const createUser = async (user: User, password: string) => {
         return false;
     }
     return true;
+}
+
+export const getAllFiles = async (channel: Channel) => {
+    const dirName = getDirName(channel);
+    const storageRef = ref(firebase_file_storage, dirName);
+
+    const files = await getAllFilesRecursive(storageRef);
+    console.log(files.fullPath);
+    return files;
+}
+
+export async function getAllFilesRecursive (folderRef: StorageReference): Promise<FirebaseFolder> {
+    const list = await listAll(folderRef);
+
+    let files = await Promise.all(list.items.map(async (fileRef) => {
+        const fileSize = await getMetadata(fileRef).then((metadata) => metadata.size);
+        const fileUrl = await getDownloadURL(fileRef);
+
+        return { 
+            name: fileRef.name,
+            fullPath: fileRef.fullPath,
+            type: "file",
+            empty: fileSize == 0,
+            downloadURL: fileUrl
+        } as FirebaseFile
+    }))
+    
+    files = files.filter((file) => file.name != "_ghostfile")
+
+    const folders = await Promise.all(list.prefixes.map(async (folderRef) => {
+        const nested_folders = await getAllFilesRecursive(folderRef);
+        return nested_folders;
+    }));
+
+    const children = (files as (FirebaseFile|FirebaseFolder)[]).concat(folders as (FirebaseFile|FirebaseFolder)[]);
+
+    return { name: folderRef.name, fullPath: folderRef.fullPath, children: children, type: "folder" } as FirebaseFolder;
+}
+
+export const deleteFile = async (fullPath: string) => {
+    console.log("Deleting file: ", fullPath)
+    const fileRef = ref(firebase_file_storage, fullPath);
+    await deleteObject(fileRef);
+    createEmptyFile(fullPath);
+    return true;
+}
+
+// TODO: Make proper file upload
+export const uploadFileString = async (fileContent: string, fileName: string) => {
+    const storageRef = ref(firebase_file_storage, fileName);
+    await uploadString(storageRef, fileContent)
+                        .then((val) => console.log("File uploaded: ", val))
+                        .catch((error) => {
+                            throw new Error(error.message);
+                        });
+    return true;
+}
+
+const DEF_TEMPLATE = {
+    name : "",
+    type : "folder",
+    contents : [
+        {
+            name : "quiz",
+            type : "folder",
+            contents : [
+                {
+                    name : "quiz1",
+                    type : "folder",
+                    contents : [
+                        {
+                            name : "marks_csea.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_cseb.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csec.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csed.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csee.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csef.xlxs",
+                            type : "file",
+                        }
+                    ]
+                },
+                {
+                    name : "quiz2",
+                    type : "folder",
+                    contents : [
+                        {
+                            name : "marks_csea.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_cseb.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csec.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csed.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csee.xlxs",
+                            type : "file",
+                        },
+                        {
+                            name : "marks_csef.xlxs",
+                            type : "file",
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+const createFolderStructureFromTemplate = async (path: string, template?: any) => {
+    if(template === undefined) template = DEF_TEMPLATE;
+
+    template.contents.forEach(async (item: any) => {
+        let newPath = path + "/" + item.name;
+        if(item.type == "folder") {
+            await createFolderStructureFromTemplate(newPath, item);
+        } else {
+            await createEmptyFile(newPath);
+        }
+    });
 }
