@@ -13,7 +13,7 @@ const FacultyDisplayPage: NextPage = () => {
     const router = useRouter();
 
     useEffect(() => {
-        if (!user) {
+        if (!user || user==null || user==undefined) {
             router.push('login');
             return;
         }
@@ -21,7 +21,7 @@ const FacultyDisplayPage: NextPage = () => {
         (async () => {
             await refreshChannels();
         })()
-    }, [])
+    }, [user])
 
     const refreshChannels = async () => {
         let { facultyChannels } = await apiReq('facultyCourseDetails', user?.email)
