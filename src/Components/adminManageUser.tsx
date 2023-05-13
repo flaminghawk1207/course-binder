@@ -342,7 +342,7 @@ const AdminManageUser: NextPage = () => {
                     onChange={(event, value) => {setSelectedUser(value)}}
                     defaultValue={null}
                     className="m-auto ml-10 w-2/5"
-                    isOptionEqualToValue={(option: User, value: User) => option.firstName === value.firstName}
+                    isOptionEqualToValue={(option: User, value: User) => option.email === value.email}
                 />
                 <CreateUserButtonDialog refreshUsers={refreshUsers}/>
             </div>

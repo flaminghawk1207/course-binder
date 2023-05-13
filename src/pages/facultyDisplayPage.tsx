@@ -29,7 +29,7 @@ const FacultyDisplayPage: NextPage = () => {
         facultyChannels = facultyChannels.map((channel: Channel) => {
             return {
                 "label": channel.channel_code,
-                "component": <CourseView channel={channel}/>,
+                "component": <CourseView key={channel.channel_code} channel={channel}/>,
             } as NavItem
         })
         setResObject(facultyChannels);

@@ -154,6 +154,7 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
 
             if(!check_template(new_temp_obj)) {
                 alert("Invalid template");
+                return;
             }            
             new_template = customTemplate
         }
@@ -286,9 +287,9 @@ const CourseView = ({channel}: {channel: Channel}) => {
                 {
                     currDirObject?.children?.map((child) => {
                         if(child.type === "folder") {
-                            return <FolderComponent folder={child} moveIntoFolder={moveIntoFolder} />
+                            return <FolderComponent key={child.fullPath} folder={child} moveIntoFolder={moveIntoFolder} />
                         } else {
-                            return <FileComponent file={child} refreshCompleteDir={refreshCompleteDir}/>
+                            return <FileComponent key={child.fullPath} file={child} refreshCompleteDir={refreshCompleteDir}/>
                         }
                     })
                 }
