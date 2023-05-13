@@ -1,4 +1,3 @@
-import { StorageReference } from 'firebase/storage';
 import { ReactNode } from 'react';
 
 export interface User {

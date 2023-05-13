@@ -1,4 +1,7 @@
-import { PercentageDict } from "./types"
+import { ref } from "@firebase/storage"
+import { firebase_file_storage } from "./server/firebase"
+import { PercentageDict, FirebaseFolder, FirebaseFile } from "./types"
+import { getAllFilesRecursive } from "./server/db"
 
 export const apiReq = (apiPath: string, body: any) => {
     return fetch(`/api/${apiPath}`, {
@@ -164,4 +167,68 @@ export const check_template = (template: any) => {
         return false;
     }
     return true;
+}
+
+export const constructPercentageDict = async (level: string, maxLevels: number, dept?: string) => {
+    let dirName = "";
+    if(level == "COLLEGE") {
+        dirName = "";
+    } else if (level == "DEPARTMENT") {
+        dirName = dept!;
+    }
+
+    const storageRef = ref(firebase_file_storage, dirName);
+
+    const allFiles = await getAllFilesRecursive(storageRef);
+
+    const percentageDict = constructPercentageDictRecursive(allFiles, maxLevels);
+    return percentageDict;
+}
+
+export function collapsePercentageDict(fileFolder: (FirebaseFolder | FirebaseFile)): [number, number] {
+    if(fileFolder.type == "file") {
+        if(fileFolder.empty) {
+            return [0, 1];
+        } else {
+            return [1, 1];
+        }
+    }
+
+    let uploaded = 0;
+    let totalFiles = 0;
+    fileFolder.children.forEach(child => {
+        const [child_uploaded, child_totalFiles] = collapsePercentageDict(child);
+        uploaded += child_uploaded;
+        totalFiles += child_totalFiles;
+    });
+
+    return [uploaded, totalFiles];
+}
+
+export function constructPercentageDictRecursive(allFiles: (FirebaseFolder | FirebaseFile), depth: number): PercentageDict  {
+    if(allFiles.type == "file") {
+        return {
+            levelElementName: allFiles.name,
+            levelPercentage: allFiles.empty ? 0 : 100,
+            children: [] as PercentageDict[]
+        } as PercentageDict;
+    } else {
+        if(depth == 0) {
+            const [uploaded, totalFiles] = collapsePercentageDict(allFiles);
+            return {
+                levelElementName: allFiles.name,
+                levelPercentage: (uploaded / totalFiles) * 100,
+                children: [] as PercentageDict[]
+            }
+        }
+
+        const children = allFiles.children.map(child => constructPercentageDictRecursive(child, depth - 1));
+        const levelPercentage = children.reduce((partialSum, child) => partialSum += child?.levelPercentage, 0) / children.length;
+
+        return {
+            levelElementName: allFiles.name,
+            levelPercentage: levelPercentage,
+            children: children
+        } as PercentageDict;
+    }
 }
