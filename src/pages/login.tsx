@@ -6,7 +6,9 @@ import { apiReq } from "~/utils";
 import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "~/contexts/UserProvider";
-import { ROLE } from "~/types";
+import { Role } from "~/types";
+import { Button, TextField, Link as MUILink, InputAdornment } from "@mui/material";
+import { AccountCircle, Key, Markunread } from "@mui/icons-material";
 
 interface signInForm {
     email: string,
@@ -44,7 +46,7 @@ const Login: NextPage = () => {
                 firstName: res.firstName as string,
                 lastName: res.lastName as string,
                 email: res.email as string,
-                role: res.role as ROLE,
+                role: res.role as Role,
             })
             router.push("/");
         } else {
@@ -54,38 +56,55 @@ const Login: NextPage = () => {
         setLoading(false);
     }
 
-    return (
-        <div className="h-screen w-full flex mx-auto items-center">
-            <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-red-200 shadow-lg rounded px-8 py-12">
-                <div>
-                    <label>Email:</label>
-                    <input 
-                        {...register("email", { 
-                            required: "This field is required",
+    return (        
+            <div id="login-form-container" className="flex flex-col items-center justify-center h-screen bg-cyan-300 ">
+                <AccountCircle fontSize="large" className = "mb-10 text-7xl" /> 
+
+                    <TextField
+                        label="Email ID"
+                        type="text"
+                        InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Markunread/>
+                              </InputAdornment>
+                            ),
+                          }}                       
+                        {...register("email", {
+                            required: "This field is Required",
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
-                                message: "Invalid email address", }
-                        })}
-                        type="text" name="email"/>
-                    <br/>
-                    {errors.email && errors.email.type == "required" && 
-                    <><span className='text-red-700'>This field is required</span><br /></>}
-                    {errors.email && errors.email.type == "pattern" && 
-                    <><span className='text-red-700'>{errors.email.message}</span><br /></>}
-                    <br/>
-                    <label>Password:</label>
-                    <input 
-                        {...register("password", { 
+                                message: "Invalid email address",
+                            }
+                        })} />
+                    <br />
+                    {errors.email && errors.email.type == "required" &&
+                        <><span className='text-red-700'>This field is required</span><br /></>}
+                    {errors.email && errors.email.type == "pattern" &&
+                        <><span className='text-red-700'>{errors.email.message}</span><br /></>}
+                    <br />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Key/>
+                              </InputAdornment>
+                            ),
+                          }}
+                        {...register("password", {
                             required: "This field is required"
-                        })}
-                        type="text"/>
-                    <br/>
-                    <button onClick={handleSubmit(handleLogin)}>Sign In</button>
-                    <br/>
-                    <Link href={'/forgotPassword'}>Forgot password?</Link>
+                        })} />
+                    <br />
+                    <br />
+                    <Button variant="outlined" className="bg-green-400" onClick={handleSubmit(handleLogin)}>Login</Button>
+                    <br />
+                    <Link href={'/forgotPassword'}>
+                        <div className="text-sky-500 underline">Forgot Password?</div>
+                    </Link>
+
                 </div>
-            </div>
-        </div>
 
     )
 }
