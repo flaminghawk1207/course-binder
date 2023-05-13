@@ -3,7 +3,6 @@ import { firebase_app, firebase_file_storage, firestore_db } from "./firebase";
 import { Channel, CHANNEL_ROLE, CourseBinderError, ERROR_TYPE, FirebaseFile, FirebaseFolder, User } from "~/types";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { StorageReference, deleteObject, getDownloadURL, getMetadata, listAll, ref, uploadBytes, uploadString } from "firebase/storage";
-import formidable from "formidable";
 
 export const getUserInfo = async (email: string) => {
     const userInfoSnapshot = await getDocs(
@@ -126,15 +125,12 @@ export const getUsersRolesInChannel = async (channel_code: string) => {
 }
 
 export const getChannelsRolesWithUser = async (email: string) => {
-    console.log(email)
     const channelsWithUserSnapshot = await getDocs(
         query(
             collection(firestore_db, "channelMemberRelationship"),
             where("email", "==", email)
         )
     );
-
-    console.log("Here")
 
     if(!channelsWithUserSnapshot) {
         throw new Error("Firestore error when retrieving user emails");
@@ -164,6 +160,25 @@ export const getChannelsRolesWithUser = async (email: string) => {
         return channelMemberRelationship?.data().channel_role;
     }) as CHANNEL_ROLE[];
     return {user_channels: channelInfos, channel_roles};
+}
+
+export const getUserRole = async (channel_code: string, user_email: string) => {
+    // get user role from channel
+    const channelMemberRelationshipSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channelMemberRelationship"),
+            where("channel_code", "==", channel_code),
+            where("email", "==", user_email)
+        )
+    );
+
+    if(!channelMemberRelationshipSnapshot) {
+        throw new Error("Firestore error when retrieving user role");
+    }
+    
+    const channelMemberRelationship = channelMemberRelationshipSnapshot.docs[0]?.data();
+
+    return channelMemberRelationship?.channel_role;
 }
 
 export const getUsersNotInChannel = async (channel_code: string) => {
@@ -273,7 +288,7 @@ export const createDir = async (dirName: string) => {
     // Till we figure out some way to create empty directories in firebase storage
     const storageRef = ref(firebase_file_storage, `${dirName}/_ghostfile`);
     await uploadBytes(storageRef, new Uint8Array())
-            .then((val) => console.log("DIR created: ", val))
+            .then((val) => console.log("DIR created: ", val.ref.name))
 }
 
 export const createEmptyFile = async (pathName: string) => {
@@ -281,7 +296,7 @@ export const createEmptyFile = async (pathName: string) => {
     // Till we figure out some way to create empty directories in firebase storage
     const storageRef = ref(firebase_file_storage, pathName);
     await uploadBytes(storageRef, new Uint8Array())
-            .then((val) => console.log("DIR created: ", val))
+            .then((val) => console.log("FILE created: ", val.ref.name))
 }
 
 export const getDirName = (channel: Channel) => {
@@ -300,7 +315,7 @@ export const createChannel = async (channel: Channel) => {
     const dirName = getDirName(channel);
 
     await createDir(dirName);
-    await createFolderStructureFromTemplate(dirName);
+    await createFolderStructureFromTemplate(dirName, channel.channel_template);
     
     if(!status) {
         return false;
@@ -310,7 +325,6 @@ export const createChannel = async (channel: Channel) => {
 
 // TODO: Check if email already exists
 export const createUser = async (user: User, password: string) => {
-    console.log(user, password)
     const authUser = await createUserWithEmailAndPassword(getAuth(firebase_app), user.email, password)
                             .then((userCredential) => {
                                 return userCredential.user;
@@ -336,7 +350,6 @@ export const getAllFiles = async (channel: Channel) => {
     const storageRef = ref(firebase_file_storage, dirName);
 
     const files = await getAllFilesRecursive(storageRef);
-    console.log(files.fullPath);
     return files;
 }
 
@@ -368,8 +381,7 @@ export async function getAllFilesRecursive (folderRef: StorageReference): Promis
     return { name: folderRef.name, fullPath: folderRef.fullPath, children: children, type: "folder" } as FirebaseFolder;
 }
 
-export const deleteFile = async (fullPath: string) => {
-    console.log("Deleting file: ", fullPath)
+export const resetFile = async (fullPath: string) => {
     const fileRef = ref(firebase_file_storage, fullPath);
     await deleteObject(fileRef);
     createEmptyFile(fullPath);
@@ -380,95 +392,64 @@ export const deleteFile = async (fullPath: string) => {
 export const uploadFileString = async (fileContent: string, fileName: string) => {
     const storageRef = ref(firebase_file_storage, fileName);
     await uploadString(storageRef, fileContent)
-                        .then((val) => console.log("File uploaded: ", val))
+                        .then((val) => console.log("File uploaded: ", val.ref.name))
                         .catch((error) => {
                             throw new Error(error.message);
                         });
     return true;
 }
 
-const DEF_TEMPLATE = {
-    name : "",
-    type : "folder",
-    contents : [
-        {
-            name : "quiz",
-            type : "folder",
-            contents : [
-                {
-                    name : "quiz1",
-                    type : "folder",
-                    contents : [
-                        {
-                            name : "marks_csea.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_cseb.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csec.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csed.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csee.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csef.xlxs",
-                            type : "file",
-                        }
-                    ]
-                },
-                {
-                    name : "quiz2",
-                    type : "folder",
-                    contents : [
-                        {
-                            name : "marks_csea.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_cseb.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csec.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csed.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csee.xlxs",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_csef.xlxs",
-                            type : "file",
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
+const createFolderStructureFromTemplate = async (path: string, template: string) => {
+    let template_obj = JSON.parse(template);
 
-const createFolderStructureFromTemplate = async (path: string, template?: any) => {
-    if(template === undefined) template = DEF_TEMPLATE;
-
-    template.contents.forEach(async (item: any) => {
+    template_obj.contents.forEach(async (item: any) => {
         let newPath = path + "/" + item.name;
         if(item.type == "folder") {
-            await createFolderStructureFromTemplate(newPath, item);
+            await createFolderStructureFromTemplate(newPath, JSON.stringify(item));
         } else {
             await createEmptyFile(newPath);
         }
     });
+}
+
+export const deleteFolder = async (path: string) => {
+    const folderRef = ref(firebase_file_storage, path);
+    const firebase_folder = await getAllFilesRecursive(folderRef);
+    await deleteAllFilesRecursive(firebase_folder);
+    return true;
+}
+
+export const deleteAllFilesRecursive = async (firebase_folder: FirebaseFolder | FirebaseFile) => {
+    if(firebase_folder.type == "file") {
+        const fileRef = ref(firebase_file_storage, firebase_folder.fullPath);
+        await deleteObject(fileRef);
+    } else {
+        await Promise.all(firebase_folder.children.map(async (child) => {
+            await deleteAllFilesRecursive(child);
+        }));
+    }
+}
+
+export const setNewTemplate = async (channel: Channel, newTemplate: string) => {
+    const dirName = getDirName(channel);
+
+
+    // Find channel using channel_code
+    const channelDocsSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channels"),
+            where("channel_code", "==", channel.channel_code)
+        )
+    );
+    // Update the channel_template field
+    const channelDocRef = channelDocsSnapshot.docs[0]?.ref;
+    if(!channelDocRef) {
+        throw new Error("Channel Ref not found");
+    }
+    await updateDoc(channelDocRef, {
+        channel_template: newTemplate
+    });
+    await deleteFolder(dirName);
+    await createFolderStructureFromTemplate(dirName, newTemplate);
+    return true;
 }

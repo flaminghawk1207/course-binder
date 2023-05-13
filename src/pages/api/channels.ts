@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, deleteFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, removeUserFromChannel, uploadFileString } from "~/server/db";
+import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFileString } from "~/server/db";
 import { Channel } from "~/types";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -23,21 +23,24 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         res.json(status);
     } else if(req.body.type == "CHANNELS_WITH_USER") {
         const { user_channels, channel_roles } = await getChannelsRolesWithUser(req.body.email);
-        console.log(user_channels, channel_roles);
         res.json({ user_channels, channel_roles });
     } else if (req.body.type == "CHANNELS_WITHOUT_USER") {
         const channels = await getChannelsWithoutUser(req.body.email);
         res.json(channels);
     } else if (req.body.type == "ALL_FILES") {
         const files = await getAllFiles(req.body.channel);
-        console.log(files.fullPath);
         res.json(files);
     } else if (req.body.type == "DELETE_FILE") {
-        const status = await deleteFile(req.body.fullPath);
+        const status = await resetFile(req.body.fullPath);
         res.json(status);
     } else if (req.body.type == "UPLOAD_FILE") {
-        console.log(req.body.fileContent)
         const status = await uploadFileString(req.body.fileContent, req.body.fileName);
+        res.json(status);
+    } else if (req.body.type == "GET_USER_ROLE") {
+        const role = await getUserRole(req.body.channel_code, req.body.user_email);
+        res.json(role);
+    } else if(req.body.type == "SET_NEW_TEMPLATE") {
+        const status = await setNewTemplate(req.body.channel, req.body.new_template);
         res.json(status);
     } else {
         res.json({

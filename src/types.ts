@@ -21,6 +21,7 @@ export interface Channel {
     channel_name: string,
     channel_department: string,
     channel_year: string | null,
+    channel_template: string,
 }
 
 export interface ChannelMemberRelationship {
