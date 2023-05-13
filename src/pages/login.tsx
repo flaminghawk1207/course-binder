@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { apiReq } from "~/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "~/contexts/UserProvider";
 import { ROLE } from "~/types";
@@ -20,12 +20,18 @@ interface signInForm {
 }
 
 const Login: NextPage = () => {
-    const { login } = useContext(UserContext);
+    const { user, login } = useContext(UserContext);
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<signInForm>();
+
+    useEffect(() => {
+        if (user) {
+            router.push("/");
+        }
+    }, [user]);
 
     let router = useRouter();
     const [isLoading, setLoading] = useState(false);
@@ -38,6 +44,7 @@ const Login: NextPage = () => {
                     <span className="sr-only">Loading...</span>
                 </div>);
     }
+
     const handleLogin = async (data: signInForm) => {
         setLoading(true);
 
@@ -52,7 +59,6 @@ const Login: NextPage = () => {
                 email: res.email as string,
                 role: res.role as ROLE,
             })
-            router.push("/");
         } else {
             alert(res.message)
             console.log(res.error)
@@ -106,7 +112,6 @@ const Login: NextPage = () => {
                     <Link href={'/forgotPassword'}>
                         <div className="text-sky-500 underline">Forgot Password?</div>
                     </Link>
-
                 </div>
 
     )
