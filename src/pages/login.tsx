@@ -6,7 +6,7 @@ import { apiReq } from "~/utils";
 import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "~/contexts/UserProvider";
-import { Role } from "~/types";
+import { ROLE } from "~/types";
 import { Button, TextField, Link as MUILink, InputAdornment } from "@mui/material";
 import { AccountCircle, Key, Markunread } from "@mui/icons-material";
 
@@ -46,7 +46,7 @@ const Login: NextPage = () => {
                 firstName: res.firstName as string,
                 lastName: res.lastName as string,
                 email: res.email as string,
-                role: res.role as Role,
+                role: res.role as ROLE,
             })
             router.push("/");
         } else {
@@ -76,12 +76,11 @@ const Login: NextPage = () => {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
                                 message: "Invalid email address",
                             }
-                        })} />
+                        })}
+                        error={errors.email !== undefined}
+                        helperText={errors.email?.message}                        
+                        />
                     <br />
-                    {errors.email && errors.email.type == "required" &&
-                        <><span className='text-red-700'>This field is required</span><br /></>}
-                    {errors.email && errors.email.type == "pattern" &&
-                        <><span className='text-red-700'>{errors.email.message}</span><br /></>}
                     <br />
                     <TextField
                         label="Password"
