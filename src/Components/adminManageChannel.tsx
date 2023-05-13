@@ -8,7 +8,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { type NextPage } from "next";
-import { Dispatch, Fragment, SetStateAction } from "react";
+import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, CHANNEL_ROLE, User } from "~/types";
@@ -182,6 +182,7 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
             channel_department: "",
             channel_type: "",
             channel_year: "",
+            channel_template: JSON.stringify(DEF_TEMPLATE),
         },
     });
     const [open, setOpen] = useState(false);
