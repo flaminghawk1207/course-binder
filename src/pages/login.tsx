@@ -6,7 +6,7 @@ import { apiReq } from "~/utils";
 import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "~/contexts/UserProvider";
-import { Role } from "~/types";
+import { ROLE } from "~/types";
 
 interface signInForm {
     email: string,
@@ -44,7 +44,7 @@ const Login: NextPage = () => {
                 firstName: res.firstName as string,
                 lastName: res.lastName as string,
                 email: res.email as string,
-                role: res.role as Role,
+                role: res.role as ROLE,
             })
             router.push("/");
         } else {

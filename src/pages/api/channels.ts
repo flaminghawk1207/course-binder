@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, getAllChannels, getChannelsRolesWithUser, getChannelsWithoutUser, removeUserFromChannel } from "~/server/db";
+import { addUserToChannel, createChannel, deleteFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, removeUserFromChannel, uploadFileString } from "~/server/db";
 import { Channel } from "~/types";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -28,6 +28,17 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     } else if (req.body.type == "CHANNELS_WITHOUT_USER") {
         const channels = await getChannelsWithoutUser(req.body.email);
         res.json(channels);
+    } else if (req.body.type == "ALL_FILES") {
+        const files = await getAllFiles(req.body.channel);
+        console.log(files.fullPath);
+        res.json(files);
+    } else if (req.body.type == "DELETE_FILE") {
+        const status = await deleteFile(req.body.fullPath);
+        res.json(status);
+    } else if (req.body.type == "UPLOAD_FILE") {
+        console.log(req.body.fileContent)
+        const status = await uploadFileString(req.body.fileContent, req.body.fileName);
+        res.json(status);
     } else {
         res.json({
             error: "Invalid request"

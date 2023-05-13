@@ -11,9 +11,9 @@ import { type NextPage } from "next";
 import { Dispatch, Fragment, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Channel, ChannelRole, User } from "~/types";
+import { Channel, CHANNEL_ROLE, User } from "~/types";
 import { apiReq } from "~/utils";
-import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton } from "@mui/material";
+import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormControl } from "@mui/material";
 
 const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
@@ -21,7 +21,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     const loading = open && suggestedUsers.length === 0;
 
     const [channelUsers, setChannelUsers] = useState<User[]>([]);
-    const [channelUsersRoles, setChannelUsersRoles] = useState<ChannelRole[]>([]);
+    const [channelUsersRoles, setChannelUsersRoles] = useState<CHANNEL_ROLE[]>([]);
 
     useEffect(() => {
         if(!selectedChannel) {
@@ -169,22 +169,19 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
 }
 
 const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => void}) => {
-    type FormValues = {
-        channel_name: string;
-        channel_code: string;
-        channel_department: string;
-    }
     const {
         register,
         handleSubmit,
         clearErrors,
         reset,
         formState: { errors },
-    } = useForm<FormValues>({
+    } = useForm<Channel>({
         defaultValues: {
             channel_name: "",
             channel_code: "",
             channel_department: "",
+            channel_type: "",
+            channel_year: "",
         },
     });
     const [open, setOpen] = useState(false);
@@ -193,7 +190,7 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
         setOpen(true);
     };
 
-    const createChannelandClose = async (data: FormValues) => {
+    const createChannelandClose = async (data: Channel) => {
         const status = await apiReq("channels", {
             type: "CREATE_CHANNEL",
             data: data
@@ -228,7 +225,6 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                         error={errors.channel_name !== undefined}
                         helperText={errors.channel_name?.message}
                     />
-                    <br/>
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Channel Code:</InputLabel>
@@ -239,7 +235,6 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                         error={errors.channel_code !== undefined}
                         helperText={errors.channel_code?.message}
                     />
-                    <br/>
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Department:</InputLabel>
@@ -250,7 +245,38 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                         error={errors.channel_department !== undefined}
                         helperText={errors.channel_department?.message}
                         />
-                    <br/>
+                </Box>
+                <Box display="flex">
+                    <InputLabel>Type:</InputLabel>
+                    <FormControl>
+                        <Select sx={{ml:6, mt:1}} size="small" required
+                            error={errors.channel_type !== undefined}
+                            {...register("channel_type", { 
+                                required: "This field is required", 
+                        })}>
+                            
+                            <MenuItem value="course">Course</MenuItem>
+                            <MenuItem value="lab">Lab</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
+                
+                <Box display="flex">
+                    <InputLabel>Year:</InputLabel>
+                    <FormControl>
+                        <Select sx={{ml:6, mt:1}} size="small" required
+                            error={errors.channel_year !== undefined}
+                            {...register("channel_year", { 
+                                required: "This field is required", 
+                        })}>
+                            
+                            <MenuItem value="I">I</MenuItem>
+                            <MenuItem value="II">II</MenuItem>
+                            <MenuItem value="III">III</MenuItem>
+                            <MenuItem value="IV">IV</MenuItem>
+                            <MenuItem value="NA">NA</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Box>
             </DialogContent>
             <DialogActions>
