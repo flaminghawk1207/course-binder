@@ -44,3 +44,9 @@ export interface CourseBinderError {
 export enum ErrorType {
     USER_NOT_FOUND,
 }
+
+export interface PercentageDict {
+    levelElementName: string,
+    levelPercentage: number,
+    children: PercentageDict[],
+}
