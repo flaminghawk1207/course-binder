@@ -16,7 +16,9 @@ const Home: NextPage = () => {
       router.push("/login");
     } else if (user.role === ROLE.FACULTY) {
       router.push("/facultyDisplayPage");
-    }
+    } else if (user.role === ROLE.ADMIN) {
+      router.push("/admin");
+    } 
   }, [user])
   // Main App UI
   

@@ -1,32 +1,15 @@
-import { updatePhoneNumber } from "firebase/auth";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { PercentageDict } from "~/types";
-import { tempObject } from "~/utils"
+import { apiReq, tempObject } from "~/utils"
 
 import React, { useRef } from 'react';
-
-// import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
-// import { Pie } from 'react-chartjs-2';
-
 import * as Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { Options } from 'highcharts';
 
 
-const DisplayPieChart = ({ child, updateLevelPointer, levelPointerArray }: { child: PercentageDict, updateLevelPointer: any, levelPointerArray: PercentageDict[] }) => {
-
-    // const data = {
-    //   label: ['Uploaded', 'Not Uploaded'],
-    //   datasets: [
-    //     {
-    //       label: ['File Uploads'],
-    //       data: [child.levelPercentage, 100 - child.levelPercentage]
-    //     }
-
-    //   ]
-    // }
-
+const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict, updateLevelPointer: any }) => {
     const HighChart = (props: HighchartsReact.Props) => {
 
         const initialOptions: Highcharts.Options = {
@@ -66,7 +49,6 @@ const DisplayPieChart = ({ child, updateLevelPointer, levelPointerArray }: { chi
             />
         );
     };
-    // console.log("Printing level pointer array",levelPointerArray)
     return (
         <div>
             <button onClick={() => updateLevelPointer(child)}>{child?.levelElementName}</button>
@@ -78,11 +60,20 @@ const DisplayPieChart = ({ child, updateLevelPointer, levelPointerArray }: { chi
 }
 
 const AnalyticsView: NextPage = () => {
-    const [percentageDict, setPercentageDict] = useState<PercentageDict>();
-    const [levelPointerArray, setLevelPointerArray] = useState<PercentageDict[]>([tempObject]);
+    const [levelPointerArray, setLevelPointerArray] = useState<PercentageDict[]>([]);
 
-
-    console.log(tempObject)
+    useEffect(() => {
+        (async () => {
+            const percentage_dict = await apiReq("channels", {
+                type: "GET_PERCENTAGE_DICT",
+                level: "COLLEGE",
+                maxDepth: 3,
+                dept: null,
+            });
+            console.log(percentage_dict)
+            setLevelPointerArray([percentage_dict]);
+        })();
+    }, []);
 
     const updateLevelPointer = (child: PercentageDict) => {
         setLevelPointerArray(levelPointerArray.concat([child]));
@@ -94,21 +85,16 @@ const AnalyticsView: NextPage = () => {
     }
     return (
         <>
-            <>
-                <button onClick={ReduceLevelPointer} disabled={levelPointerArray.length == 1} >Go previous</button>
-                {
-                    levelPointerArray[levelPointerArray.length - 1]?.children.map((child) => {
-                        return (
-                            <div>
-                                <DisplayPieChart child={child} updateLevelPointer={updateLevelPointer} levelPointerArray={levelPointerArray}></DisplayPieChart>
-                            </div>
-
-                        )
-
-                    })
-                }
-            </>
-
+            <button onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Go previous</button>
+            {
+                levelPointerArray[levelPointerArray.length - 1]?.children.map((child) => {
+                    return (
+                        <div>
+                            <DisplayPieChart child={child} updateLevelPointer={updateLevelPointer}></DisplayPieChart>
+                        </div>
+                    )
+                })
+            }
         </>
 
     )
