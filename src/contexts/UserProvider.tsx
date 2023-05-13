@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createContext, useState } from "react";
 import { User } from "~/types";
 
@@ -18,13 +18,30 @@ export const UserContext = createContext<UserContextType>(nullUserContext);
 
 export const UserProvider = ({ children } : { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
+
+    // For testing purposes
+    // const [user, setUser] = useState<User | null>({
+    //     firstName: "Jayanth",
+    //     lastName: "Menon S",
+    //     email: "jayanthmenons@gmail.com",
+    //     role: "faculty"
+    // } as User);
+
+    useEffect(() => {
+        const userFromLocalStorage = window.localStorage.getItem("user");
+        if (userFromLocalStorage) {
+            setUser(JSON.parse(userFromLocalStorage));
+        }
+    }, []);
     
     const login = (user: User) => {
         setUser(user);
+        window.localStorage.setItem("user", JSON.stringify(user));
     };
     
     const logout = () => {
         setUser(null);
+        window.localStorage.removeItem("user");
     };
 
     const userContextValue = {
