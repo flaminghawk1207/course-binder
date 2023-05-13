@@ -39,7 +39,7 @@ const Login: NextPage = () => {
         const res = await apiReq('login', data)
     
         // Set the user from the info in response
-        if(!res.errorType) {
+        if(!res.error) {
             login({
                 firstName: res.firstName as string,
                 lastName: res.lastName as string,

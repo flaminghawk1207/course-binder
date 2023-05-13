@@ -20,13 +20,23 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                         .catch((err) => {
                             if(err.code === "auth/user-not-found") {
                                 res.json({
+                                    error: true,
                                     errorType: "USER_NOT_FOUND",
                                     message: "No account found with the given email"
                                 })
+                            } else if(err.code === "auth/wrong-password") {
+                                res.json({
+                                    error: true,
+                                    errorType: "PASSWORD_INCORRECT",
+                                    message: "Incorrect password"
+                                });
                             } else {
-                                res.json(err);
+                                res.json({
+                                    error: true,
+                                    errorType: "UNKNOWN",
+                                    message: "An unknown error occurred"
+                                });
                             }
-                            console.log(err);
                             return null;
                         });
     
