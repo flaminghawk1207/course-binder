@@ -49,6 +49,12 @@ export enum ERROR_TYPE {
     USER_NOT_FOUND,
 }
 
+export interface PercentageDict {
+    levelElementName: string,
+    levelPercentage: number,
+    children: PercentageDict[],
+}
+
 export interface FirebaseFile {
     name: string;
     fullPath: string; // Path in the storage filesystem

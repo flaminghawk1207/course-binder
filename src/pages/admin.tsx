@@ -3,6 +3,7 @@ import { useContext } from "react";
 import NavBar from "~/Components/NavBar";
 import AdminManageChannel from "~/Components/adminManageChannel";
 import AdminManageUser from "~/Components/adminManageUser";
+import AnalyticsView from "~/Components/analyticsView"
 import { Forbidden } from "~/Components/forbidden";
 import { UserContext } from "~/contexts/UserProvider";
 import { NavItem, ROLE } from "~/types";
@@ -23,7 +24,7 @@ const AdminView: NextPage = () => {
         },
         {
             label: "View Analytics",
-            component: <></>,
+            component: <AnalyticsView/>,
         }
     ]
 
