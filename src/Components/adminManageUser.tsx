@@ -298,8 +298,6 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                             <MenuItem value="faculty">Faculty</MenuItem>
                         </Select>
                         <br/>
-                        {/* {errors.role && 
-                        <><span className='text-red-700'>This field is required</span><br /></>} */}
                     {/* </FormControl> */}
                 </Box>
 

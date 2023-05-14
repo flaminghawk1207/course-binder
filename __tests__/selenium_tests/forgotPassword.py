@@ -27,6 +27,7 @@ def forgotPassword(email_value,url):
                 print("Email Address '"+email_value+"' not registered")
             else:
                 print("Error:", alert.text)
+            alert.accept()
         except:
             print("Reset Link has been sent to",email_value)
     else:

@@ -4,9 +4,9 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import constants as const
+from selenium.webdriver.common.alert import Alert
 
-def fillLoginCredentials(username, password, url):
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+def fillLoginCredentials(driver,username, password, url):
     driver.get(url)
     time.sleep(2)
 
@@ -14,15 +14,33 @@ def fillLoginCredentials(username, password, url):
     pass_elem = driver.find_element(By.NAME, "password").send_keys(password)
     driver.find_element(By.CSS_SELECTOR,"button, [type=\'button\'], [type=\'reset\'], [type=\'submit\']").click()
 
-    print("Logged in Successfully using Username:", username,"Password:",password)
-    time.sleep(5)
+    try:
+        time.sleep(3)
+        alert = Alert(driver)
+        print(alert.text)
+        alert.accept()
+    except:
+        print("Logged in Successfully using Username:", username,"Password:",password)
 
-
+    time.sleep(1)
+        
 def main():
-    fillLoginCredentials("jayanthmenons@gmail.com","qwerty12345",const.BASE_URL)
-    fillLoginCredentials("jayanthmenons@gmail.com","qwerty1234",const.BASE_URL)
-    # fillLoginCredentials("anishayyagari@gmail.com","Anish@1207",url)
-    # fillLoginCredentials("anishayyagari@gmail.com","Anish7",url)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    fillLoginCredentials(driver,"jayanthmenons@gmail.com","qwerty1234",const.BASE_URL)
+    driver.close()
+
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    fillLoginCredentials(driver,"jayanthmenons@gmail.com","qwerty12345",const.BASE_URL)
+    driver.close()
+    
+
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    fillLoginCredentials(driver,"anishayyagari@gmail.com","Anish@1207",const.BASE_URL)
+    driver.close()
+
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    fillLoginCredentials(driver,"anishayyagari@gmail.com","Anish7",const.BASE_URL)
+    driver.close()
     
 
 if __name__ == "__main__":

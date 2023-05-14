@@ -249,17 +249,17 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 </Box>
                 <Box display="flex">
                     <InputLabel>Type:</InputLabel>
-                    <FormControl>
+                    {/* <FormControl> */}
                         <Select sx={{ml:6, mt:1}} size="small" required
                             error={errors.channel_type !== undefined}
                             {...register("channel_type", { 
-                                required: "This field is required", 
+                                required: "Type field is required", 
                         })}>
                             
                             <MenuItem value="course">Course</MenuItem>
                             <MenuItem value="lab">Lab</MenuItem>
                         </Select>
-                    </FormControl>
+                    {/* </FormControl> */}
                 </Box>
                 
                 <Box display="flex">
@@ -268,7 +268,7 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                         <Select sx={{ml:6, mt:1}} size="small" required
                             error={errors.channel_year !== undefined}
                             {...register("channel_year", { 
-                                required: "This field is required", 
+                                required: "Year is required", 
                         })}>
                             
                             <MenuItem value="I">I</MenuItem>
