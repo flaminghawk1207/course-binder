@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFileString } from "~/server/db";
 import { Channel } from "~/types";
+import { constructPercentageDict } from "~/utils";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     if(!req.body) {
@@ -42,6 +43,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     } else if(req.body.type == "SET_NEW_TEMPLATE") {
         const status = await setNewTemplate(req.body.channel, req.body.new_template);
         res.json(status);
+    } else if(req.body.type == "GET_PERCENTAGE_DICT") {
+        const percentageDict = await constructPercentageDict(req.body.level, req.body.maxDepth, req.body.dept);
+        res.json(percentageDict);
     } else {
         res.json({
             error: "Invalid request"

@@ -2,6 +2,7 @@
   "name": "course-binder",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
@@ -19,7 +20,8 @@
     "@types/formidable": "^2.0.6",
     "@types/react-select": "^5.0.1",
     "firebase": "^9.21.0",
-    "formidable": "^2.1.1",
+    "highcharts": "^11.0.1",
+    "highcharts-react-official": "^3.2.0",
     "next": "^13.2.4",
     "next-router-mock": "^0.9.3",
     "react": "18.2.0",

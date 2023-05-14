@@ -1,4 +1,3 @@
-import { StorageReference } from 'firebase/storage';
 import { ReactNode } from 'react';
 
 export interface User {
@@ -47,6 +46,12 @@ export interface CourseBinderError {
 
 export enum ERROR_TYPE {
     USER_NOT_FOUND,
+}
+
+export interface PercentageDict {
+    levelElementName: string,
+    levelPercentage: number,
+    children: PercentageDict[],
 }
 
 export interface FirebaseFile {

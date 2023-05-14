@@ -3,10 +3,16 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { apiReq } from "~/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "~/contexts/UserProvider";
 import { ROLE } from "~/types";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Key from "@mui/icons-material/Key";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import Markunread from "@mui/icons-material/Markunread";
 
 interface signInForm {
     email: string,
@@ -14,12 +20,18 @@ interface signInForm {
 }
 
 const Login: NextPage = () => {
-    const { login } = useContext(UserContext);
+    const { user, login } = useContext(UserContext);
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<signInForm>();
+
+    useEffect(() => {
+        if (user) {
+            router.push("/");
+        }
+    }, [user]);
 
     let router = useRouter();
     const [isLoading, setLoading] = useState(false);
@@ -32,6 +44,7 @@ const Login: NextPage = () => {
                     <span className="sr-only">Loading...</span>
                 </div>);
     }
+
     const handleLogin = async (data: signInForm) => {
         setLoading(true);
 
@@ -46,7 +59,6 @@ const Login: NextPage = () => {
                 email: res.email as string,
                 role: res.role as ROLE,
             })
-            router.push("/");
         } else {
             alert(res.message)
             console.log(res.error)
@@ -54,6 +66,7 @@ const Login: NextPage = () => {
         setLoading(false);
     }
 
+<<<<<<< HEAD
     return (
         <div className="h-screen w-full flex mx-auto items-center">
             <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-red-200 shadow-lg rounded px-8 py-12">
@@ -63,21 +76,47 @@ const Login: NextPage = () => {
                     <input 
                         {...register("email", { 
                             required: "This field is required",
+=======
+    return (        
+            <div id="login-form-container" className="flex flex-col items-center justify-center h-screen bg-cyan-300 ">
+                <AccountCircle fontSize="large" className = "mb-10 text-7xl" /> 
+
+                    <TextField
+                        label="Email ID"
+                        type="text"
+                        InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Markunread/>
+                              </InputAdornment>
+                            ),
+                          }}                       
+                        {...register("email", {
+                            required: "This field is Required",
+>>>>>>> ba520f33f279fc5dc3e51971f5ad90fd343e0b39
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
-                                message: "Invalid email address", }
+                                message: "Invalid email address",
+                            }
                         })}
-                        type="text" name="email"/>
-                    <br/>
-                    {errors.email && errors.email.type == "required" && 
-                    <><span className='text-red-700'>This field is required</span><br /></>}
-                    {errors.email && errors.email.type == "pattern" && 
-                    <><span className='text-red-700'>{errors.email.message}</span><br /></>}
-                    <br/>
-                    <label>Password:</label>
-                    <input 
-                        {...register("password", { 
+                        error={errors.email !== undefined}
+                        helperText={errors.email?.message}                        
+                        />
+                    <br />
+                    <br />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Key/>
+                              </InputAdornment>
+                            ),
+                          }}
+                        {...register("password", {
                             required: "This field is required"
+<<<<<<< HEAD
                         })}
                         type="text"/>
                     <br/>
@@ -85,9 +124,17 @@ const Login: NextPage = () => {
                     <br/>
                     <Link id="forgotPasswordLink" href={'/forgotPassword'}>Forgot password?</Link>
                     </form>
+=======
+                        })} />
+                    <br />
+                    <br />
+                    <Button variant="outlined" className="bg-green-400" onClick={handleSubmit(handleLogin)}>Login</Button>
+                    <br />
+                    <Link href={'/forgotPassword'}>
+                        <div className="text-sky-500 underline">Forgot Password?</div>
+                    </Link>
+>>>>>>> ba520f33f279fc5dc3e51971f5ad90fd343e0b39
                 </div>
-            </div>
-        </div>
 
     )
 }

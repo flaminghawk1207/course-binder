@@ -34,7 +34,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                                 res.json({
                                     error: true,
                                     errorType: "UNKNOWN",
-                                    message: "An unknown error occurred"
+                                    message: err.code
                                 });
                             }
                             return null;

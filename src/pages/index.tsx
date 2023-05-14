@@ -18,7 +18,11 @@ const Home: NextPage = () => {
       router.push("/facultyDisplayPage");
     } else if (user.role === ROLE.ADMIN) {
       router.push("/admin");
+<<<<<<< HEAD
     }
+=======
+    } 
+>>>>>>> ba520f33f279fc5dc3e51971f5ad90fd343e0b39
   }, [user])
   // Main App UI
   
