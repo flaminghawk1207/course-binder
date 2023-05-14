@@ -213,15 +213,15 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
 
     return (
         <div className="w-1/5 h-2/5 m-auto mr-10">
-        <Button variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create Channel</Button>
+        <Button id="createChannelDialogButton" variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create Channel</Button>
         <Dialog open={open} onClose={closeDialog}>
             <DialogTitle><Typography textAlign={"center"}>Create Channel</Typography></DialogTitle>
             <DialogContent>
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Channel Name:</InputLabel>
-                    <TextField sx={{ml:1.8}} size="small" required
+                    <TextField id="channelName" sx={{ml:1.8}} size="small" required
                         {...register("channel_name", { 
-                            required: "This field is required"
+                            required: "Channel Name is required"
                         })}
                         error={errors.channel_name !== undefined}
                         helperText={errors.channel_name?.message}
@@ -229,9 +229,9 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Channel Code:</InputLabel>
-                    <TextField sx={{ml:2.3}} required size="small" 
+                    <TextField id="channelCode" sx={{ml:2.3}} required size="small" 
                         {...register("channel_code", { 
-                            required: "This field is required",
+                            required: "Channel Code is required",
                         })}
                         error={errors.channel_code !== undefined}
                         helperText={errors.channel_code?.message}
@@ -239,9 +239,9 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Department:</InputLabel>
-                    <TextField sx={{ml:4.5}} size="small"  required
+                    <TextField id="departmentName" sx={{ml:4.5}} size="small"  required
                         {...register("channel_department", { 
-                            required: "This field is required",
+                            required: "Department Name is required",
                         })}
                         error={errors.channel_department !== undefined}
                         helperText={errors.channel_department?.message}
@@ -249,26 +249,26 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 </Box>
                 <Box display="flex">
                     <InputLabel>Type:</InputLabel>
-                    <FormControl>
-                        <Select sx={{ml:6, mt:1}} size="small" required
+                    {/* <FormControl> */}
+                        <Select id="channelTypeSelect" sx={{ml:6, mt:1}} size="small" required
                             error={errors.channel_type !== undefined}
                             {...register("channel_type", { 
-                                required: "This field is required", 
+                                required: "Type field is required", 
                         })}>
                             
                             <MenuItem value="course">Course</MenuItem>
                             <MenuItem value="lab">Lab</MenuItem>
                         </Select>
-                    </FormControl>
+                    {/* </FormControl> */}
                 </Box>
                 
                 <Box display="flex">
                     <InputLabel>Year:</InputLabel>
                     <FormControl>
-                        <Select sx={{ml:6, mt:1}} size="small" required
+                        <Select id="channelYearSelect" sx={{ml:6, mt:1}} size="small" required
                             error={errors.channel_year !== undefined}
                             {...register("channel_year", { 
-                                required: "This field is required", 
+                                required: "Year is required", 
                         })}>
                             
                             <MenuItem value="I">I</MenuItem>
@@ -281,8 +281,8 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 </Box>
             </DialogContent>
             <DialogActions>
-            <Button onClick={closeDialog}>Cancel</Button>
-            <Button onClick={handleSubmit(createChannelandClose)}>Create</Button>
+            <Button id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
+            <Button id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
             </DialogActions>
         </Dialog>
         </div>

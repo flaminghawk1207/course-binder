@@ -109,8 +109,8 @@ const Login: NextPage = () => {
                     <br />
                     <Button variant="outlined" className="bg-green-400" onClick={handleSubmit(handleLogin)}>Login</Button>
                     <br />
-                    <Link href={'/forgotPassword'}>
-                        <div className="text-sky-500 underline">Forgot Password?</div>
+                    <Link href={'/forgotPassword'} id="forgotPasswordLink">
+                        <div className="text-sky-500 underline" >Forgot Password?</div>
                     </Link>
                 </div>
 

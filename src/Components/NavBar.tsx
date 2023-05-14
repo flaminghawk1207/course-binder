@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavItem } from '~/types';
 import { Button, Typography } from '@mui/material';
+import LogOut from './LogOut';
 
 const NavBar = ({items} : {items : Array<NavItem>}) => {
     const [CurrentItem, setCurrentItem] = useState<NavItem>();
@@ -14,11 +15,13 @@ const NavBar = ({items} : {items : Array<NavItem>}) => {
                         variant="outlined" 
                         sx={{mt: 2}} 
                         className="w-full" 
+                        id = {item.label}
                         onClick={() => setCurrentItem(item)}
                     >
                         {item.label}
                     </Button>
                 )}
+                <LogOut />
             </div>
 
             <div className='w-4/5 h-full bg-yellow-100'>
