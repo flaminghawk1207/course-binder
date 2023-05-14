@@ -304,7 +304,7 @@ export const getDirName = (channel: Channel) => {
     if(channel.channel_type == "course") {
         dirName = `${channel.channel_department}/${channel.channel_year}/${channel.channel_code}`
     } else {
-        dirName = `${channel.channel_type}/Labs/${channel.channel_code}`
+        dirName = `${channel.channel_department}/Labs/${channel.channel_code}`
     }
     return dirName;
 }

@@ -152,6 +152,41 @@ export const DEF_TEMPLATE2 = {
     ]
 }
 
+export const DEF_LAB_TEMPLATE = {
+    name : "",
+    type : "folder",
+    contents : [
+        {
+            name : "phase1",
+            type : "folder",
+            contents : [                
+                {
+                    name : "progress_report.txt",
+                    type : "file",
+                },
+                {
+                    name : "lab_activities.txt",
+                    type : "file",
+                },
+            ]
+        },
+        {
+            name : "phase2",
+            type : "folder",
+            contents : [                
+                {
+                    name : "progress_report.txt",
+                    type : "file",
+                },
+                {
+                    name : "lab_activities.txt",
+                    type : "file",
+                },
+            ]
+        }
+    ]
+}
+
 export const check_template = (template: any) => {
     if(!template) return false;
     if(template.type == "file") {
@@ -231,4 +266,18 @@ export function constructPercentageDictRecursive(allFiles: (FirebaseFolder | Fir
             children: children
         } as PercentageDict;
     }
+}
+
+export const groupElements = (list: any[], keyGetter: any) => {
+    const map = new Map();
+    list.forEach((item) => {
+         const key = keyGetter(item);
+         const collection = map.get(key);
+         if (!collection) {
+             map.set(key, [item]);
+         } else {
+             collection.push(item);
+         }
+    });
+    return [...map.values()];
 }

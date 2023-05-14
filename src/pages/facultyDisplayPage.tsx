@@ -11,6 +11,7 @@ import { Forbidden } from '~/Components/forbidden';
 const FacultyDisplayPage: NextPage = () => {
     const { user } = useContext(UserContext);
     const [resObject, setResObject] = useState<NavItem[]>();
+    const [channels, setChannels] = useState<Channel[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -29,20 +30,29 @@ const FacultyDisplayPage: NextPage = () => {
     const refreshChannels = async () => {
         let { facultyChannels } = await apiReq('facultyCourseDetails', user?.email)
         facultyChannels = facultyChannels as Channel[];
-        facultyChannels = facultyChannels.map((channel: Channel) => {
+        const facultyNavItems = facultyChannels.map((channel: Channel) => {
             return {
                 "label": channel.channel_code,
                 "component": <CourseView key={channel.channel_code} channel={channel}/>,
             } as NavItem
         })
-        setResObject(facultyChannels);
+        setChannels(facultyChannels);
+        setResObject(facultyNavItems);
+    }
+
+    const getChannelTypeFromLabel = (navItem: NavItem) => {
+        console.log(channels);
+        console.log(navItem);
+        let channel_type = channels?.find((channel: Channel) => channel.channel_code == navItem.label)?.channel_type;
+        console.log(channel_type);
+        return channel_type;
     }
 
     if (!resObject) return <>Loading...</>;
 
     return (
         <div>
-            <NavBar items={resObject} />
+            <NavBar items={resObject} items_differentiator={getChannelTypeFromLabel} />
         </div>
     );
 };
