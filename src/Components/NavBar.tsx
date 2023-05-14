@@ -1,7 +1,12 @@
 import React, { use, useEffect, useState } from 'react';
 import { NavItem } from '~/types';
+<<<<<<< HEAD
 import { Button } from '@mui/material';
 import { groupElements } from '~/utils';
+=======
+import { Button, Typography } from '@mui/material';
+import LogOut from './LogOut';
+>>>>>>> d0401e277e36f3bff95318b6d1bdb1bb075ebde2
 
 const groupColors = [
     'bg-red-300',
@@ -34,6 +39,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                     groupedItems?.map((group: any, group_index: number) =>
                         group.map((item: NavItem) => 
                             <Button 
+                                id={item.label}
                                 key={item.label} 
                                 variant="contained"
                                 sx={{mt: 2}} 
