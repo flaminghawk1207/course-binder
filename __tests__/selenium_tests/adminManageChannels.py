@@ -22,8 +22,8 @@ def createChannel(adminName, adminPassword, channelName, channelCode, department
     driver.find_element(By.ID,"channelName").send_keys(channelName)
     driver.find_element(By.ID,"channelCode").send_keys(channelCode)
     driver.find_element(By.ID,"departmentName").send_keys(department)
-    driver.find_element(By.ID,"mui-component-select-channel_type").send_keys(type_value)
-    driver.find_element(By.ID, "mui-component-select-channel_year").send_keys(year)
+    driver.find_element(By.ID,"channelTypeSelect").send_keys(type_value)
+    driver.find_element(By.ID, "channelYearSelect").send_keys(year)
     driver.find_element(By.ID,"createChannelButton").click()
     # time.sleep(2) 
 

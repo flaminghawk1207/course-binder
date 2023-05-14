@@ -10,10 +10,10 @@ def forgotPassword(email_value,url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     driver.get(url)
 
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element(By.ID,"forgotPasswordLink").click()
 
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element(By.NAME,"email").send_keys(email_value)
     driver.find_element(By.CSS_SELECTOR,"button, [type='button'], [type='reset'], [type='submit']").click()
 

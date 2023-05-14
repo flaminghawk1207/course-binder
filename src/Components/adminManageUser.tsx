@@ -13,8 +13,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, CHANNEL_ROLE, User } from "~/types";
 import { apiReq } from "~/utils";
-import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormHelperText, FormControl } from "@mui/material";
-// import { FormControl } from '@angular/forms';
+import Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
+import Box from "@mui/material/Box";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
 
 const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     const [suggestedChannels, setSuggestedChannels] = useState<Channel[]>([]);
@@ -230,9 +234,9 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Typography>
             </DialogTitle>
             <DialogContent>
-                <Box display="flex" sx={{mt:1}}>
+                <Box display="flex" sx={{mt:1}}> 
                     <InputLabel>First Name:</InputLabel>
-                    <TextField  sx={{ml:1}} size="small"
+                    <TextField id="firstName"  sx={{ml:1}} size="small"
                         {...register("firstName", { 
                             required: "First Name is required", 
                         })}
@@ -241,9 +245,9 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                         />
                 </Box>
 
-                <Box display="flex" sx={{mt:1}}>
+                <Box  display="flex" sx={{mt:1}}>
                     <InputLabel>Last Name:</InputLabel>
-                    <TextField sx={{ml:1}} size="small"
+                    <TextField id="lastName" sx={{ml:1}} size="small"
                         {...register("lastName", { 
                             required: "Last Name is required", 
                         })}
@@ -255,7 +259,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
 
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Email:</InputLabel>
-                    <TextField sx={{ml:5.6, align:"right"}} size="small"
+                    <TextField id="emailTextField" sx={{ml:5.6, align:"right"}} size="small"
                         {...register("email", { 
                             required: "Email is required",
                             pattern: {
@@ -270,7 +274,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
 
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Password:</InputLabel>
-                    <TextField sx={{ml:1.7}} size="small"
+                    <TextField id="passwordTextField" sx={{ml:1.7}} size="small"
                         {...register("password", { 
                             required: "Password is required",
                             pattern: {
@@ -287,7 +291,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 <Box display="flex">
                     <InputLabel>Role:</InputLabel>
                     {/* <FormControl> */}
-                        <Select sx={{ml:6, mt:1}} size="small" required style={{ width: "72%" }}
+                        <Select id="roleSelect" sx={{ml:6, mt:1}} size="small" required style={{ width: "72%" }}
                             error={errors.role !== undefined}
                             // helperText={errors.role?.message}
                             {...register("role", { 

@@ -12,31 +12,33 @@ def createUser(adminName, adminPassword, firstName, lastName, email, password, r
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     login.fillLoginCredentials(driver, adminName, adminPassword, url)
 
-    time.sleep(1)
-    driver.find_element(By.ID,"Manage Users").click()
-    time.sleep(1)
-    driver.find_element(By.ID,"createUserDialogButton").click()
-    time.sleep(1)
+    driver.implicitly_wait(20)
 
-    driver.find_element(By.ID,":r7:").send_keys(firstName)
-    driver.find_element(By.ID,":r9:").send_keys(lastName)
-    driver.find_element(By.ID,":rb:").send_keys(email)
-    driver.find_element(By.ID,":rd:").send_keys(password)
-    time.sleep(2)
-    driver.find_element(By.ID,"mui-component-select-role").send_keys(role)
+    # time.sleep(1)
+    driver.find_element(By.ID,"Manage Users").click()
+    # time.sleep(1)
+    driver.find_element(By.ID,"createUserDialogButton").click()
+    # time.sleep(1)
+
+    driver.find_element(By.ID,"firstName").send_keys(firstName)
+    driver.find_element(By.ID,"lastName").send_keys(lastName)
+    driver.find_element(By.ID,"emailTextField").send_keys(email)
+    driver.find_element(By.ID,"passwordTextField").send_keys(password)
+    # time.sleep(2)
+    driver.find_element(By.ID,"roleSelect").send_keys(role)
     # drop=Select(driver.find_element(By.ID,"roleSelect"))
     # drop.select_by_visible_text("Faculty")
                                 
     driver.find_element(By.ID,"createUserButton").click()
-    time.sleep(2) 
+    # time.sleep(2) 
 
     try:
-        time.sleep(1)
+        # time.sleep(1)
         driver.find_element(By.CSS_SELECTOR,".css-k4qjio-MuiFormHelperText-root.Mui-error")
 
     except:
         try:
-            time.sleep(3)
+            # time.sleep(3)
             alert = Alert(driver)
             if (alert.text == "User created successfully"):
                 print("User Created Successfully")
@@ -49,7 +51,7 @@ def createUser(adminName, adminPassword, firstName, lastName, email, password, r
     else:
         print(driver.find_element(By.CSS_SELECTOR,".css-k4qjio-MuiFormHelperText-root.Mui-error").text)
     
-    time.sleep(1)
+    # time.sleep(1)
 
 
 def main():
