@@ -66,17 +66,6 @@ const Login: NextPage = () => {
         setLoading(false);
     }
 
-<<<<<<< HEAD
-    return (
-        <div className="h-screen w-full flex mx-auto items-center">
-            <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-red-200 shadow-lg rounded px-8 py-12">
-                <div>
-                    <form>
-                    <label>Email:</label>
-                    <input 
-                        {...register("email", { 
-                            required: "This field is required",
-=======
     return (        
             <div id="login-form-container" className="flex flex-col items-center justify-center h-screen bg-cyan-300 ">
                 <AccountCircle fontSize="large" className = "mb-10 text-7xl" /> 
@@ -93,7 +82,6 @@ const Login: NextPage = () => {
                           }}                       
                         {...register("email", {
                             required: "This field is Required",
->>>>>>> ba520f33f279fc5dc3e51971f5ad90fd343e0b39
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
                                 message: "Invalid email address",
@@ -116,15 +104,6 @@ const Login: NextPage = () => {
                           }}
                         {...register("password", {
                             required: "This field is required"
-<<<<<<< HEAD
-                        })}
-                        type="text"/>
-                    <br/>
-                    <button onClick={handleSubmit(handleLogin)}>Sign In</button>
-                    <br/>
-                    <Link id="forgotPasswordLink" href={'/forgotPassword'}>Forgot password?</Link>
-                    </form>
-=======
                         })} />
                     <br />
                     <br />
@@ -133,7 +112,6 @@ const Login: NextPage = () => {
                     <Link href={'/forgotPassword'}>
                         <div className="text-sky-500 underline">Forgot Password?</div>
                     </Link>
->>>>>>> ba520f33f279fc5dc3e51971f5ad90fd343e0b39
                 </div>
 
     )
