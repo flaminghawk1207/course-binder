@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from 'react';
 import { NavItem } from '~/types';
 import { groupElements } from '~/utils';
 import { Button, Typography } from '@mui/material';
-import LogOut from './LogOut';
+import { LogOut } from './LogOut';
 
 const groupColors = [
     'bg-red-300',
@@ -30,7 +30,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
 
     return (
         <div className = "flex bg-black-100 h-screen">
-            <div className="w-1/5 h-full bg-red-100">
+            <div className="w-1/5 h-full bg-red-100 relative">
                 {
                     groupedItems?.map((group: any, group_index: number) =>
                         group.map((item: NavItem) => 
@@ -50,6 +50,9 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                         )
                     ).flat()
                 }
+                <div className='absolute bottom-0 w-full'>
+                    <LogOut/>
+                </div>
             </div>
 
             <div className='w-4/5 h-full bg-yellow-100'>
