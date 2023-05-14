@@ -286,7 +286,6 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                                 <MenuItem value="II">II</MenuItem>
                                 <MenuItem value="III">III</MenuItem>
                                 <MenuItem value="IV">IV</MenuItem>
-                                <MenuItem value="NA">NA</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
