@@ -12,7 +12,7 @@ import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, CHANNEL_ROLE, User } from "~/types";
-import { DEF_TEMPLATE, apiReq } from "~/utils";
+import { DEF_LAB_TEMPLATE, DEF_TEMPLATE, apiReq } from "~/utils";
 import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormControl } from "@mui/material";
 
 const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
@@ -171,9 +171,11 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
 const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => void}) => {
     const {
         register,
+        getValues,
         handleSubmit,
         clearErrors,
         reset,
+        watch,
         formState: { errors },
     } = useForm<Channel>({
         defaultValues: {
@@ -185,6 +187,8 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
             channel_template: JSON.stringify(DEF_TEMPLATE),
         },
     });
+
+    const courseCheck = watch("channel_type") === "course";
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -192,6 +196,10 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
     };
 
     const createChannelandClose = async (data: Channel) => {
+        if(data.channel_type === "lab") {
+            data.channel_template = JSON.stringify(DEF_LAB_TEMPLATE);
+        }
+
         const status = await apiReq("channels", {
             type: "CREATE_CHANNEL",
             data: data
@@ -261,24 +269,27 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                         </Select>
                     {/* </FormControl> */}
                 </Box>
-                
-                <Box display="flex">
-                    <InputLabel>Year:</InputLabel>
-                    <FormControl>
-                        <Select id="channelYearSelect" sx={{ml:6, mt:1}} size="small" required
-                            error={errors.channel_year !== undefined}
-                            {...register("channel_year", { 
-                                required: "Year is required", 
-                        })}>
-                            
-                            <MenuItem value="I">I</MenuItem>
-                            <MenuItem value="II">II</MenuItem>
-                            <MenuItem value="III">III</MenuItem>
-                            <MenuItem value="IV">IV</MenuItem>
-                            <MenuItem value="NA">NA</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                {/* Renders year input only if course */}
+                { courseCheck && 
+                    <Box display="flex">
+                        <InputLabel>Year:</InputLabel>
+                        <FormControl>
+                            <Select 
+                                id="channelYearSelect" 
+                                sx={{ml:6, mt:1}} size="small"
+                                error={errors.channel_year !== undefined}
+                                {...register("channel_year", { 
+                                    required: courseCheck ? "This field is required": undefined, 
+                            })}>
+                                
+                                <MenuItem value="I">I</MenuItem>
+                                <MenuItem value="II">II</MenuItem>
+                                <MenuItem value="III">III</MenuItem>
+                                <MenuItem value="IV">IV</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                }
             </DialogContent>
             <DialogActions>
             <Button id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>

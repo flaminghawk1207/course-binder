@@ -2,8 +2,8 @@
 import { Button, Tab, Tabs, TextField } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
-import { CHANNEL_ROLE, Channel, FirebaseFile, FirebaseFolder, ROLE } from "~/types";
-import { DEF_TEMPLATE, DEF_TEMPLATE2, apiReq, check_template } from "~/utils";
+import { CHANNEL_ROLE, Channel, FirebaseFile, FirebaseFolder } from "~/types";
+import { DEF_LAB_TEMPLATE, DEF_TEMPLATE, DEF_TEMPLATE2, apiReq, check_template } from "~/utils";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -143,6 +143,8 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
             new_template = JSON.stringify(DEF_TEMPLATE);
         } else if (tabIndex == 1) {
             new_template = JSON.stringify(DEF_TEMPLATE2);
+        } else if (tabIndex == 2) {
+            new_template = JSON.stringify(DEF_LAB_TEMPLATE);
         } else {
             let new_temp_obj;
             try {
@@ -188,8 +190,9 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
             <Dialog open={open} onClose={closeDialog}>
                 <DialogContent>
                     <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
-                        <Tab label="Template One"/>
-                        <Tab label="Template Two"/>
+                        <Tab label="Template 1"/>
+                        <Tab label="Template 2"/>
+                        <Tab label="Lab Template 1"/>
                         <Tab label="Custom Template"/>
                     </Tabs>
 
@@ -206,6 +209,12 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
                                         />
                     }
                     {tabIndex == 2 && <TextField 
+                                        className = "h-full w-full"
+                                        value={JSON.stringify(DEF_LAB_TEMPLATE)}
+                                        contentEditable={false}
+                                        />
+                    }
+                    {tabIndex == 3 && <TextField 
                                         className = "h-full w-full"
                                         value={customTemplate} 
                                         onChange={(e) => setCustomTemplate(e.target.value)}
