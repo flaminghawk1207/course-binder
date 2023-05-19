@@ -31,20 +31,11 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          Hello {user?.firstName}!
-          <button onClick={logout}>Logout</button>
-          <SampleChild/>
+          Loading....
         </div>
-
       </main>
-
     </>
   );
 };
 
 export default Home;
-
-const SampleChild = () => {
-  const { user } = useContext(UserContext);
-  return <div>Hello {user?.firstName}! from child. You are a {user?.role}.</div>
-}
