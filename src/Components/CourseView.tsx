@@ -37,24 +37,14 @@ const FileUploadDialog = ({fullPath, refreshCompleteDir}: {fullPath: string, ref
 
     const uploadFileToFirebase = async () => {
 
-        // const formData = new FormData();
-        // formData.append("file", uploadFile as Blob);
-
-        console.log("Uploaded", uploadFile);
-        const txt = await uploadFile?.text();
-        await apiReq("channels", {
-            type: "UPLOAD_FILE",
-            fileContent: txt,
-            fileName: fullPath,
-        });
-
-        // fetch('/api/uploadFile', {
-        //     method: 'POST',
-        //     body: formData,
-        //   })
-        //   .then(response => response.json())
-        //   .then(data => console.log(data))
-        //   .catch(error => console.error(error));
+        console.log(uploadFile);
+        const formData = new FormData();
+        formData.append("file", uploadFile as Blob, uploadFile?.name as string);
+        formData.append("fullPath", fullPath);
+        const status = await fetch(`/api/uploadFile`, {
+            method: "POST",
+            body: formData,
+        }).then(t => t.json())
 
         alert("File uploaded successfully");
         refreshCompleteDir();
@@ -150,12 +140,12 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
             try {
                 new_temp_obj = JSON.parse(customTemplate);
             } catch (e) {
-                alert("Invalid template");
+                alert("Invalid template: Invalid JSON");
                 return;
             }
 
             if(!check_template(new_temp_obj)) {
-                alert("Invalid template");
+                alert("Invalid template: Format not correct");
                 return;
             }            
             new_template = customTemplate
