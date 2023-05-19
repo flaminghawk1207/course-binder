@@ -25,7 +25,7 @@ const AdminView: NextPage = () => {
         },
         {
             label: "View Analytics",
-            component: <AnalyticsView/>,
+            component: <AnalyticsView level={"COLLEGE"} maxDepth={3}/>,
         }
     ]
 

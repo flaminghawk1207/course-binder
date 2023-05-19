@@ -181,11 +181,13 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
         lastName: string;
         password: string;
         role: string;
+        department: string,
     }
     const {
         register,
         handleSubmit,
         clearErrors,
+        watch,
         reset,
         formState: { errors },
     } = useForm<FormValues>({
@@ -194,10 +196,13 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
             firstName: "",
             lastName: "",
             password: "",
-            role: ""
+            role: "",
+            department: "",
         },
     });
     const [open, setOpen] = useState(false);
+
+    const hasDepartment = watch("role") === "hod" || watch("role") === "faculty";
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -206,7 +211,13 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
     const createUserandClose = async (data: FormValues) => {
         const status = await apiReq("users", {
             type: "CREATE_USER",
-            data: data,
+            data: {
+                email: data.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                role: data.role,
+                department: data.department,
+            },
             password: data.password
         });
         if(status) {
@@ -298,12 +309,28 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                                 required: "This field is required", 
                         })}>
                             <MenuItem value="admin">Admin</MenuItem>
+                            <MenuItem value="principal">Principal </MenuItem>
                             <MenuItem value="hod">HOD </MenuItem>
                             <MenuItem value="faculty">Faculty</MenuItem>
                         </Select>
                         <br/>
                     {/* </FormControl> */}
                 </Box>
+
+                {
+                    hasDepartment &&
+                    <Box display="flex">
+                        <InputLabel>Department:</InputLabel>
+                        <TextField id="departmentTextField" sx={{ml:1.7}} size="small"
+                            {...register("department", {
+                                required: "Department is required",
+                            })}
+                            error={errors.department !== undefined}
+                            helperText={errors.department?.message}
+                        />
+                        <br/>
+                    </Box>
+                }
 
             </DialogContent>
             <DialogActions>
