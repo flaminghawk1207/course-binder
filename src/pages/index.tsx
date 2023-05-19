@@ -14,11 +14,11 @@ const Home: NextPage = () => {
   useEffect(() => {
     if(!user) {
       router.push("/login");
-    } else if (user.role === ROLE.FACULTY) {
-      router.push("/facultyDisplayPage");
     } else if (user.role === ROLE.ADMIN) {
       router.push("/admin");
-    } 
+    } else {
+      router.push("/facultyDisplayPage");
+    }
   }, [user])
   // Main App UI
   

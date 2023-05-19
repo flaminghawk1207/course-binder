@@ -59,16 +59,16 @@ const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict,
     )
 }
 
-const AnalyticsView: NextPage = () => {
+const AnalyticsView = ({level, maxDepth, dept}: {level: string, maxDepth: number, dept?: string}) => {
     const [levelPointerArray, setLevelPointerArray] = useState<PercentageDict[]>([]);
 
     useEffect(() => {
         (async () => {
             const percentage_dict = await apiReq("channels", {
                 type: "GET_PERCENTAGE_DICT",
-                level: "COLLEGE",
-                maxDepth: 3,
-                dept: null,
+                level: level,
+                maxDepth: maxDepth,
+                dept: dept,
             });
             console.log(percentage_dict)
             setLevelPointerArray([percentage_dict]);
