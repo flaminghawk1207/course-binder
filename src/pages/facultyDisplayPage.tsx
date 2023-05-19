@@ -41,10 +41,7 @@ const FacultyDisplayPage: NextPage = () => {
     }
 
     const getChannelTypeFromLabel = (navItem: NavItem) => {
-        console.log(channels);
-        console.log(navItem);
         let channel_type = channels?.find((channel: Channel) => channel.channel_code == navItem.label)?.channel_type;
-        console.log(channel_type);
         return channel_type;
     }
 
