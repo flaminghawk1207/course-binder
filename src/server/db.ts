@@ -388,10 +388,9 @@ export const resetFile = async (fullPath: string) => {
     return true;
 }
 
-// TODO: Make proper file upload
-export const uploadFileString = async (fileContent: string, fileName: string) => {
+export const uploadFile = async (fileContent: Uint8Array, fileName: string) => {
     const storageRef = ref(firebase_file_storage, fileName);
-    await uploadString(storageRef, fileContent)
+    await uploadBytes(storageRef, fileContent)
                         .then((val) => console.log("File uploaded: ", val.ref.name))
                         .catch((error) => {
                             throw new Error(error.message);
