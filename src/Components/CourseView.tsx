@@ -283,8 +283,6 @@ const CourseView = ({channel}: {channel: Channel}) => {
         setCurrDir(currDir.slice(0, currDir.length - 1));
     }
 
-    // if(!completeDir) return (<h1>Loading...</h1>)
-    
     return (
         <div>
             <div>
@@ -296,7 +294,6 @@ const CourseView = ({channel}: {channel: Channel}) => {
                 <h1 className="font-bold font-9xl">Current Directory: {currDir[currDir.length - 1]}</h1>
                 <button onClick={moveOutOfFolder}>Back</button>
             </div>
-            {fsLoading}
             <div>
                 {
                     fsLoading ? <h1>Loading files...</h1> :
