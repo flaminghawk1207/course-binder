@@ -1,10 +1,11 @@
 import { ReactNode } from 'react';
 
 export interface User {
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: ROLE;
+    firstName: string,
+    lastName: string,
+    email: string,
+    role: ROLE,
+    department: string, // Only set when role is faculty or hod
 }
 
 export enum ROLE {

@@ -58,6 +58,7 @@ const Login: NextPage = () => {
                 lastName: res.lastName as string,
                 email: res.email as string,
                 role: res.role as ROLE,
+                department: res.department as string,
             })
         } else {
             alert(res.message)

@@ -37,24 +37,14 @@ const FileUploadDialog = ({fullPath, refreshCompleteDir}: {fullPath: string, ref
 
     const uploadFileToFirebase = async () => {
 
-        // const formData = new FormData();
-        // formData.append("file", uploadFile as Blob);
-
-        console.log("Uploaded", uploadFile);
-        const txt = await uploadFile?.text();
-        await apiReq("channels", {
-            type: "UPLOAD_FILE",
-            fileContent: txt,
-            fileName: fullPath,
-        });
-
-        // fetch('/api/uploadFile', {
-        //     method: 'POST',
-        //     body: formData,
-        //   })
-        //   .then(response => response.json())
-        //   .then(data => console.log(data))
-        //   .catch(error => console.error(error));
+        console.log(uploadFile);
+        const formData = new FormData();
+        formData.append("file", uploadFile as Blob, uploadFile?.name as string);
+        formData.append("fullPath", fullPath);
+        const status = await fetch(`/api/uploadFile`, {
+            method: "POST",
+            body: formData,
+        }).then(t => t.json())
 
         alert("File uploaded successfully");
         refreshCompleteDir();
@@ -150,12 +140,12 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
             try {
                 new_temp_obj = JSON.parse(customTemplate);
             } catch (e) {
-                alert("Invalid template");
+                alert("Invalid template: Invalid JSON");
                 return;
             }
 
             if(!check_template(new_temp_obj)) {
-                alert("Invalid template");
+                alert("Invalid template: Format not correct");
                 return;
             }            
             new_template = customTemplate
@@ -239,6 +229,8 @@ const CourseView = ({channel}: {channel: Channel}) => {
 
     const currDirObject = getCurrDirObject(completeDir, currDir);
 
+    const [fsLoading, setFSLoading] = useState<boolean>(false);
+
     useEffect(() => {
         (async () => {
             await refreshFileSys();
@@ -246,9 +238,11 @@ const CourseView = ({channel}: {channel: Channel}) => {
     }, []);
 
     const refreshFileSys = async () => {
+        setFSLoading(true);
         console.log("Refreshing File System");
-        refreshCompleteDir();
+        await refreshCompleteDir();
         setCurrDir([]);
+        setFSLoading(false);
     }
 
     useEffect(() => {
@@ -279,8 +273,6 @@ const CourseView = ({channel}: {channel: Channel}) => {
         setCurrDir(currDir.slice(0, currDir.length - 1));
     }
 
-    if(!completeDir) return (<h1>Loading...</h1>)
-    
     return (
         <div className="bg-[#D9C9B1]">
             <div className="text-lg">
@@ -294,6 +286,7 @@ const CourseView = ({channel}: {channel: Channel}) => {
             </div>
             <div>
                 {
+                    fsLoading ? <h1>Loading files...</h1> :
                     currDirObject?.children?.map((child) => {
                         if(child.type === "folder") {
                             return <FolderComponent key={child.fullPath} folder={child} moveIntoFolder={moveIntoFolder} />

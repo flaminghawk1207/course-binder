@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFileString } from "~/server/db";
+import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile } from "~/server/db";
 import { Channel } from "~/types";
 import { constructPercentageDict } from "~/utils";
 
@@ -33,9 +33,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         res.json(files);
     } else if (req.body.type == "DELETE_FILE") {
         const status = await resetFile(req.body.fullPath);
-        res.json(status);
-    } else if (req.body.type == "UPLOAD_FILE") {
-        const status = await uploadFileString(req.body.fileContent, req.body.fileName);
         res.json(status);
     } else if (req.body.type == "GET_USER_ROLE") {
         const role = await getUserRole(req.body.channel_code, req.body.user_email);

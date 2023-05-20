@@ -83,11 +83,11 @@ export const DEF_TEMPLATE = {
                     type : "folder",
                     contents : [
                         {
-                            name : "marks_csea.xlxs",
+                            name : "marks_csea.xlsx",
                             type : "file",
                         },
                         {
-                            name : "marks_cseb.xlxs",
+                            name : "marks_cseb.xlsx",
                             type : "file",
                         },
                     ]
@@ -97,11 +97,11 @@ export const DEF_TEMPLATE = {
                     type : "folder",
                     contents : [
                         {
-                            name : "marks_csea.xlxs",
+                            name : "marks_csea.xlsx",
                             type : "file",
                         },
                         {
-                            name : "marks_cseb.xlxs",
+                            name : "marks_cseb.xlsx",
                             type : "file",
                         },
                     ]
@@ -124,11 +124,11 @@ export const DEF_TEMPLATE2 = {
                     type : "folder",
                     contents : [
                         {
-                            name : "marks_csea.xlxs",
+                            name : "marks_csea.xlsx",
                             type : "file",
                         },
                         {
-                            name : "marks_cseb.xlxs",
+                            name : "marks_cseb.xlsx",
                             type : "file",
                         },
                     ]
@@ -138,11 +138,11 @@ export const DEF_TEMPLATE2 = {
                     type : "folder",
                     contents : [
                         {
-                            name : "marks_csea.xlxs",
+                            name : "marks_csea.xlsx",
                             type : "file",
                         },
                         {
-                            name : "marks_cseb.xlxs",
+                            name : "marks_cseb.xlsx",
                             type : "file",
                         },
                     ]
@@ -191,7 +191,7 @@ export const check_template = (template: any) => {
     if(!template) return false;
     if(template.type == "file") {
         if(!template.hasOwnProperty("name")) return false;
-        if(!template.hasOwnProperty("contents")) return false;
+        if(template.hasOwnProperty("contents")) return false;
     } else if (template.type == "folder") {
         if(!template.hasOwnProperty("name")) return false;
         if(!template.hasOwnProperty("contents")) return false;
