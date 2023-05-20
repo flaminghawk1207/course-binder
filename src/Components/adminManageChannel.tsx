@@ -24,14 +24,14 @@ import FormControl from "@mui/material/FormControl";
 
 const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     type AddUserValues = {
-        name : User;
+        name : User | null;
         channelRole: string;
     }
 
-    const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
+    const [suggestedUsers, setSuggestedUsers] = useState<User[] | null>(null);
     const [open, setOpen] = useState(false);
     const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
-    const loading = open && suggestedUsers.length === 0;
+    const loading = open && suggestedUsers === null;
     const [channelUsers, setChannelUsers] = useState<User[]>([]);
     const [channelUsersRoles, setChannelUsersRoles] = useState<CHANNEL_ROLE[]>([]);
     
@@ -44,7 +44,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
         formState: { errors },
     } = useForm<AddUserValues>({
         defaultValues: {
-            name: suggestedUsers[0],
+            name: null,
             channelRole: ""
         },
     });
@@ -66,7 +66,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     }, [selectedChannel]);
 
     useEffect(() => {
-        if(open && !suggestedUsers.length){
+        if(open && suggestedUsers === null){
             (async () => {
                 await refreshSuggestedUsers();
             })();
@@ -109,6 +109,8 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             if(!status){
                 alert("Failed to add user to channel");
                 return;
+            } else {
+                alert("User added to channel successfully");
             }
             await refreshChannelUsers();
             await refreshSuggestedUsers();
@@ -131,6 +133,8 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             if(!status){
                 alert("Failed to remove user from channel");
                 return;
+            } else {
+                alert("User removed from channel successfully");
             }
             await refreshChannelUsers();
             await refreshSuggestedUsers();
@@ -174,7 +178,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 <DialogContent className="ml-10 mr-10 mt-5 mb-5">
                     <Box> 
                         <Autocomplete
-                            options={suggestedUsers}
+                            options={suggestedUsers || []}
                             open={autoCompleteOpen}
                             onOpen={() => {
                                 setAutoCompleteOpen(true);
@@ -218,7 +222,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                             </Select>
                         </FormControl>
                     </Box> 
-                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name, data.channelRole))} fullWidth sx={{mt:4}}>Add User</Button>
+                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} fullWidth sx={{mt:4}}>Add User</Button>
                 </DialogContent>
             </Dialog>
             </div>
