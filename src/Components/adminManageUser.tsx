@@ -19,14 +19,36 @@ import Box from "@mui/material/Box";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
+import FormControl from "@mui/material/FormControl";
+
 
 const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
+    type ChannelFormValues = {
+        channel : Channel,
+        role : string
+    }
+
     const [suggestedChannels, setSuggestedChannels] = useState<Channel[]>([]);
     const [open, setOpen] = useState(false);
     const loading = open && suggestedChannels.length === 0;
 
+    const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
     const [userChannels, setUserChannels] = useState<Channel[]>([]);
     const [userChannelsRoles, setUserChannelsRoles] = useState<CHANNEL_ROLE[]>([]);
+
+    const {
+        register,
+        setValue,
+        handleSubmit,
+        clearErrors,
+        reset,
+        formState: { errors },
+    } = useForm<ChannelFormValues>({
+        defaultValues: {
+            channel: suggestedChannels[0],
+            role: ""
+        },
+    });
 
     useEffect(() => {
         if(!selectedUser) {
@@ -45,6 +67,12 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             })();
         }
     }, [open]);
+    
+    const closeDialog = () => {
+        reset();
+        clearErrors();
+        setOpen(false);
+    }
 
     const refreshUserChannels = async () => {
         if(!selectedUser) return;
@@ -66,7 +94,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
         setSuggestedChannels(suggested_users);
     }
 
-    const addUserToChannel = async (channel: Channel) => {
+    const addUserToChannel = async (channel: Channel, role: string) => {
         if(selectedUser){
             if(!window.confirm(
                 `Add ${selectedUser.firstName} to ${channel?.channel_name}?`
@@ -78,7 +106,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                 type: "ADD_USER_TO_CHANNEL",
                 channel_code: channel.channel_code,
                 email: selectedUser.email,
-                role: "faculty" // TODO: add role selection
+                role: role
             });
             if(!status){
                 alert("Failed to add user to channel");
@@ -112,8 +140,8 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     }
 
     return (
-        <Box id='course-users-list' className="relative w-1/3 h-full bg-[#F68888] items-center">
-            <Typography variant="h5" sx={{textAlign:"center",mt:1}} className="w-full">Users</Typography>
+        <Box id='course-users-list' className="relative w-1/3 h-full bg-secondary-color items-center">
+            <Typography variant="h5" sx={{textAlign:"center",mt:1}} className="w-full">Channels</Typography>
 
             <Box className="flex flex-row" sx={{mt:1}}>
                 <h3 className="w-2/4 text-center">Name</h3>
@@ -132,44 +160,65 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                     )
                 })
             }
-            <Autocomplete
-                options={suggestedChannels}
-                open={open}
-                onOpen={() => {
-                    setOpen(true);
-                }}
-                onClose={() => {
-                    setOpen(false);
-                }}
-                loading={loading}
-                getOptionLabel={(option: Channel) => option.channel_name}
-                onChange={(event, value) => {console.log(value)}}
-                defaultValue={null}
-                className="absolute m-auto ml-10 w-4/5 bottom-10"
-                renderInput={(params) => <TextField
-                    {...params}
-                    label="Add to Channels"
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                        <Fragment>                            
-                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                            {params.InputProps.endAdornment}
-                        </Fragment>
-                        ),
-                    }}
-                />}
-                renderOption={(props, option: Channel) => {
-                    return (
-                        <div key={option.channel_code} className="flex flex-row w-full">
-                            <Typography className="w-3/4" sx={{p:2}}>{option.channel_name}</Typography>
-                            <Button size="small" sx={{borderRadius:300}} key={option.channel_code} onClick={() => addUserToChannel(option)} className="w-1/4">
-                                +
-                            </Button>
-                        </div>
-                    )
-                }}
-            />
+            
+            <Box>
+            <Button id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
+            <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
+                <DialogTitle>
+                    <Typography align="center">
+                        Add Channel
+                    </Typography>
+                </DialogTitle>
+                <DialogContent className="ml-10 mr-10 mt-5 mb-5">
+                    <Box> 
+                        <Autocomplete
+                            options={suggestedChannels}
+                            open={autoCompleteOpen}
+                            onOpen={() => {
+                                setAutoCompleteOpen(true);
+                            }}
+                            onClose={() => {
+                                setAutoCompleteOpen(false);
+                            }}
+                            loading={loading}
+                            getOptionLabel={(option: Channel) => option.channel_name}
+                            onChange={(event, value) => setValue("channel", value as Channel)}
+                            defaultValue={null}
+                            aria-required
+                            renderInput={(params) => <TextField
+                                {...params}
+                                label="Add Channel"
+                                InputProps={{
+                                    ...params.InputProps,
+                                    endAdornment: (
+                                    <Fragment>
+                                        {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {params.InputProps.endAdornment}
+                                    </Fragment>
+                                    ),
+                                }}
+                            />}
+                        />
+                    </Box>
+                    <Box sx={{mt:3}}>
+                        <FormControl fullWidth>
+                            <InputLabel>Channel Role</InputLabel>
+                            <Select id="channelRoleSelect" 
+                                defaultValue={""}
+                                error = {errors.role !== undefined}
+                                {...register("role", { 
+                                    required: "Channel Role is required", 
+                                })}
+                            >
+                                <MenuItem value="faculty">Faculty</MenuItem>
+                                <MenuItem value="course_mentor">Course Mentor</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box> 
+                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel, data.role))} fullWidth sx={{mt:4}}>Add Channel</Button>
+                </DialogContent>
+            </Dialog>
+        </Box>
         </Box>
     )
 }
