@@ -140,7 +140,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     }
 
     return (
-        <Box id='course-users-list' className="relative w-1/3 h-full bg-purple-600 items-center">
+        <Box id='course-users-list' className="relative w-1/3 h-full bg-secondary-color items-center">
             <Typography variant="h5" sx={{textAlign:"center",mt:1}} className="w-full">Channels</Typography>
 
             <Box className="flex flex-row" sx={{mt:1}}>
@@ -286,14 +286,14 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
     
     return (
         <div className="w-1/5 h-2/5 m-auto mr-10">
-        <Button id="createUserDialogButton" variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create User</Button>
+        <Button id="createUserDialogButton" variant="contained" className="w-full h-full bg-secondary-color text-primary-txt hover:bg-primary-color" onClick={handleClickOpen}>Create User</Button>
         <Dialog open={open} onClose={closeDialog}>
-            <DialogTitle>
+            <DialogTitle className="bg-tertiary-color" >
                 <Typography align="center">
                     Create User
                 </Typography>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent className="bg-tertiary-color text-primary-txt">
                 <Box display="flex" sx={{mt:1}}> 
                     <InputLabel>First Name:</InputLabel>
                     <TextField id="firstName"  sx={{ml:1}} size="small"
@@ -382,9 +382,9 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 }
 
             </DialogContent>
-            <DialogActions>
-            <Button id="createUserCancelButton" onClick={closeDialog}>Cancel</Button>
-            <Button id="createUserButton" onClick={handleSubmit(createUserandClose)}>Create</Button>
+            <DialogActions className="bg-tertiary-color" >
+            <Button className="bg-secondary-color text-black" id="createUserCancelButton" onClick={closeDialog}>Cancel</Button>
+            <Button className="bg-secondary-color text-black" id="createUserButton" onClick={handleSubmit(createUserandClose)}>Create</Button>
             </DialogActions>
         </Dialog>
         </div>
@@ -409,8 +409,8 @@ const AdminManageUser: NextPage = () => {
     }
 
     return (
-        <div id="main-view" className="flex flex-col h-screen w-full bg-black">
-            <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-red-400">
+        <div id="main-view" className="flex flex-col h-screen w-full">
+            <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-tertiary-color">
                 <Autocomplete
                     options={users}
                     getOptionLabel={(option: User) => option.firstName}
@@ -426,8 +426,8 @@ const AdminManageUser: NextPage = () => {
             </div>
             {
                 selectedUser ?
-                    <div id="course-info-view" className="h-4/5 w-full bg-blue-300 flex flex-row">
-                        <div id="course-info" className="w-2/3 h-full bg-yellow-300">
+                    <div id="course-info-view" className="h-4/5 w-full bg-white flex flex-row">
+                        <div id="course-info" className="w-2/3 h-full bg-primary-color flex items-center justify-center text-lg">
                             <Typography>
                                 Current selected User: {selectedUser? selectedUser.firstName : "None"}<br/>
                                 Last Name: {selectedUser? selectedUser.lastName : "None"}<br/>
@@ -438,7 +438,7 @@ const AdminManageUser: NextPage = () => {
                             selectedUser={selectedUser}/>
                     </div>
                 :
-                    <div className="w-full h-4/5 text-center bg-blue-300">Select a User</div>
+                    <div className="w-full h-4/5 text-center bg-primary-color">Select a User</div>
             }
         </div>
     );
