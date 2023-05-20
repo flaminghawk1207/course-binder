@@ -162,7 +162,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             }
             
             <Box>
-            <Button id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
+            <Button id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Channel Name</Button>
             <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
                 <DialogTitle>
                     <Typography align="center">
@@ -172,6 +172,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                 <DialogContent className="ml-10 mr-10 mt-5 mb-5">
                     <Box> 
                         <Autocomplete
+                            id="channelNameAutoComplete"
                             options={suggestedChannels}
                             open={autoCompleteOpen}
                             onOpen={() => {
