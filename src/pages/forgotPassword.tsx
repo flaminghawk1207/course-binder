@@ -27,8 +27,8 @@ const ForgotPassword: NextPage = () => {
     }
 
     return (
-        <div className="bg-[#EDC3AB] h-screen w-full flex mx-auto items-center">
-            <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-[#F68888] shadow-lg rounded px-8 py-12 flex items-center justify-center">
+        <div className="bg-primary-color h-screen w-full flex mx-auto items-center">
+            <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-secondary-color shadow-lg rounded px-8 py-12 flex items-center justify-center">
                 <div>
                     <label>Email:</label>
                     <input 
@@ -46,11 +46,11 @@ const ForgotPassword: NextPage = () => {
                     {errors.email && errors.email.type == "pattern" && 
                     <><span className='text-red-700'>{errors.email.message}</span><br /></>}
                     <br/>
-                    <button className="bg-[#EDC3AB] hover:bg-[#F2B490] text-black py-2 px-4 rounded flex items-center justify-center ml-10" onClick={handleSubmit(handleResetPwd)}>Send Reset Mail</button>
+                    <button className="bg-primary-color hover:bg-hovercolor text-black py-2 px-4 rounded flex items-center justify-center ml-10" onClick={handleSubmit(handleResetPwd)}>Send Reset Mail</button>
 
                 
                     <br/>
-                    <Link className="bg-[#EDC3AB] hover:bg-[#F2B490] text-black py-2 px-4 rounded flex items-center justify-center" href={"/login"}>Sign In</Link>
+                    <Link className="bg-primary-color hover:bg-hovercolor text-black py-2 px-4 rounded flex items-center justify-center" href={"/login"}>Sign In</Link>
                 </div>
             </div>
         </div>

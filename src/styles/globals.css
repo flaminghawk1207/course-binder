@@ -4,6 +4,9 @@
 
 :root
 {
---primary-color: #000;
---secondary-color: #000;
+--primary-color: #EDC3AB ;
+--secondary-color: #F68888;
+--tertiary-color: #D9C9B1;
+--primary-txt: #000;
+--hovercolor: #EFAE89;
 }

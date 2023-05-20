@@ -5,9 +5,9 @@ import { Button, Typography } from '@mui/material';
 import { LogOut } from './LogOut';
 
 const groupColors = [
-    'bg-[#EDC3AB]',
+    'bg-primary-color',
     'bg-[#fdba74]',
-    'bg-[#EDC3AB]',
+    'bg-primary-color',
     'bg-red-200'
 ]
 
@@ -30,8 +30,8 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
     }, [items])
 
     return (
-        <div className = "flex bg-black-100 h-screen bg-white">
-            <div className="w-64 h-full m-1 bg-primary-color relative">
+        <div className = "flex h-screen">
+            <div className="w-64 h-full m-1 bg-secondary-color relative">
                 {
                     groupedItems?.map((group: any, group_index: number) =>
                         group.map((item: NavItem) => 
@@ -40,7 +40,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                                 key={item.label} 
                                 variant="contained"
                                 sx={{mt: 2}} 
-                                className= {`w-48 text-[#0c0a09] hover:bg-[#EFAE89] ml-3
+                                className= {`w-48 text-primary-txt hover:bg-hovercolor ml-3
                                     ${CurrentItem?.label === item.label ? groupColorsSelected[group_index]: groupColors[group_index]}`
                                 }
                                 onClick={() => setCurrentItem(item)}
@@ -56,7 +56,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                 </Button>
             </div>
 
-            <div className='w-full h-full bg-[#EDC3AB] '>
+            <div className='w-full h-full bg-primary-color'>
                 {CurrentItem?.component} 
             </div>
         </div>

@@ -106,7 +106,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     }
 
     return (
-        <div id='course-users-list' className="relative w-1/3 h-full bg-[#F68888] items-center m-1">
+        <div id='course-users-list' className="relative w-1/3 h-full bg-secondary-color items-center">
             <Typography variant="h5" sx={{textAlign:"center",mt:1}} className="w-full">Users</Typography>
 
             <Box className="flex flex-row" sx={{mt:1}}>
@@ -221,7 +221,7 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
 
     return (
         <div className="w-1/5 h-2/5 m-auto mr-10 ">
-        <Button id="createChannelDialogButton" variant="contained" className="w-full h-full bg-[#F68888] text-[#020617] hover:bg-[#EFAE89] " onClick={handleClickOpen}>Create Channel</Button>
+        <Button id="createChannelDialogButton" variant="contained" className="w-full h-full bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={handleClickOpen}>Create Channel</Button>
         <Dialog open={open} onClose={closeDialog}>
             <DialogTitle><Typography textAlign={"center"}>Create Channel</Typography></DialogTitle>
             <DialogContent>
@@ -292,8 +292,8 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 }
             </DialogContent>
             <DialogActions>
-            <Button id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
-            <Button id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
+            <Button className="bg-secondary-color text-primary-txt" id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
+            <Button className="bg-secondary-color text-primary-txt" id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
             </DialogActions>
         </Dialog>
         </div>
@@ -318,8 +318,8 @@ const AdminManageChannel: NextPage = () => {
     }
 
     return (
-        <div id="main-view" className="flex flex-col h-screen w-full bg-white">
-            <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-[#D9C9B1] m-1">
+        <div id="main-view" className="flex flex-col h-screen w-full">
+            <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-tertiary-color">
                 <Autocomplete
                     options={channels}
                     getOptionLabel={(option: Channel) => option.channel_name}
@@ -335,8 +335,8 @@ const AdminManageChannel: NextPage = () => {
             </div>
             {
                 selectedChannel ?
-                    <div id="course-info-view" className="h-4/5 w-full bg-white flex flex-row ">
-                        <div id="course-info" className="w-2/3 h-full bg-[#EDC3AB] flex items-center justify-center text-lg m-1">
+                    <div id="course-info-view" className="h-4/5 w-full flex flex-row ">
+                        <div id="course-info" className="w-2/3 h-full bg-primary-color flex items-center justify-center text-lg">
                             Current selected Channel: {selectedChannel? selectedChannel.channel_name : "None"}<br/>
                             Current course code: {selectedChannel? selectedChannel.channel_code : "None"}
                         </div>
@@ -344,7 +344,7 @@ const AdminManageChannel: NextPage = () => {
                             selectedChannel={selectedChannel}/>
                     </div>
                 :
-                    <div className="w-full h-4/5 text-center m-1 bg-[#EDC3AB]">Select a Channel</div>
+                    <div className="w-full h-4/5 text-center bg-primary-color">Select a Channel</div>
             }
         </div>
     );
