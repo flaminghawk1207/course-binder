@@ -41,7 +41,7 @@ const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict,
         const [options, setOptions] = useState<Options>(initialOptions);
 
         return (
-            <HighchartsReact
+            <HighchartsReact className="justify-start"
                 highcharts={Highcharts}
                 options={options}
                 ref={chartComponentRef}
@@ -85,7 +85,7 @@ const AnalyticsView: NextPage = () => {
     }
     return (
         <>
-            <button onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Go previous</button>
+            <button className="w-64" onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Go previous</button>
             {
                 levelPointerArray[levelPointerArray.length - 1]?.children.map((child) => {
                     return (

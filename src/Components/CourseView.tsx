@@ -186,7 +186,7 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
 
     return (
         <>
-            <Button variant="contained" className="bg-slate-700" onClick={handleClickOpen}>Template Settings</Button>
+            <Button variant="contained" className="bg-[#F68888] text-black" onClick={handleClickOpen}>Template Settings</Button>
             <Dialog open={open} onClose={closeDialog}>
                 <DialogContent>
                     <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
@@ -282,8 +282,8 @@ const CourseView = ({channel}: {channel: Channel}) => {
     if(!completeDir) return (<h1>Loading...</h1>)
     
     return (
-        <div>
-            <div>
+        <div className="bg-[#D9C9B1]">
+            <div className="text-lg">
                     <p>Course Code: {channel.channel_code}</p>
                     <p>Course Name: {channel.channel_name}</p>
                     <p>Course Deparment: {channel.channel_department}</p>

@@ -67,7 +67,7 @@ const Login: NextPage = () => {
     }
 
     return (        
-            <div id="login-form-container" className="flex flex-col items-center justify-center h-screen bg-cyan-300 ">
+            <div id="login-form-container" className="flex flex-col items-center justify-center h-screen bg-[#D9C9B1] ">
                 <AccountCircle fontSize="large" className = "mb-10 text-7xl" /> 
 
                     <TextField
@@ -107,7 +107,7 @@ const Login: NextPage = () => {
                         })} />
                     <br />
                     <br />
-                    <Button variant="outlined" className="bg-green-400" onClick={handleSubmit(handleLogin)}>Login</Button>
+                    <Button variant="outlined" className="bg-[#F68888] text-[#020617] hover:bg-[#EFAE89] " onClick={handleSubmit(handleLogin)}>Login</Button>
                     <br />
                     <Link href={'/forgotPassword'} id="forgotPasswordLink">
                         <div className="text-sky-500 underline" >Forgot Password?</div>
