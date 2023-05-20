@@ -13,7 +13,6 @@ const AdminView: NextPage = () => {
     if (!user || user.role !== ROLE.ADMIN) {
         return <Forbidden/>
     }
-
     const navItems: NavItem[] = [
         {
             label: "Manage Channels",
@@ -28,7 +27,6 @@ const AdminView: NextPage = () => {
             component: <AnalyticsView level={"COLLEGE"} maxDepth={3}/>,
         }
     ]
-
     return <>
         <NavBar items={navItems}/>
     </>

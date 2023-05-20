@@ -5,17 +5,18 @@ import { Button, Typography } from '@mui/material';
 import { LogOut } from './LogOut';
 
 const groupColors = [
-    'bg-red-300',
-    'bg-blue-300',
-    'bg-green-300',
-    'bg-yellow-300',
+    'bg-primary-color',
+    'bg-[#fdba74]',
+    'bg-primary-color',
+    'bg-red-200'
 ]
 
 const groupColorsSelected = [
-    'bg-red-500',
-    'bg-blue-500',
-    'bg-green-500',
-    'bg-yellow-500',
+    'bg-[#EFAE89]',
+    'bg-[#EFAE89]',
+    'bg-[#EFAE89]',
+    'bg-green-300'
+    
 ]
 
 const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_differentiator?: any}) => {
@@ -29,8 +30,8 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
     }, [items])
 
     return (
-        <div className = "flex bg-black-100 h-screen">
-            <div className="w-1/5 h-full bg-red-100 relative">
+        <div className = "flex h-screen">
+            <div className="w-64 h-full m-1 bg-secondary-color relative">
                 {
                     groupedItems?.map((group: any, group_index: number) =>
                         group.map((item: NavItem) => 
@@ -39,7 +40,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                                 key={item.label} 
                                 variant="contained"
                                 sx={{mt: 2}} 
-                                className= {`w-full 
+                                className= {`w-48 text-primary-txt hover:bg-hovercolor ml-3
                                     ${CurrentItem?.label === item.label ? groupColorsSelected[group_index]: groupColors[group_index]}`
                                 }
                                 onClick={() => setCurrentItem(item)}
@@ -50,12 +51,12 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                         )
                     ).flat()
                 }
-                <div className='absolute bottom-0 w-full'>
+                <Button className='absolute bottom-0 left-0 w-48'>
                     <LogOut/>
-                </div>
+                </Button>
             </div>
 
-            <div className='w-4/5 h-full bg-yellow-100'>
+            <div className='w-full h-full bg-primary-color'>
                 {CurrentItem?.component} 
             </div>
         </div>
