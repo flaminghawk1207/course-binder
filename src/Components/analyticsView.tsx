@@ -85,16 +85,18 @@ const AnalyticsView = ({level, maxDepth, dept}: {level: string, maxDepth: number
     }
     return (
         <>
-            <button onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Go previous</button>
+        <button onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Go previous</button>
+        <div className="flex flex-wrap overflow-auto max-h-screen">
             {
                 levelPointerArray[levelPointerArray.length - 1]?.children.map((child) => {
                     return (
-                        <div>
+                        <div className="w-1/2">
                             <DisplayPieChart child={child} updateLevelPointer={updateLevelPointer}></DisplayPieChart>
                         </div>
                     )
                 })
             }
+        </div>
         </>
 
     )
