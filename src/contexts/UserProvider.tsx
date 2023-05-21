@@ -19,14 +19,6 @@ export const UserContext = createContext<UserContextType>(nullUserContext);
 export const UserProvider = ({ children } : { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
-    // For testing purposes
-    // const [user, setUser] = useState<User | null>({
-    //     firstName: "Jayanth",
-    //     lastName: "Menon S",
-    //     email: "jayanthmenons@gmail.com",
-    //     role: "faculty"
-    // } as User);
-
     useEffect(() => {
         const userFromLocalStorage = window.localStorage.getItem("user");
         if (userFromLocalStorage) {

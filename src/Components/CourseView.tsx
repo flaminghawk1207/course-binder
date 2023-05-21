@@ -171,8 +171,8 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
             "Changing template will remove all existing files related to the channel. This action is not reversible. Are you sure you want to continue?"
         )
 
-        if (!ans) return;
-        console.log("Template Changed", new_template);
+        if(!ans) return;
+        console.log("Changing Template to", new_template);
         await apiReq("channels", {
             type: "SET_NEW_TEMPLATE",
             channel: channel,
@@ -189,7 +189,7 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
         <>
             <Button variant="contained" className="bg-[#F68888] text-black" onClick={handleClickOpen}>Template Settings</Button>
             <Dialog open={open} onClose={closeDialog}>
-                <DialogContent>
+                <DialogContent className="h-128">
                     <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
                         <Tab label="Template 1" />
                         <Tab label="Template 2" />
@@ -197,29 +197,37 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
                         <Tab label="Custom Template" />
                     </Tabs>
 
-                    {tabIndex == 0 && <TextField
-                        className="h-full w-full"
-                        value={JSON.stringify(DEF_TEMPLATE)}
-                        contentEditable={false}
-                    />
+                    {tabIndex == 0 && <TextField 
+                                        className = "h-full w-full bg-gray-200"
+                                        value={JSON.stringify(DEF_TEMPLATE, null, 8)}
+                                        contentEditable={false}
+                                        multiline
+                                        rows={13}
+                                        />
                     }
-                    {tabIndex == 1 && <TextField
-                        className="h-full w-full"
-                        value={JSON.stringify(DEF_TEMPLATE2)}
-                        contentEditable={false}
-                    />
+                    {tabIndex == 1 && <TextField 
+                                        className = "h-full w-full bg-gray-200"
+                                        value={JSON.stringify(DEF_TEMPLATE2, null, 8)}
+                                        contentEditable={false}
+                                        multiline
+                                        rows={13}
+                                        />
                     }
-                    {tabIndex == 2 && <TextField
-                        className="h-full w-full"
-                        value={JSON.stringify(DEF_LAB_TEMPLATE)}
-                        contentEditable={false}
-                    />
+                    {tabIndex == 2 && <TextField 
+                                        className = "h-full w-full bg-gray-200"
+                                        value={JSON.stringify(DEF_LAB_TEMPLATE, null, 8)}
+                                        contentEditable={false}
+                                        multiline
+                                        rows={13}
+                                        />
                     }
-                    {tabIndex == 3 && <TextField
-                        className="h-full w-full"
-                        value={customTemplate}
-                        onChange={(e) => setCustomTemplate(e.target.value)}
-                    />
+                    {tabIndex == 3 && <TextField 
+                                        className = "h-full w-full"
+                                        value={customTemplate} 
+                                        onChange={(e) => setCustomTemplate(e.target.value)}
+                                        multiline
+                                        rows={13}
+                                        />
                     }
                 </DialogContent>
                 <DialogActions>
@@ -359,7 +367,6 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                 channel_code: channel.channel_code,
                 user_email: user?.email,
             }) as string;
-            console.log(role);
             setChannelUserRole(role);
         })()
     }, [user])
