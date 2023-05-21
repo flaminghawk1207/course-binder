@@ -8,21 +8,53 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { type NextPage } from "next";
-import { Fragment } from "react";
+import { Fragment, use } from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Channel, CHANNEL_ROLE, User } from "~/types";
 import { DEF_LAB_TEMPLATE, DEF_TEMPLATE, apiReq } from "~/utils";
-import { Typography, InputLabel, Input, Box, Select, MenuItem, IconButton, FormControl } from "@mui/material";
+import  Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
+import Input from "@mui/material/Input";
+import Box from "@mui/material/Box";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
+import FormControl from "@mui/material/FormControl";
 
 const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
-    const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
-    const [open, setOpen] = useState(false);
-    const loading = open && suggestedUsers.length === 0;
+    type AddUserValues = {
+        name : User | null;
+        channelRole: string;
+    }
 
+    const [suggestedUsers, setSuggestedUsers] = useState<User[] | null>(null);
+    const [open, setOpen] = useState(false);
+    const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
+    const loading = open && suggestedUsers === null;
     const [channelUsers, setChannelUsers] = useState<User[]>([]);
     const [channelUsersRoles, setChannelUsersRoles] = useState<CHANNEL_ROLE[]>([]);
-
+    
+    const {
+        register,
+        setValue,
+        handleSubmit,
+        clearErrors,
+        reset,
+        formState: { errors },
+    } = useForm<AddUserValues>({
+        defaultValues: {
+            name: null,
+            channelRole: ""
+        },
+    });
+    
+    const closeDialog = () => {
+        reset();
+        clearErrors();
+        setOpen(false);
+    }
+    
     useEffect(() => {
         if(!selectedChannel) {
             setChannelUsers([]);
@@ -34,7 +66,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     }, [selectedChannel]);
 
     useEffect(() => {
-        if(open && !suggestedUsers.length){
+        if(open && suggestedUsers === null){
             (async () => {
                 await refreshSuggestedUsers();
             })();
@@ -60,7 +92,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
         setSuggestedUsers(suggested_users);
     }
 
-    const addUserToChannel = async (user: User) => {
+    const addUserToChannel = async (user: User, user_channel_role : string) => {
         if(selectedChannel){
             if(!window.confirm(
                 `Add ${user.firstName} to ${selectedChannel?.channel_name}?`
@@ -72,11 +104,13 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 type: "ADD_USER_TO_CHANNEL",
                 channel_code: selectedChannel.channel_code,
                 email: user.email,
-                role: "faculty" // TODO: add role selection
+                role: user_channel_role
             });
             if(!status){
                 alert("Failed to add user to channel");
                 return;
+            } else {
+                alert("User added to channel successfully");
             }
             await refreshChannelUsers();
             await refreshSuggestedUsers();
@@ -99,14 +133,20 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             if(!status){
                 alert("Failed to remove user from channel");
                 return;
+            } else {
+                alert("User removed from channel successfully");
             }
             await refreshChannelUsers();
             await refreshSuggestedUsers();
         }
     }
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
     return (
-        <div id='course-users-list' className="relative w-1/3 h-full bg-purple-600 items-center">
+        <div id='course-users-list' className="relative w-1/3 h-full bg-secondary-color items-center">
             <Typography variant="h5" sx={{textAlign:"center",mt:1}} className="w-full">Users</Typography>
 
             <Box className="flex flex-row" sx={{mt:1}}>
@@ -126,44 +166,70 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                     )
                 })
             }
-            <Autocomplete
-                options={suggestedUsers}
-                open={open}
-                onOpen={() => {
-                    setOpen(true);
-                }}
-                onClose={() => {
-                    setOpen(false);
-                }}
-                loading={loading}
-                getOptionLabel={(option: User) => option.firstName}
-                onChange={(event, value) => {console.log(value)}}
-                defaultValue={null}
-                className="absolute m-auto ml-10 w-4/5 bottom-10"
-                renderInput={(params) => <TextField
-                    {...params}
-                    label="Add Users"
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                        <Fragment>
-                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                            {params.InputProps.endAdornment}
-                        </Fragment>
-                        ),
-                    }}
-                />}
-                renderOption={(props, option: User) => {
-                    return (
-                        <div key={option.email} className="flex flex-row w-full">
-                            <Typography sx={{p:2}} className="w-3/4">{option.firstName}</Typography>
-                            <Button key={option.email} onClick={() => addUserToChannel(option)} className="w-1/4">
-                                +
-                            </Button>
-                        </div>
-                    )
-                }}
-            />
+
+            <div>
+            <Button id="addUserChannel" variant="contained" onClick={handleClickOpen}>Add User</Button>
+            <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
+                <DialogTitle>
+                    <Typography align="center">
+                        Add Users
+                    </Typography>
+                </DialogTitle>
+                <DialogContent className="ml-10 mr-10 mt-5 mb-5">
+                    <Box> 
+                        <Autocomplete
+                            key={suggestedUsers?.length || 0}
+                            options={suggestedUsers || []}
+                            open={autoCompleteOpen}
+                            onOpen={() => {
+                                setAutoCompleteOpen(true);
+                            }}
+                            onClose={() => {
+                                setAutoCompleteOpen(false);
+                            }}
+                            loading={loading}
+                            getOptionLabel={(option: User) => option.firstName}
+                            onChange={(event, value) => setValue("name", value as User)}
+                            defaultValue={null}
+                            isOptionEqualToValue={(option, value) => option.email === value.email}
+                            aria-required
+                            renderInput={(params) => <TextField
+                                {...params}
+                                label="User Name"
+                                InputProps={{
+                                    ...params.InputProps,
+                                    endAdornment: (
+                                    <Fragment>
+                                        {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {params.InputProps.endAdornment}
+                                    </Fragment>
+                                    ),
+                                }}
+                            />}
+                        />
+                    </Box>
+                    <Box sx={{mt:3}}>
+                        <FormControl fullWidth>
+                            <InputLabel>Channel Role</InputLabel>
+                            <Select id="channelRoleSelect" 
+                                error = {errors.channelRole !== undefined}
+                                defaultValue={""}
+                                {...register("channelRole", { 
+                                    required: "Channel Role is required", 
+                                })}
+                            >
+                                <MenuItem value="faculty">Faculty</MenuItem>
+                                <MenuItem value="course_mentor">Course Mentor</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box> 
+                <DialogActions className="w-full">
+                    <Button variant="outlined" onClick={closeDialog} className="w-1/2" sx={{mt:4}}>Close</Button>
+                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} className="w-1/2" sx={{mt:4}}>Add User</Button>
+                </DialogActions>
+                </DialogContent>
+            </Dialog>
+            </div>
         </div>
     )
 }
@@ -220,8 +286,8 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
     }
 
     return (
-        <div className="w-1/5 h-2/5 m-auto mr-10">
-        <Button id="createChannelDialogButton" variant="contained" className="w-full h-full bg-slate-700" onClick={handleClickOpen}>Create Channel</Button>
+        <div className="w-1/5 h-2/5 m-auto mr-10 ">
+        <Button id="createChannelDialogButton" variant="contained" className="w-full h-full bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={handleClickOpen}>Create Channel</Button>
         <Dialog open={open} onClose={closeDialog}>
             <DialogTitle><Typography textAlign={"center"}>Create Channel</Typography></DialogTitle>
             <DialogContent>
@@ -292,8 +358,8 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 }
             </DialogContent>
             <DialogActions>
-            <Button id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
-            <Button id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
+            <Button className="bg-secondary-color text-primary-txt" id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
+            <Button className="bg-secondary-color text-primary-txt" id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
             </DialogActions>
         </Dialog>
         </div>
@@ -318,8 +384,8 @@ const AdminManageChannel: NextPage = () => {
     }
 
     return (
-        <div id="main-view" className="flex flex-col h-screen w-full bg-black">
-            <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-red-400">
+        <div id="main-view" className="flex flex-col h-screen w-full">
+            <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-tertiary-color">
                 <Autocomplete
                     options={channels}
                     getOptionLabel={(option: Channel) => option.channel_name}
@@ -335,8 +401,8 @@ const AdminManageChannel: NextPage = () => {
             </div>
             {
                 selectedChannel ?
-                    <div id="course-info-view" className="h-4/5 w-full bg-blue-300 flex flex-row">
-                        <div id="course-info" className="w-2/3 h-full bg-yellow-300">
+                    <div id="course-info-view" className="h-4/5 w-full flex flex-row ">
+                        <div id="course-info" className="w-2/3 h-full bg-primary-color flex items-center justify-center text-lg">
                             Current selected Channel: {selectedChannel? selectedChannel.channel_name : "None"}<br/>
                             Current course code: {selectedChannel? selectedChannel.channel_code : "None"}
                         </div>
@@ -344,7 +410,7 @@ const AdminManageChannel: NextPage = () => {
                             selectedChannel={selectedChannel}/>
                     </div>
                 :
-                    <div className="w-full h-4/5 text-center bg-blue-300">Select a Channel</div>
+                    <div className="w-full h-4/5 text-center bg-primary-color">Select a Channel</div>
             }
         </div>
     );

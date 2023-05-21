@@ -64,7 +64,7 @@ const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict,
         const [options, setOptions] = useState<Options>(initialOptions);
 
         return (
-            <HighchartsReact
+            <HighchartsReact className="justify-start"
                 highcharts={Highcharts}
                 options={options}
                 ref={chartComponentRef}
