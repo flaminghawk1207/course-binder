@@ -20,24 +20,6 @@ import Checkbox from '@mui/material/Checkbox';
 
 const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
 
-    // for (let i = 0; i < folder.children.length; i++) {
-    //     if (folder.children[i]?.type == "file") {
-    //         console.log('Children name: ',folder.children);
-    //     }
-    // }
-    // const [typeOfFiles, setTypeOfFiles] = useState<string[]>([])
-
-    // // for (let i = 0; i < folder.children.length; i++) {
-    // //     if (folder.children[i]?.type == "file") {
-    // //         const pattern = /\.([0-9a-z]+)(?:[\?#]|$)/i;
-    // //         const match = folder.children[i]?.name.match(pattern);
-    // //         if (match && match.length >= 2) {
-    // //             console.log(folder.name, "type", match[1]);
-    // //         }
-    // //         return null;
-    // //     }
-    // // }
-
     return (
 
         <div className="bg-blue-100">
@@ -249,13 +231,7 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
     );
 }
 
-const FilterDocument = ({ currentDir, completeDir }: { currentDir: string[], completeDir: FirebaseFolder }) => {
-    console.log(completeDir.fullPath)
-
-    return (<h1></h1>);
-}
-
-const CourseView = ({ channel }: { channel: Channel }) => {
+const CourseView = ({ channel }: { channel: Channel }) => { 
     const { user } = useContext(UserContext);
     const [channelUserRole, setChannelUserRole] = useState<string>("faculty");
 
@@ -270,12 +246,6 @@ const CourseView = ({ channel }: { channel: Channel }) => {
 
     let finalDisplayItems = currDirObject?.children;
     let AllFileExtensions: string[] = []
-
-
-    // console.log("Curr dir object: ",currDirObject);
-    // const setFileExtensionType = () => {
-
-    // }
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;

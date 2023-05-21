@@ -74,7 +74,6 @@ const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict,
     };
     return (
         <div>
-            {/* <button onClick={() => updateLevelPointer(child)}>{child?.levelElementName}</button> */}
             <HighChart title={child.levelElementName}></HighChart>
         </div>
 
