@@ -161,7 +161,7 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
         )
 
         if(!ans) return;
-        console.log("Template Changed", new_template);
+        console.log("Changing Template to", new_template);
         await apiReq("channels", {
             type: "SET_NEW_TEMPLATE",
             channel: channel,
@@ -178,7 +178,7 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
         <>
             <Button variant="contained" className="bg-[#F68888] text-black" onClick={handleClickOpen}>Template Settings</Button>
             <Dialog open={open} onClose={closeDialog}>
-                <DialogContent>
+                <DialogContent className="h-128">
                     <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
                         <Tab label="Template 1"/>
                         <Tab label="Template 2"/>
@@ -187,27 +187,35 @@ const TemplateDialog = ({channel, refreshFileSys}: {channel: Channel, refreshFil
                     </Tabs>
 
                     {tabIndex == 0 && <TextField 
-                                        className = "h-full w-full"
-                                        value={JSON.stringify(DEF_TEMPLATE)}
+                                        className = "h-full w-full bg-gray-200"
+                                        value={JSON.stringify(DEF_TEMPLATE, null, 8)}
                                         contentEditable={false}
+                                        multiline
+                                        rows={13}
                                         />
                     }
                     {tabIndex == 1 && <TextField 
-                                        className = "h-full w-full"
-                                        value={JSON.stringify(DEF_TEMPLATE2)}
+                                        className = "h-full w-full bg-gray-200"
+                                        value={JSON.stringify(DEF_TEMPLATE2, null, 8)}
                                         contentEditable={false}
+                                        multiline
+                                        rows={13}
                                         />
                     }
                     {tabIndex == 2 && <TextField 
-                                        className = "h-full w-full"
-                                        value={JSON.stringify(DEF_LAB_TEMPLATE)}
+                                        className = "h-full w-full bg-gray-200"
+                                        value={JSON.stringify(DEF_LAB_TEMPLATE, null, 8)}
                                         contentEditable={false}
+                                        multiline
+                                        rows={13}
                                         />
                     }
                     {tabIndex == 3 && <TextField 
                                         className = "h-full w-full"
                                         value={customTemplate} 
                                         onChange={(e) => setCustomTemplate(e.target.value)}
+                                        multiline
+                                        rows={13}
                                         />
                     }
                 </DialogContent>
@@ -252,7 +260,6 @@ const CourseView = ({channel}: {channel: Channel}) => {
                 channel_code: channel.channel_code,
                 user_email: user?.email,
             }) as string;
-            console.log(role);
             setChannelUserRole(role);
         })()
     }, [user])
@@ -283,6 +290,7 @@ const CourseView = ({channel}: {channel: Channel}) => {
             <div>
                 <h1 className="font-bold font-9xl">Current Directory: {currDir[currDir.length - 1]}</h1>
                 <button onClick={moveOutOfFolder}>Back</button>
+                <button onClick={refreshFileSys}>Refresh</button>
             </div>
             <div>
                 {
