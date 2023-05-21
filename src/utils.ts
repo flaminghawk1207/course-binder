@@ -217,7 +217,13 @@ export const constructPercentageDict = async (level: string, maxLevels: number, 
     const allFiles = await getAllFilesRecursive(storageRef);
 
     const percentageDict = constructPercentageDictRecursive(allFiles, maxLevels);
-    return percentageDict;
+
+    if(level == "COLLEGE") percentageDict.levelElementName = "college";
+    return {
+        levelElementName: "totalData",
+        levelPercentage: percentageDict.levelPercentage,
+        children: [percentageDict]
+    } as PercentageDict;
 }
 
 export function collapsePercentageDict(fileFolder: (FirebaseFolder | FirebaseFile)): [number, number] {

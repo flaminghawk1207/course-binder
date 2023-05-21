@@ -50,9 +50,9 @@ export enum ERROR_TYPE {
 }
 
 export interface PercentageDict {
-    levelElementName: string,
-    levelPercentage: number,
-    children: PercentageDict[],
+    levelElementName: string;
+    levelPercentage: number;
+    children: PercentageDict[];
 }
 
 export interface FirebaseFile {
@@ -68,4 +68,10 @@ export interface FirebaseFolder {
     fullPath: string; // Path in the storage filesystem
     type: "folder";
     children: (FirebaseFile | FirebaseFolder)[];
+}
+
+export interface checkBoxFields {
+    id: number;
+    label: string;
+    checked: boolean;
 }
