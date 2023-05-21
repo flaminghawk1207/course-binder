@@ -274,7 +274,7 @@ const CourseView = ({channel}: {channel: Channel}) => {
     }
 
     return (
-        <div className="bg-[#D9C9B1] m-1">
+        <div className="bg-tertiary-color">
             <div className="text-lg">
                     <p>Course Code: {channel.channel_code}</p>
                     <p>Course Name: {channel.channel_name}</p>

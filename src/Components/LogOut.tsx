@@ -10,14 +10,14 @@ export const LogOut = () => {
     console.log(user);
 
     return (
-        <div className="mb-10 bg-[#EDC3AB]">
+        <div className="mb-10 bg-primary-color">
             <Button id="userLogOutButton" endIcon={<LogoutIcon/>}
                 onClick={() => {
                     user.logout();
                     router.push('/login');
                  }} 
                 sx={{mt:1}} 
-                className="w-full text-[#0c0a09]" 
+                className="w-full text-primary-txt" 
             >
                 Log Out
             </Button>

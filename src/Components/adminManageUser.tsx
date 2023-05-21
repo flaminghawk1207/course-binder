@@ -162,14 +162,15 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             }
             
             <Box>
-            <Button id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
-            <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
-                <DialogTitle>
-                    <Typography align="center">
-                        Add Channel
-                    </Typography>
-                </DialogTitle>
-                <DialogContent className="ml-10 mr-10 mt-5 mb-5">
+                <div className="flex flex justify-center">
+                    <Button className="bg-primary-color text-primary-txt hover:bg-hovercolor" id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
+                    <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
+                    <DialogTitle>
+                        <Typography align="center">
+                            Add Channel
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent className="ml-10 mr-10 mt-5 mb-5">
                     <Box> 
                         <Autocomplete
                             options={suggestedChannels}
@@ -216,9 +217,10 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                         </FormControl>
                     </Box> 
                     <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel, data.role))} fullWidth sx={{mt:4}}>Add Channel</Button>
-                </DialogContent>
-            </Dialog>
-        </Box>
+                    </DialogContent>
+                    </Dialog>
+                </div>
+            </Box>
         </Box>
     )
 }
@@ -339,7 +341,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                             required: "Password is required",
                             pattern: {
                                 value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                                message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
+                                message: "Password must be at least 8 characters long and must be a combination of uppercase letters, lowercase letters, special characters and numbers",
                             }
                         })}
                     error={errors.password !== undefined}
@@ -349,9 +351,9 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Box>
 
                 <Box display="flex">
-                    <InputLabel>Role:</InputLabel>
+                    <InputLabel>User Role:</InputLabel>
                     {/* <FormControl> */}
-                        <Select id="roleSelect" sx={{ml:6, mt:1}} size="small" required style={{ width: "72%" }}
+                        <Select id="roleSelect" sx={{ml:2, mt:1}} size="small" required style={{ width: "70%" }}
                             error={errors.role !== undefined}
                             // helperText={errors.role?.message}
                             {...register("role", { 

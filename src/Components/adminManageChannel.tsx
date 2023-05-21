@@ -163,8 +163,8 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 })
             }
 
-            <div>
-            <Button id="addUserChannel" variant="contained" onClick={handleClickOpen}>Add User</Button>
+            <div className="flex flex justify-center">
+            <Button  className="bg-primary-color text-primary-txt hover:bg-hovercolor" id="addUserChannel" variant="contained" onClick={handleClickOpen}>Add User</Button>
             <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
                 <DialogTitle>
                     <Typography align="center">
@@ -282,8 +282,8 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
         <div className="w-1/5 h-2/5 m-auto mr-10 ">
         <Button id="createChannelDialogButton" variant="contained" className="w-full h-full bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={handleClickOpen}>Create Channel</Button>
         <Dialog open={open} onClose={closeDialog}>
-            <DialogTitle><Typography textAlign={"center"}>Create Channel</Typography></DialogTitle>
-            <DialogContent>
+            <DialogTitle className="bg-tertiary-color font-bold"><Typography textAlign={"center"}>Create Channel</Typography></DialogTitle>
+            <DialogContent className="bg-tertiary-color text-primary-txt font-bold">
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Channel Name:</InputLabel>
                     <TextField id="channelName" sx={{ml:1.8}} size="small" required
@@ -296,7 +296,7 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Channel Code:</InputLabel>
-                    <TextField id="channelCode" sx={{ml:2.3}} required size="small" 
+                    <TextField id="channelCode" sx={{ml:2.4}} required size="small" 
                         {...register("channel_code", { 
                             required: "Channel Code is required",
                         })}
@@ -306,7 +306,7 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
                     <InputLabel>Department:</InputLabel>
-                    <TextField id="departmentName" sx={{ml:4.5}} size="small"  required
+                    <TextField id="departmentName" sx={{ml:4.0}} size="small"  required
                         {...register("channel_department", { 
                             required: "Department Name is required",
                         })}
@@ -315,9 +315,9 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                         />
                 </Box>
                 <Box display="flex">
-                    <InputLabel>Type:</InputLabel>
+                    <InputLabel>Course Type:</InputLabel>
                     {/* <FormControl> */}
-                        <Select id="channelTypeSelect" sx={{ml:6, mt:1}} size="small" required
+                        <Select id="channelTypeSelect" sx={{ml:3.5, mt:1}} size="small" required
                             error={errors.channel_type !== undefined}
                             {...register("channel_type", { 
                                 required: "Type field is required", 
@@ -350,7 +350,7 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                     </Box>
                 }
             </DialogContent>
-            <DialogActions>
+            <DialogActions className="bg-tertiary-color">
             <Button className="bg-secondary-color text-primary-txt" id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
             <Button className="bg-secondary-color text-primary-txt" id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
             </DialogActions>
