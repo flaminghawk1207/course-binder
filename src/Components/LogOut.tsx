@@ -9,13 +9,15 @@ export const LogOut = () => {
     const router = useRouter();
 
     return (
-        <div className="mb-10 bg-primary-color">
-            <Button id="userLogOutButton" endIcon={<LogoutIcon/>}
+        <div className="my-10 ml-5 bg-primary-color rounded w-4/5 justify-center">
+            <Button id="userLogOutButton" 
+                endIcon={<LogoutIcon/>}
+                variant="contained"
+                size="large"
                 onClick={() => {
                     user.logout();
                     router.push('/login');
                  }} 
-                sx={{mt:1}} 
                 className="w-full text-primary-txt" 
             >
                 Log Out

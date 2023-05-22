@@ -1,4 +1,3 @@
-// takes in channel_name, channel_code, channel_department
 import { Button, Tab, Tabs, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton"
 import { useContext, useEffect, useState } from "react";
@@ -9,8 +8,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import { UserContext } from "~/contexts/UserProvider";
-import SaveIcon from '@mui/icons-material/Save';
 import UploadIcon from '@mui/icons-material/Upload';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import * as React from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -25,7 +25,7 @@ const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, m
 
     return (
 
-        <div className="bg-[#E3DABA] rounded my-3 h-16 flex px-2 items-center hover:cursor-pointer"onClick={() => moveIntoFolder(folder.name)}>
+        <div className="bg-tertiary-color rounded my-2 h-16 flex px-2 items-center hover:cursor-pointer"onClick={() => moveIntoFolder(folder.name)}>
         {folder.name}       
         </div>
     );
@@ -69,8 +69,10 @@ const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, 
 
 
     return (
-        <div className="h-full">
-            <Button variant="contained" className={`bg-secondary-color m-3 inline-block align-middle`} onClick={handleClickOpen}>Upload File</Button>
+        <div className="h-full mr-5">
+            <div className="h-full items-center">
+                <Button variant="contained" className="bg-secondary-color mt-3" onClick={handleClickOpen}>Upload File</Button>
+            </div>
             <Dialog open={open} onClose={closeDialog}>
                 <DialogContent>
                     {
@@ -123,23 +125,19 @@ const FileComponent = ({ file, refreshCompleteDir }: { file: FirebaseFile, refre
     }
 
     return (
-        <div className={`bg-[#E3DABA] rounded h-16 flex relative items-center m-2 ${loading ? "opacity-25": ""}`}>
-            {
-                file.empty
-                            ? <button className="w-6 h-6 disabled flex justify-center rounded-full bg-red-500 hover:bg-red-500 text-white mx-4" disabled></button>
-
-                            : <button className="w-6 h-6 disabled flex justify-center rounded-full bg-green-500 hover:bg-green-500 text-white mx-4" disabled></button>
-            }
-            <p>{file.name}</p>
-            
-            <div className="bg-[#E3DABA] absolute right-0 h-full items-center p-2 rounded">
+        <div className={`bg-tertiary-color rounded h-16 my-2 flex relative items-center ${loading ? "opacity-25": ""}`}>
+            <button className={`w-6 h-6 rounded-full ${file.empty? "bg-red-500" : "bg-green-500"} mx-4`} disabled></button>
+            <p>{file.name}</p>            
+            <div className="bg-tertiary-color absolute right-0 h-full items-center rounded">
                 {
                     file.empty
                         ? <FileUploadDialog fullPath={file.fullPath} refreshCompleteDir={refreshCompleteDir} />
 
-                        : [<button className="mx-10 h-1/2 px-4 pb-4 hover:bg-[#344ec2] my-4 bg-secondary-color inline-block align-middle rounded text-white drop-shadow-lg " onClick={()=>window.open(file.downloadURL, '_blank')}>Download</button>
-                        ,
-                        <button className="mx-10 h-1/2 px-4 pb-4 hover:bg-[#344ec2] my-4 bg-secondary-color inline-block align-middle rounded text-white drop-shadow-lg " onClick={deleteFile}>Delete</button>]
+                        :
+                        <div className="flex h-full items-center space-x-5 mr-5"> 
+                            <Button variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={()=>window.open(file.downloadURL, '_blank')}>Download</Button>
+                            <Button variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={deleteFile}>Delete</Button>
+                        </div>
                 }
             </div>
         </div>        
@@ -219,7 +217,14 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
 
     return (
         <>
-            <Button variant="contained" className="bg-[#F68888] text-black" onClick={handleClickOpen}>Template Settings</Button>
+            <Button 
+                variant="contained" 
+                className="bg-[#F68888] text-black" 
+                onClick={handleClickOpen}
+                startIcon={<SettingsIcon/>}
+            >
+                Template Settings
+            </Button>
             <Dialog open={open} onClose={closeDialog}>
                 <DialogContent className="h-128">
                     <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
@@ -312,7 +317,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
 
         return (
             <div>
-                <FormControl sx={{ m: 1, width: 300 }}>
+                <FormControl sx={{ m: 1, width: 150 }} className="rounded">
                     <InputLabel id="demo-multiple-checkbox-label">{tag}</InputLabel>
                     <Select
                         labelId="demo-multiple-checkbox-label"
@@ -421,54 +426,71 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     console.log(selectedFileExtensions);
     console.log(selectedFileUploadCategory);
 
-    function handleClick() {
+    function handleBackClick() {
         moveOutOfFolder();
         setSelectedFileExtensions([]);
         setSelectedFileUploadCategory([]);
     }
-    // console.log(currDirObject);
     return (
-        <div className="h-4/5 my-10 mx-10">
-            <div>
-                    <p>Course Code: {channel.channel_code}</p>
-                    <p>Course Name: {channel.channel_name}</p>
-                    <p>Course Deparment: {channel.channel_department}</p>
-            </div>
-
-            <div className="w-5/6 h-full  mx-auto bg-secondary-color shadow-lg rounded px-8 py-12 mt-10">
-            <div>
-                <h1 className="font-bold font-9xl">Current Directory: {currDir.join("/")}</h1>
-                <button className="mt-20 flex"onClick={handleClick}>Back</button>
-            </div>
-            <div>
-                <div className="flex justify-end">
-                    <div ><MultipleSelectCheckmarks tag = {"File Type"} menuDisplayValue={AllFileExtensions} selectedValue={selectedFileExtensions} setSelectedValue={setSelectedFileExtensions}></MultipleSelectCheckmarks></div>
-                    <div ><MultipleSelectCheckmarks tag = {"Upload status"} menuDisplayValue={fileUploadStatus} selectedValue={selectedFileUploadCategory} setSelectedValue={setSelectedFileUploadCategory}></MultipleSelectCheckmarks></div>
+        <div className="h-4/5 my-10 mx-10 mt-15">
+            <div className="flex w-full relative">
+                <div>
+                        <p>Course Code: {channel.channel_code}</p>
+                        <p>Course Name: {channel.channel_name}</p>
+                        <p>Course Deparment: {channel.channel_department}</p>
                 </div>
+                <div className="absolute right-5">            
+                    {
+                        channelUserRole == CHANNEL_ROLE.COURSE_MENTOR
+                            ? <TemplateDialog channel={channel} refreshFileSys={refreshFileSys} />
+                            : null
+                    }
+                </div>
+            </div>
 
-                {
-                    fsLoading ? <div role="status" className="h-full flex items-center justify-center scale-200">
-                    <svg aria-hidden="true" className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-[#EDC3AB]" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                    </svg>
-                    <span className="sr-only">Loading...</span>
-                </div> :
-                        finalDisplayItems?.map((child) => {
-                            if (child.type === "folder") {
-                                return <FolderComponent key={child.fullPath} folder={child} moveIntoFolder={moveIntoFolder} />
-                            } else {
-                                return <FileComponent key={child.fullPath} file={child} refreshCompleteDir={refreshCompleteDir} />
-                            }
-                        })
-                }
+            <div className="w-full h-5/6 mx-auto bg-secondary-color shadow-lg rounded px-8 pt-5 mt-10">
+                <div className="flex space-x-2 text-xl">
+                    <h1 className="font-bold">Current Directory:</h1> 
+                    <p>{"/" + channel.channel_name + "/" + currDir.join("/")}</p>
+                </div>
+                <div className="h-5/6">                    
+                    <div className="flex w-full relative">
+                        <Button 
+                            variant="outlined" 
+                            className="bg-primary-color border-primary-color text-primary-txt rounded my-4" 
+                            startIcon={<ArrowBackIcon/>} 
+                            onClick={handleBackClick}
+                            disabled={currDir.length == 0}
+                        >
+                            Back
+                        </Button>
+                        <div className="flex justify-end absolute right-0">
+                            <div ><MultipleSelectCheckmarks tag = {"File Type"} menuDisplayValue={AllFileExtensions} selectedValue={selectedFileExtensions} setSelectedValue={setSelectedFileExtensions}></MultipleSelectCheckmarks></div>
+                            <div ><MultipleSelectCheckmarks tag = {"Upload status"} menuDisplayValue={fileUploadStatus} selectedValue={selectedFileUploadCategory} setSelectedValue={setSelectedFileUploadCategory}></MultipleSelectCheckmarks></div>
+                        </div>
+                    </div>
+                    
+
+                    <div className="mt-5 h-5/6 overflow-auto no-scrollbar">
+                    {
+                        fsLoading ? <div role="status" className="h-full flex items-center justify-center scale-200">
+                        <svg aria-hidden="true" className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-[#EDC3AB]" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                        </svg>
+                        <span className="sr-only">Loading...</span>
+                    </div> :
+                            finalDisplayItems?.map((child) => {
+                                if (child.type === "folder") {
+                                    return <FolderComponent key={child.fullPath} folder={child} moveIntoFolder={moveIntoFolder} />
+                                } else {
+                                    return <FileComponent key={child.fullPath} file={child} refreshCompleteDir={refreshCompleteDir} />
+                                }
+                            })
+                    }
+                    </div>
+                </div>
             </div>
-            </div>
-            {
-                channelUserRole == CHANNEL_ROLE.COURSE_MENTOR
-                    ? <TemplateDialog channel={channel} refreshFileSys={refreshFileSys} />
-                    : null
-            }
         </div>
     );
 }
