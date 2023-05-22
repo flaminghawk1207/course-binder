@@ -178,6 +178,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 <DialogContent className="ml-10 mr-10 mt-5 mb-5">
                     <Box> 
                         <Autocomplete
+                            id="userNameAutoComplete"
                             options={suggestedUsers || []}
                             open={autoCompleteOpen}
                             onOpen={() => {
@@ -220,9 +221,10 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                                 <MenuItem value="faculty">Faculty</MenuItem>
                                 <MenuItem value="course_mentor">Course Mentor</MenuItem>
                             </Select>
+
                         </FormControl>
                     </Box> 
-                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} fullWidth sx={{mt:4}}>Add User</Button>
+                    <Button id="submitAddUser" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} fullWidth sx={{mt:4}}>Add User</Button>
                 </DialogContent>
             </Dialog>
             </div>
@@ -384,6 +386,7 @@ const AdminManageChannel: NextPage = () => {
         <div id="main-view" className="flex flex-col h-screen w-full">
             <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-tertiary-color">
                 <Autocomplete
+                    id = "searchChannelAutoComplete"
                     options={channels}
                     getOptionLabel={(option: Channel) => option.channel_name}
                     renderInput={(params) => <TextField {...params} 

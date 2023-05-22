@@ -220,7 +220,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                             </Select>
                         </FormControl>
                     </Box> 
-                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel as Channel, data.role))} fullWidth sx={{mt:4}}>Add Channel</Button>
+                    <Button id="submitAddChannel" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel as Channel, data.role))} fullWidth sx={{mt:4}}>Add Channel</Button>
                 </DialogContent>
             </Dialog>
         </Box>
@@ -418,6 +418,7 @@ const AdminManageUser: NextPage = () => {
             <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-tertiary-color">
                 <Autocomplete
                     options={users}
+                    id = "searchUsersAutoComplete"
                     getOptionLabel={(option: User) => option.firstName}
                     renderInput={(params) => <TextField {...params} 
                                                 label="Search Users"
