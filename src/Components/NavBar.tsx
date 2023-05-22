@@ -31,7 +31,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
 
     return (
         <div className = "flex h-screen">
-            <div className="w-64 h-full m-1 bg-secondary-color relative">
+            <div className="w-1/6 h-full bg-secondary-color relative">
                 {
                     groupedItems?.map((group: any, group_index: number) =>
                         group.map((item: NavItem) => 
@@ -40,7 +40,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                                 key={item.label} 
                                 variant="contained"
                                 sx={{mt: 2}} 
-                                className= {`w-48 text-primary-txt hover:bg-hovercolor ml-3
+                                className= {`w-4/5 text-primary-txt hover:bg-hovercolor ml-3
                                     ${CurrentItem?.label === item.label ? groupColorsSelected[group_index]: groupColors[group_index]}`
                                 }
                                 onClick={() => setCurrentItem(item)}

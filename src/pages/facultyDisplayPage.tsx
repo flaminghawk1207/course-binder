@@ -29,6 +29,7 @@ const FacultyDisplayPage: NextPage = () => {
     if(!user) return <Forbidden/>;
 
     const refreshChannels = async () => {
+
         let { facultyChannels } = await apiReq('facultyCourseDetails', user?.email)
         facultyChannels = facultyChannels as Channel[];
         let facultyNavItems = [];
