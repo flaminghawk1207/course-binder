@@ -1,3 +1,6 @@
+import { Markunread } from "@mui/icons-material";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -32,16 +35,20 @@ const ForgotPassword: NextPage = () => {
                 <div>
                     <h1 className="mb-2 mt-0 text-3xl font-small leading-tight text-primary-txt flex flex justify-center">Reset Password</h1>
                     <br/>
-                    <label className="text-xl justify-center">Email:</label>
-                    <input className="w-3/4"
-                        {...register("email", { 
-                            required: "This field is required",
+                    <TextField className="justify-center "
+                        label="Email ID"
+                        type="text" 
+                        fullWidth                     
+                        {...register("email", {
+                            required: "This field is Required",
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
-                                message: "Invalid email address", }
+                                message: "Invalid email address",
+                            }
                         })}
-                        type="text" name="email"/>
-                        
+                        error={errors.email !== undefined}
+                        helperText={errors.email?.message}                        
+                        />                        
                     <br/>
                     {errors.email && errors.email.type == "required" && 
                     <><span className='text-red-700'>This field is required</span><br /></>}

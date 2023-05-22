@@ -24,13 +24,13 @@ import FormControl from "@mui/material/FormControl";
 
 const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     type ChannelFormValues = {
-        channel : Channel,
+        channel : Channel | null,
         role : string
     }
 
-    const [suggestedChannels, setSuggestedChannels] = useState<Channel[]>([]);
+    const [suggestedChannels, setSuggestedChannels] = useState<Channel[]|null>(null);
     const [open, setOpen] = useState(false);
-    const loading = open && suggestedChannels.length === 0;
+    const loading = open && suggestedChannels === null;
 
     const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
     const [userChannels, setUserChannels] = useState<Channel[]>([]);
@@ -45,7 +45,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
         formState: { errors },
     } = useForm<ChannelFormValues>({
         defaultValues: {
-            channel: suggestedChannels[0],
+            channel: null,
             role: ""
         },
     });
@@ -61,7 +61,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
     }, [selectedUser]);
 
     useEffect(() => {
-        if(open && !suggestedChannels.length){
+        if(open && suggestedChannels === null){
             (async () => {
                 await refreshSuggestedChannels();
             })();
@@ -111,6 +111,8 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             if(!status){
                 alert("Failed to add user to channel");
                 return;
+            } else {
+                alert("User added to channel successfully");
             }
             await refreshUserChannels();
             await refreshSuggestedChannels();
@@ -133,6 +135,8 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             if(!status){
                 alert("Failed to remove user from channel");
                 return;
+            } else {
+                alert("User removed from channel successfully");
             }
             await refreshUserChannels();
             await refreshSuggestedChannels();
@@ -163,7 +167,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             
             <Box>
                 <div className="flex flex justify-center">
-                    <Button className="bg-primary-color text-primary-txt hover:bg-hovercolor" id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
+                    <Button className="bg-primary-color text-primary-txt hover:bg-hovercolor w-4/5 absolute bottom-0 mb-10" id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
                     <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
                     <DialogTitle>
                         <Typography align="center">
@@ -173,7 +177,8 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                     <DialogContent className="ml-10 mr-10 mt-5 mb-5">
                     <Box> 
                         <Autocomplete
-                            options={suggestedChannels}
+                            key={suggestedChannels?.length || 0}
+                            options={suggestedChannels || []}
                             open={autoCompleteOpen}
                             onOpen={() => {
                                 setAutoCompleteOpen(true);
@@ -216,12 +221,16 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                             </Select>
                         </FormControl>
                     </Box> 
-                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel, data.role))} fullWidth sx={{mt:4}}>Add Channel</Button>
-                    </DialogContent>
-                    </Dialog>
-                </div>
-            </Box>
+                <DialogActions className="w-full">
+                    <Button variant="outlined" onClick={closeDialog} className="w-1/2" sx={{mt:4}}>Close</Button>
+                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel as Channel, data.role))} className="w-1/2" sx={{mt:4}}>Add Channel</Button>
+                </DialogActions>
+                </DialogContent>
+            </Dialog>
+            </div>
         </Box>
+        </Box>
+    
     )
 }
 
@@ -297,31 +306,30 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
             </DialogTitle>
             <DialogContent className="bg-tertiary-color text-primary-txt">
                 <Box display="flex" sx={{mt:1}}> 
-                    <InputLabel>First Name:</InputLabel>
                     <TextField id="firstName"  sx={{ml:1}} size="small"
                         {...register("firstName", { 
                             required: "First Name is required", 
                         })}
                         error={errors.firstName !== undefined}
+                        placeholder="First Name"
                         helperText={errors.firstName?.message}
                         />
                 </Box>
 
                 <Box  display="flex" sx={{mt:1}}>
-                    <InputLabel>Last Name:</InputLabel>
                     <TextField id="lastName" sx={{ml:1}} size="small"
                         {...register("lastName", { 
                             required: "Last Name is required", 
                         })}
                         error={errors.lastName !== undefined}
                         helperText={errors.lastName?.message}
+                        placeholder="Last name"
                         type="text"/>
                     <br/>
                 </Box>
 
                 <Box display="flex" sx={{mt:1}}>
-                    <InputLabel>Email:</InputLabel>
-                    <TextField id="emailTextField" sx={{ml:5.6, align:"right"}} size="small"
+                    <TextField id="emailTextField" sx={{ml:1.1, align:"right"}} size="small"
                         {...register("email", { 
                             required: "Email is required",
                             pattern: {
@@ -330,13 +338,13 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                         })}
                         error={errors.email !== undefined}
                         helperText={errors.email?.message}
+                        placeholder="Email"
                     />
                     <br/>
                 </Box>
 
                 <Box display="flex" sx={{mt:1}}>
-                    <InputLabel>Password:</InputLabel>
-                    <TextField id="passwordTextField" sx={{ml:1.7}} size="small"
+                    <TextField id="passwordTextField" sx={{ml:1.2}} size="small"
                         {...register("password", { 
                             required: "Password is required",
                             pattern: {
@@ -346,15 +354,16 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                         })}
                     error={errors.password !== undefined}
                     helperText={errors.password?.message}
+                    placeholder="Password"
                     />
                     <br/>
                 </Box>
 
                 <Box display="flex">
-                    <InputLabel>User Role:</InputLabel>
                     {/* <FormControl> */}
                         <Select id="roleSelect" sx={{ml:2, mt:1}} size="small" required style={{ width: "70%" }}
                             error={errors.role !== undefined}
+                            placeholder="User Role"
                             // helperText={errors.role?.message}
                             {...register("role", { 
                                 required: "This field is required", 
@@ -371,13 +380,13 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 {
                     hasDepartment &&
                     <Box display="flex">
-                        <InputLabel>Department:</InputLabel>
                         <TextField id="departmentTextField" sx={{ml:1.7}} size="small"
                             {...register("department", {
                                 required: "Department is required",
                             })}
                             error={errors.department !== undefined}
                             helperText={errors.department?.message}
+                            placeholder="Department"
                         />
                         <br/>
                     </Box>

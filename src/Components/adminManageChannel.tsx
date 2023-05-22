@@ -24,14 +24,14 @@ import FormControl from "@mui/material/FormControl";
 
 const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     type AddUserValues = {
-        name : User;
+        name : User | null;
         channelRole: string;
     }
 
-    const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
+    const [suggestedUsers, setSuggestedUsers] = useState<User[] | null>(null);
     const [open, setOpen] = useState(false);
     const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
-    const loading = open && suggestedUsers.length === 0;
+    const loading = open && suggestedUsers === null;
     const [channelUsers, setChannelUsers] = useState<User[]>([]);
     const [channelUsersRoles, setChannelUsersRoles] = useState<CHANNEL_ROLE[]>([]);
     
@@ -44,7 +44,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
         formState: { errors },
     } = useForm<AddUserValues>({
         defaultValues: {
-            name: suggestedUsers[0],
+            name: null,
             channelRole: ""
         },
     });
@@ -66,7 +66,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
     }, [selectedChannel]);
 
     useEffect(() => {
-        if(open && !suggestedUsers.length){
+        if(open && suggestedUsers === null){
             (async () => {
                 await refreshSuggestedUsers();
             })();
@@ -109,6 +109,8 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             if(!status){
                 alert("Failed to add user to channel");
                 return;
+            } else {
+                alert("User added to channel successfully");
             }
             await refreshChannelUsers();
             await refreshSuggestedUsers();
@@ -131,6 +133,8 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             if(!status){
                 alert("Failed to remove user from channel");
                 return;
+            } else {
+                alert("User removed from channel successfully");
             }
             await refreshChannelUsers();
             await refreshSuggestedUsers();
@@ -164,7 +168,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             }
 
             <div className="flex flex justify-center">
-            <Button  className="bg-primary-color text-primary-txt hover:bg-hovercolor" id="addUserChannel" variant="contained" onClick={handleClickOpen}>Add User</Button>
+            <Button  className="bg-primary-color text-primary-txt hover:bg-hovercolor w-4/5 absolute bottom-0 mb-10" id="addUserChannel" variant="contained" onClick={handleClickOpen}>Add User</Button>
             <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
                 <DialogTitle>
                     <Typography align="center">
@@ -174,7 +178,8 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 <DialogContent className="ml-10 mr-10 mt-5 mb-5">
                     <Box> 
                         <Autocomplete
-                            options={suggestedUsers}
+                            key={suggestedUsers?.length || 0}
+                            options={suggestedUsers || []}
                             open={autoCompleteOpen}
                             onOpen={() => {
                                 setAutoCompleteOpen(true);
@@ -218,11 +223,13 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                             </Select>
                         </FormControl>
                     </Box> 
-                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name, data.channelRole))} fullWidth sx={{mt:4}}>Add User</Button>
+                <DialogActions className="w-full">
+                    <Button variant="outlined" onClick={closeDialog} className="w-1/2" sx={{mt:4}}>Close</Button>
+                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} className="w-1/2" sx={{mt:4}}>Add User</Button>
+                </DialogActions>
                 </DialogContent>
             </Dialog>
             </div>
-
         </div>
     )
 }
@@ -283,42 +290,42 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
         <Button id="createChannelDialogButton" variant="contained" className="w-full h-full bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={handleClickOpen}>Create Channel</Button>
         <Dialog open={open} onClose={closeDialog}>
             <DialogTitle className="bg-tertiary-color font-bold"><Typography textAlign={"center"}>Create Channel</Typography></DialogTitle>
-            <DialogContent className="bg-tertiary-color text-primary-txt font-bold">
+            <DialogContent className="bg-tertiary-color text-primary-txt font-bold content-center">
                 <Box display="flex" sx={{mt:1}}>
-                    <InputLabel>Channel Name:</InputLabel>
                     <TextField id="channelName" sx={{ml:1.8}} size="small" required
                         {...register("channel_name", { 
                             required: "Channel Name is required"
                         })}
                         error={errors.channel_name !== undefined}
                         helperText={errors.channel_name?.message}
+                        placeholder="Channel Name"
                     />
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
-                    <InputLabel>Channel Code:</InputLabel>
-                    <TextField id="channelCode" sx={{ml:2.4}} required size="small" 
+                    <TextField id="channelCode" sx={{ml:2.2}} required size="small" 
                         {...register("channel_code", { 
                             required: "Channel Code is required",
                         })}
                         error={errors.channel_code !== undefined}
                         helperText={errors.channel_code?.message}
+                        placeholder="Channel Code"
                     />
                 </Box>
                 <Box display="flex" sx={{mt:1}}>
-                    <InputLabel>Department:</InputLabel>
-                    <TextField id="departmentName" sx={{ml:4.0}} size="small"  required
+                    <TextField id="departmentName" sx={{ml:2.5}} size="small"  required
                         {...register("channel_department", { 
                             required: "Department Name is required",
                         })}
                         error={errors.channel_department !== undefined}
                         helperText={errors.channel_department?.message}
+                        placeholder="Department"
                         />
                 </Box>
                 <Box display="flex">
-                    <InputLabel>Course Type:</InputLabel>
                     {/* <FormControl> */}
                         <Select id="channelTypeSelect" sx={{ml:3.5, mt:1}} size="small" required
                             error={errors.channel_type !== undefined}
+                            placeholder="Type"
                             {...register("channel_type", { 
                                 required: "Type field is required", 
                         })}>
