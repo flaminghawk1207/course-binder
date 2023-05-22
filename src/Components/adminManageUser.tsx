@@ -166,14 +166,15 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             }
             
             <Box>
-            <Button id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
-            <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
-                <DialogTitle>
-                    <Typography align="center">
-                        Add Channel
-                    </Typography>
-                </DialogTitle>
-                <DialogContent className="ml-10 mr-10 mt-5 mb-5">
+                <div className="flex flex justify-center">
+                    <Button className="bg-primary-color text-primary-txt hover:bg-hovercolor w-4/5 absolute bottom-0 mb-10" id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
+                    <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
+                    <DialogTitle>
+                        <Typography align="center">
+                            Add Channel
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent className="ml-10 mr-10 mt-5 mb-5">
                     <Box> 
                         <Autocomplete
                             key={suggestedChannels?.length || 0}
@@ -226,8 +227,10 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                 </DialogActions>
                 </DialogContent>
             </Dialog>
+            </div>
         </Box>
         </Box>
+    
     )
 }
 
@@ -303,31 +306,30 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
             </DialogTitle>
             <DialogContent className="bg-tertiary-color text-primary-txt">
                 <Box display="flex" sx={{mt:1}}> 
-                    <InputLabel>First Name:</InputLabel>
                     <TextField id="firstName"  sx={{ml:1}} size="small"
                         {...register("firstName", { 
                             required: "First Name is required", 
                         })}
                         error={errors.firstName !== undefined}
+                        placeholder="First Name"
                         helperText={errors.firstName?.message}
                         />
                 </Box>
 
                 <Box  display="flex" sx={{mt:1}}>
-                    <InputLabel>Last Name:</InputLabel>
                     <TextField id="lastName" sx={{ml:1}} size="small"
                         {...register("lastName", { 
                             required: "Last Name is required", 
                         })}
                         error={errors.lastName !== undefined}
                         helperText={errors.lastName?.message}
+                        placeholder="Last name"
                         type="text"/>
                     <br/>
                 </Box>
 
                 <Box display="flex" sx={{mt:1}}>
-                    <InputLabel>Email:</InputLabel>
-                    <TextField id="emailTextField" sx={{ml:5.6, align:"right"}} size="small"
+                    <TextField id="emailTextField" sx={{ml:1.1, align:"right"}} size="small"
                         {...register("email", { 
                             required: "Email is required",
                             pattern: {
@@ -336,31 +338,32 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                         })}
                         error={errors.email !== undefined}
                         helperText={errors.email?.message}
+                        placeholder="Email"
                     />
                     <br/>
                 </Box>
 
                 <Box display="flex" sx={{mt:1}}>
-                    <InputLabel>Password:</InputLabel>
-                    <TextField id="passwordTextField" sx={{ml:1.7}} size="small"
+                    <TextField id="passwordTextField" sx={{ml:1.2}} size="small"
                         {...register("password", { 
                             required: "Password is required",
                             pattern: {
                                 value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                                message: "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
+                                message: "Password must be at least 8 characters long and must be a combination of uppercase letters, lowercase letters, special characters and numbers",
                             }
                         })}
                     error={errors.password !== undefined}
                     helperText={errors.password?.message}
+                    placeholder="Password"
                     />
                     <br/>
                 </Box>
 
                 <Box display="flex">
-                    <InputLabel>Role:</InputLabel>
                     {/* <FormControl> */}
-                        <Select id="roleSelect" sx={{ml:6, mt:1}} size="small" required style={{ width: "72%" }}
+                        <Select id="roleSelect" sx={{ml:2, mt:1}} size="small" required style={{ width: "70%" }}
                             error={errors.role !== undefined}
+                            placeholder="User Role"
                             // helperText={errors.role?.message}
                             {...register("role", { 
                                 required: "This field is required", 
@@ -377,13 +380,13 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 {
                     hasDepartment &&
                     <Box display="flex">
-                        <InputLabel>Department:</InputLabel>
                         <TextField id="departmentTextField" sx={{ml:1.7}} size="small"
                             {...register("department", {
                                 required: "Department is required",
                             })}
                             error={errors.department !== undefined}
                             helperText={errors.department?.message}
+                            placeholder="Department"
                         />
                         <br/>
                     </Box>

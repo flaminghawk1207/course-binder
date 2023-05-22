@@ -1,3 +1,6 @@
+import { Markunread } from "@mui/icons-material";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -30,27 +33,32 @@ const ForgotPassword: NextPage = () => {
         <div className="bg-primary-color h-screen w-full flex mx-auto items-center">
             <div id="login-form-container" className="w-2/3 h-2/3 lg:w-1/2 mx-auto bg-secondary-color shadow-lg rounded px-8 py-12 flex items-center justify-center">
                 <div>
-                    <label>Email:</label>
-                    <input 
-                        {...register("email", { 
-                            required: "This field is required",
+                    <h1 className="mb-2 mt-0 text-3xl font-small leading-tight text-primary-txt flex flex justify-center">Reset Password</h1>
+                    <br/>
+                    <TextField className="justify-center "
+                        label="Email ID"
+                        type="text" 
+                        fullWidth                     
+                        {...register("email", {
+                            required: "This field is Required",
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/i,
-                                message: "Invalid email address", }
+                                message: "Invalid email address",
+                            }
                         })}
-                        type="text" name="email"/>
-                        
+                        error={errors.email !== undefined}
+                        helperText={errors.email?.message}                        
+                        />                        
                     <br/>
                     {errors.email && errors.email.type == "required" && 
                     <><span className='text-red-700'>This field is required</span><br /></>}
                     {errors.email && errors.email.type == "pattern" && 
                     <><span className='text-red-700'>{errors.email.message}</span><br /></>}
                     <br/>
-                    <button className="bg-primary-color hover:bg-hovercolor text-black py-2 px-4 rounded flex items-center justify-center ml-10" onClick={handleSubmit(handleResetPwd)}>Send Reset Mail</button>
+                    <button className="bg-primary-color hover:bg-hovercolor text-black py-2 px-4 rounded" onClick={handleSubmit(handleResetPwd)}>Send Reset Mail</button>
 
-                
-                    <br/>
-                    <Link className="bg-primary-color hover:bg-hovercolor text-black py-2 px-4 rounded flex items-center justify-center" href={"/login"}>Sign In</Link>
+                    <Link className="bg-primary-color hover:bg-hovercolor text-black py-2 px-4 rounded w-1/2 ml-10" href={"/login"}>Sign In</Link>
+                    
                 </div>
             </div>
         </div>

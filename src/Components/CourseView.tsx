@@ -396,8 +396,8 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     }
     // console.log(currDirObject);
     return (
-        <div>
-            <div>
+        <div className="bg-tertiary-color">
+            <div className="text-lg">
                     <p>Course Code: {channel.channel_code}</p>
                     <p>Course Name: {channel.channel_name}</p>
                     <p>Course Deparment: {channel.channel_department}</p>
