@@ -22,8 +22,8 @@ const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, m
 
     return (
 
-        <div className="bg-blue-100">
-            <Button onClick={() => moveIntoFolder(folder.name)}>{folder.name}</Button>
+        <div className="bg-[#E3DABA] rounded my-2 h-1/2">
+            <Button className="text-primary-txt" onClick={() => moveIntoFolder(folder.name)}>{folder.name}</Button>
         </div>
     );
 }
@@ -99,18 +99,26 @@ const FileComponent = ({ file, refreshCompleteDir }: { file: FirebaseFile, refre
     }
 
     return (
-        <div className="bg-red-100 flex">
+        
+        <div className="bg-[#E3DABA] rounded my-2 h-1/2 flex relative">{
+            file.empty
+                        ? <div><button className="w-6 h-6 justify-center rounded-full bg-red-500 hover:bg-red-500 text-white mx-4 mt-2"></button></div>
+
+                        : [<button className="w-6 h-6 justify-center rounded-full bg-green-500 hover:bg-green-500 text-white mx-4 mt-2"></button>]
+        }
             <p>{file.name}</p>
-            <div className="bg-white flex-1 items-end">
+            
+            <div className="bg-[#E3DABA] flex-1 items-end absolute right-0">
                 {
                     file.empty
-                        ? <FileUploadDialog fullPath={file.fullPath} refreshCompleteDir={refreshCompleteDir} />
+                        ? <div><FileUploadDialog fullPath={file.fullPath} refreshCompleteDir={refreshCompleteDir} /></div>
 
-                        : [<a className="mx-10" href={file.downloadURL} target="_blank">Download</a>,
+                        : [<a className="mx-10 flex-justify-right" href={file.downloadURL} target="_blank">Download</a>,
                         <button className="mx-10" onClick={deleteFile}>Delete</button>]
                 }
             </div>
         </div>
+        
     );
 }
 
@@ -396,12 +404,14 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     }
     // console.log(currDirObject);
     return (
-        <div>
+        <div className="h-4/5">
             <div>
                     <p>Course Code: {channel.channel_code}</p>
                     <p>Course Name: {channel.channel_name}</p>
                     <p>Course Deparment: {channel.channel_department}</p>
             </div>
+
+            <div className="w-5/6 h-full  mx-auto bg-secondary-color shadow-lg rounded px-8 py-12 mt-10">
             <div>
                 <h1 className="font-bold font-9xl">Current Directory: {currDir[currDir.length - 1]}</h1>
                 <button onClick={handleClick}>Back</button>
@@ -428,6 +438,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                             }
                         })
                 }
+            </div>
             </div>
             {
                 channelUserRole == CHANNEL_ROLE.COURSE_MENTOR
