@@ -13,6 +13,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Key from "@mui/icons-material/Key";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Markunread from "@mui/icons-material/Markunread";
+import { Typography } from "@mui/material";
 
 interface signInForm {
     email: string,
@@ -69,6 +70,7 @@ const Login: NextPage = () => {
 
     return (        
             <div id="login-form-container" className="flex flex-col items-center justify-center h-screen bg-tertiary-color ">
+                <Typography className="text-5xl mb-10 font-bold">Course Binder</Typography>
                 <AccountCircle fontSize="large" className = "mb-10 text-7xl" /> 
 
                     <TextField

@@ -7,7 +7,8 @@ import React, { useRef } from 'react';
 import * as Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { Options } from 'highcharts';
-
+import Button from "@mui/material/Button";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict, updateLevelPointer: any }) => {
     const HighChart = ({ title }: { title: string }) => {
@@ -107,7 +108,17 @@ const AnalyticsView = ({ level, maxDepth, dept }: { level: string, maxDepth: num
     return (
         <>
             <div className="flex bg-red-300 p-5">
-                <div className="flex flex-grow"><button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2" onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Previous</button></div>
+                <div className="flex flex-grow">
+                    <Button 
+                        variant="outlined" 
+                        className="bg-primary-color border-primary-color text-primary-txt rounded my-4" 
+                        startIcon={<ArrowBackIcon/>} 
+                        onClick={ReduceLevelPointer} 
+                        disabled={levelPointerArray.length <= 1} 
+                    >
+                        Previous
+                    </Button>
+                </div>
                 <div className="flex flex-grow "><h1 className="text-4xl"><b>FILE SUBMISSION PROGRESS PIECHART</b></h1></div>
             </div>
 
