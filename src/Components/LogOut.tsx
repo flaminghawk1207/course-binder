@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 export const LogOut = () => {
     const user = useContext(UserContext);
     const router = useRouter();
-    console.log(user);
 
     return (
         <div className="mb-10 bg-[#EDC3AB]">

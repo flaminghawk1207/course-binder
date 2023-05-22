@@ -10,19 +10,42 @@ import { Options } from 'highcharts';
 
 
 const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict, updateLevelPointer: any }) => {
-    const HighChart = (props: HighchartsReact.Props) => {
-
+    const HighChart = ({ title }: { title: string }) => {
         const initialOptions: Highcharts.Options = {
             title: {
-                text: 'My chart',
+                text: title,
             },
             series: [
                 {
                     type: 'pie',
-                    data: [child.levelPercentage, 100 - child.levelPercentage],
+                    data: [
+                        {
+                            name: 'Uploaded',
+                            y: child.levelPercentage,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}: {point.y}',
+                            },
+                        },
+                        {
+                            name: 'Pending',
+                            y: 100 - child.levelPercentage,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}: {point.y}',
+                            },
+                        },
+                    ],
                 },
             ],
+            credits: {
+                enabled: false, // Disable the credits
+            },
             plotOptions: {
+                pie: {
+                    colors: ['#00FF00', '#FF0000'],
+                },
+
                 series: {
                     point: {
                         events: {
@@ -45,21 +68,19 @@ const DisplayPieChart = ({ child, updateLevelPointer }: { child: PercentageDict,
                 highcharts={Highcharts}
                 options={options}
                 ref={chartComponentRef}
-                {...props}
+            // {...props}
             />
         );
     };
     return (
         <div>
-            <button onClick={() => updateLevelPointer(child)}>{child?.levelElementName}</button>
-            <h6>{child.levelPercentage}</h6>
-            <HighChart></HighChart>
+            <HighChart title={child.levelElementName}></HighChart>
         </div>
 
     )
 }
 
-const AnalyticsView = ({level, maxDepth, dept}: {level: string, maxDepth: number, dept?: string}) => {
+const AnalyticsView = ({ level, maxDepth, dept }: { level: string, maxDepth: number, dept?: string }) => {
     const [levelPointerArray, setLevelPointerArray] = useState<PercentageDict[]>([]);
 
     useEffect(() => {
@@ -85,16 +106,22 @@ const AnalyticsView = ({level, maxDepth, dept}: {level: string, maxDepth: number
     }
     return (
         <>
-            <button className="w-64" onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Go previous</button>
-            {
-                levelPointerArray[levelPointerArray.length - 1]?.children.map((child) => {
-                    return (
-                        <div>
-                            <DisplayPieChart child={child} updateLevelPointer={updateLevelPointer}></DisplayPieChart>
-                        </div>
-                    )
-                })
-            }
+            <div className="flex bg-red-300 p-5">
+                <div className="flex flex-grow"><button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2" onClick={ReduceLevelPointer} disabled={levelPointerArray.length <= 1} >Previous</button></div>
+                <div className="flex flex-grow "><h1 className="text-4xl"><b>FILE SUBMISSION PROGRESS PIECHART</b></h1></div>
+            </div>
+
+            <div className="flex flex-wrap overflow-auto max-h-[calc(100vh-80px)]">
+                {
+                    levelPointerArray[levelPointerArray.length - 1]?.children.map((child) => {
+                        return (
+                            <div className="w-1/2 p-4 pb-0">
+                                <DisplayPieChart child={child} updateLevelPointer={updateLevelPointer}></DisplayPieChart>
+                            </div>
+                        )
+                    })
+                }
+            </div>
         </>
 
     )

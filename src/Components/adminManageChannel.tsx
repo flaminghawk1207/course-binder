@@ -179,6 +179,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                     <Box> 
                         <Autocomplete
                             id="userNameAutoComplete"
+                            key={suggestedUsers?.length || 0}
                             options={suggestedUsers || []}
                             open={autoCompleteOpen}
                             onOpen={() => {
@@ -224,11 +225,13 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
 
                         </FormControl>
                     </Box> 
-                    <Button id="submitAddUser" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} fullWidth sx={{mt:4}}>Add User</Button>
+                <DialogActions className="w-full">
+                    <Button variant="outlined" onClick={closeDialog} className="w-1/2" sx={{mt:4}}>Close</Button>
+                    <Button id="submitAddUser" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} className="w-1/2" sx={{mt:4}}>Add User</Button>
+                </DialogActions>
                 </DialogContent>
             </Dialog>
             </div>
-
         </div>
     )
 }
