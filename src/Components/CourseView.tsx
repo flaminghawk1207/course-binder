@@ -1,5 +1,6 @@
 // takes in channel_name, channel_code, channel_department
 import { Button, Tab, Tabs, TextField } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton"
 import { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import { CHANNEL_ROLE, Channel, FirebaseFile, FirebaseFolder } from "~/types";
@@ -8,6 +9,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import { UserContext } from "~/contexts/UserProvider";
+import SaveIcon from '@mui/icons-material/Save';
+import UploadIcon from '@mui/icons-material/Upload';
 
 import * as React from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -22,14 +25,15 @@ const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, m
 
     return (
 
-        <div className="bg-[#E3DABA] rounded my-2 h-1/2">
-            <Button className="text-primary-txt" onClick={() => moveIntoFolder(folder.name)}>{folder.name}</Button>
+        <div className="bg-[#E3DABA] rounded my-3 h-16 flex px-2 items-center hover:cursor-pointer"onClick={() => moveIntoFolder(folder.name)}>
+        {folder.name}       
         </div>
     );
 }
 
 const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, refreshCompleteDir: any }) => {
     const [uploadFile, setUploadFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false)
 
     const [open, setOpen] = useState(false);
 
@@ -47,7 +51,7 @@ const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, 
     }
 
     const uploadFileToFirebase = async () => {
-
+        setLoading(true)
         console.log(uploadFile);
         const formData = new FormData();
         formData.append("file", uploadFile as Blob, uploadFile?.name as string);
@@ -57,68 +61,88 @@ const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, 
             body: formData,
         }).then(t => t.json())
 
+        await refreshCompleteDir();
+        setLoading(false)
         alert("File uploaded successfully");
-        refreshCompleteDir();
         closeDialog();
     }
 
 
     return (
-        <>
-            <Button variant="contained" className="bg-slate-700" onClick={handleClickOpen}>Upload File</Button>
+        <div className="h-full">
+            <Button variant="contained" className={`bg-secondary-color m-3 inline-block align-middle`} onClick={handleClickOpen}>Upload File</Button>
             <Dialog open={open} onClose={closeDialog}>
                 <DialogContent>
-                    <Dropzone onDrop={handleDrop}>
-                        {({ getRootProps, getInputProps }) => (
-                            <section>
-                                <div {...getRootProps()}>
-                                    <input {...getInputProps()} />
-                                    <p>Drag a file here, or click to select a file</p>
-                                </div>
-                            </section>
-                        )}
-                    </Dropzone>
-                    <p>{uploadFile?.name}</p>
+                    {
+                        uploadFile ?
+                            <p>{uploadFile?.name}</p>
+                        :
+                            <Dropzone onDrop={handleDrop}>
+                                {({ getRootProps, getInputProps }) => (
+                                    <section>
+                                        <div {...getRootProps()}>
+                                            <input {...getInputProps()} />
+                                            <p>Drag a file here, or click to select a file</p>
+                                        </div>
+                                    </section>
+                                )}
+                            </Dropzone>
+                    }
+                    
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={uploadFileToFirebase} disabled={uploadFile === null}>Upload</Button>
+                    <LoadingButton
+                        loading={loading}
+                        loadingPosition="start"
+                        startIcon={<UploadIcon />}
+                        onClick={uploadFileToFirebase}
+                        disabled={uploadFile === null}
+                        >
+                        Upload
+                        </LoadingButton>
                     <Button onClick={closeDialog}>Cancel</Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </div>
     );
 }
 
 const FileComponent = ({ file, refreshCompleteDir }: { file: FirebaseFile, refreshCompleteDir: any }) => {
+    const [loading, setLoading] = useState(false)
     const deleteFile = async () => {
+        const ans = window.confirm(`Delete file ${file.name}?`)
+        if(!ans) return
+
+        setLoading(true)
         await apiReq("channels", {
             type: "DELETE_FILE",
             fullPath: file.fullPath,
         });
-        refreshCompleteDir();
+        await refreshCompleteDir();
+        setLoading(false)
     }
 
     return (
-        
-        <div className="bg-[#E3DABA] rounded my-2 h-1/2 flex relative">{
-            file.empty
-                        ? <div><button className="w-6 h-6 justify-center rounded-full bg-red-500 hover:bg-red-500 text-white mx-4 mt-2"></button></div>
+        <div className={`bg-[#E3DABA] rounded h-16 flex relative items-center m-2 ${loading ? "opacity-25": ""}`}>
+            {
+                file.empty
+                            ? <button className="w-6 h-6 disabled flex justify-center rounded-full bg-red-500 hover:bg-red-500 text-white mx-4" disabled></button>
 
-                        : [<button className="w-6 h-6 justify-center rounded-full bg-green-500 hover:bg-green-500 text-white mx-4 mt-2"></button>]
-        }
+                            : <button className="w-6 h-6 disabled flex justify-center rounded-full bg-green-500 hover:bg-green-500 text-white mx-4" disabled></button>
+            }
             <p>{file.name}</p>
             
-            <div className="bg-[#E3DABA] flex-1 items-end absolute right-0">
+            <div className="bg-[#E3DABA] absolute right-0 h-full items-center p-2 rounded">
                 {
                     file.empty
-                        ? <div><FileUploadDialog fullPath={file.fullPath} refreshCompleteDir={refreshCompleteDir} /></div>
+                        ? <FileUploadDialog fullPath={file.fullPath} refreshCompleteDir={refreshCompleteDir} />
 
-                        : [<a className="mx-10 flex-justify-right" href={file.downloadURL} target="_blank">Download</a>,
-                        <button className="mx-10" onClick={deleteFile}>Delete</button>]
+                        : [<button className="mx-10 h-1/2 px-4 pb-4 hover:bg-[#344ec2] my-4 bg-secondary-color inline-block align-middle rounded text-white drop-shadow-lg " onClick={()=>window.open(file.downloadURL, '_blank')}>Download</button>
+                        ,
+                        <button className="mx-10 h-1/2 px-4 pb-4 hover:bg-[#344ec2] my-4 bg-secondary-color inline-block align-middle rounded text-white drop-shadow-lg " onClick={deleteFile}>Delete</button>]
                 }
             </div>
-        </div>
-        
+        </div>        
     );
 }
 
@@ -413,8 +437,8 @@ const CourseView = ({ channel }: { channel: Channel }) => {
 
             <div className="w-5/6 h-full  mx-auto bg-secondary-color shadow-lg rounded px-8 py-12 mt-10">
             <div>
-                <h1 className="font-bold font-9xl">Current Directory: {currDir[currDir.length - 1]}</h1>
-                <button onClick={handleClick}>Back</button>
+                <h1 className="font-bold font-9xl">Current Directory: {currDir.join("/")}</h1>
+                <button className="mt-20 flex"onClick={handleClick}>Back</button>
             </div>
             <div>
                 <div className="flex justify-end">
@@ -423,7 +447,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                 </div>
 
                 {
-                    fsLoading ? <div role="status" className="h-screen flex items-center justify-center scale-200">
+                    fsLoading ? <div role="status" className="h-full flex items-center justify-center scale-200">
                     <svg aria-hidden="true" className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-[#EDC3AB]" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                         <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
