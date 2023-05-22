@@ -25,6 +25,8 @@ def forgotPassword(email_value,url):
             alert = Alert(driver)
             if (alert.text == "auth/user-not-found"):
                 print("Email Address '"+email_value+"' not registered")
+            elif (alert.text == "Please find the reset link sent to your mail"):
+                print("Reset Password Link sent to", email_value)
             else:
                 print("Error:", alert.text)
             alert.accept()
@@ -36,9 +38,9 @@ def forgotPassword(email_value,url):
     time.sleep(3)
 
 def main():
-    forgotPassword("jayanthmenons@gmail.com", const.BASE_URL)
     forgotPassword("jayanthmenons", const.BASE_URL)
     forgotPassword("thsddfsdfss@asdasdasdasd.com", const.BASE_URL)
+    forgotPassword("jayanthmenons@gmail.com", const.BASE_URL)
 
 if __name__ == "__main__":
     main()

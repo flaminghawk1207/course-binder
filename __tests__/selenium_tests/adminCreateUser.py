@@ -7,59 +7,74 @@ import constants as const
 import login
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
-def createUser(adminName, adminPassword, firstName, lastName, email, password, role, url):
+def press_keys(driver, *args):
+    actions = ActionChains(driver)
+    for key in args:
+        actions.send_keys(key)
+    actions.perform()
+
+def createUser(adminName, adminPassword, firstName, lastName, email, password, role, department, url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     login.fillLoginCredentials(driver, adminName, adminPassword, url)
 
     driver.implicitly_wait(20)
 
-    # time.sleep(1)
     driver.find_element(By.ID,"Manage Users").click()
-    # time.sleep(1)
     driver.find_element(By.ID,"createUserDialogButton").click()
-    # time.sleep(1)
 
     driver.find_element(By.ID,"firstName").send_keys(firstName)
     driver.find_element(By.ID,"lastName").send_keys(lastName)
     driver.find_element(By.ID,"emailTextField").send_keys(email)
     driver.find_element(By.ID,"passwordTextField").send_keys(password)
-    # time.sleep(2)
     driver.find_element(By.ID,"roleSelect").send_keys(role)
-    # drop=Select(driver.find_element(By.ID,"roleSelect"))
-    # drop.select_by_visible_text("Faculty")
-                                
+
+    if role == "admin":
+        driver.find_element(By.ID,"roleSelect").click()
+        press_keys(driver, Keys.UP, Keys.ENTER)
+    elif role == "pricipal":
+        driver.find_element(By.ID,"roleSelect").click()
+        press_keys(driver, Keys.DOWN, Keys.ENTER)
+    elif role == "hod":
+        driver.find_element(By.ID,"roleSelect").click()
+        press_keys(driver, Keys.DOWN, Keys.DOWN, Keys.ENTER)
+    elif role == "faculty":
+        driver.find_element(By.ID,"roleSelect").click()
+        press_keys(driver, Keys.DOWN, Keys.DOWN, Keys.DOWN, Keys.ENTER)
+
+    if (role == "hod" or role == "faculty"):
+        driver.find_element(By.ID, "departmentTextField").send_keys(department)
+        time.sleep(2)
+
+    time.sleep(2)
     driver.find_element(By.ID,"createUserButton").click()
-    # time.sleep(2) 
+    time.sleep(2)
+
 
     try:
-        # time.sleep(1)
-        driver.find_element(By.CSS_SELECTOR,".css-k4qjio-MuiFormHelperText-root.Mui-error")
+        driver.find_element(By.CSS_SELECTOR,".mui-style-6ebt62-MuiFormHelperText-root.Mui-error")
 
     except:
-        try:
-            # time.sleep(3)
-            alert = Alert(driver)
-            if (alert.text == "User created successfully"):
-                print("User Created Successfully")
-            else:
-                print("Error:", alert.text)
-            alert.accept()
-        except:
-            print("User Not Created")        
+        print("User has been created")
+        pass       
 
     else:
-        print(driver.find_element(By.CSS_SELECTOR,".css-k4qjio-MuiFormHelperText-root.Mui-error").text)
-    
-    # time.sleep(1)
+        print(driver.find_element(By.CSS_SELECTOR,".mui-style-6ebt62-MuiFormHelperText-root.Mui-error").text)
+
+    try:
+        print(driver.switch_to.alert.text)
+        driver.switch_to.alert.dismiss()
+    except:
+        pass
 
 
 def main():
     url = const.BASE_URL
-    # createUser("jayanthmenon007@gmail.com", "Hello@12345", "testF", "", "test1@selenium.com", "qwerty12345", "faculty", url)
-    # createUser("jayanthmenon007@gmail.com", "Hello@12345", "testF", "testL", "test1@selenium", "qwerty12345", "faculty", url)
-    # createUser("jayanthmenon007@gmail.com", "Hello@12345", "testF", "testL", "test1@selenium.com", "qwerty12345", "faculty", url)
-    createUser("jayanthmenon007@gmail.com", "Hello@12345", "testF2", "testL2", "test1234@selenium.com", "Qwerty@12345", "faculty", url)
+    # createUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "TEST", "TEST@gma.com", "Test@12345", "admin", "TEST DEPARTMENT", url)
+    # createUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "TEST", "TEST", "TEST.com", "Test@12345", "admin", "TEST DEPARTMENT", url)
+    createUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "TEST", "TEST", "TEST@gma.com", "Test@12345", "admin", "TEST DEPARTMENT", url)
 
 if __name__ == "__main__":
     main()

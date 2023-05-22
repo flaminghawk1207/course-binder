@@ -426,7 +426,8 @@ const AdminManageUser: NextPage = () => {
                     getOptionLabel={(option: User) => option.firstName}
                     renderInput={(params) => <TextField {...params} 
                                                 label="Search Users"
-                                                variant="outlined"/>}
+                                                variant="outlined" 
+                                                required/>}
                     onChange={(event, value) => {setSelectedUser(value)}}
                     defaultValue={null}
                     className="m-auto ml-10 w-2/5"

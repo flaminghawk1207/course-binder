@@ -15,11 +15,15 @@ def fillLoginCredentials(driver,username, password, url):
     driver.find_element(By.CSS_SELECTOR,"button, [type=\'button\'], [type=\'reset\'], [type=\'submit\']").click()
 
     try:
-        alert = Alert(driver)
-        print(alert.text)
-        alert.accept()
+        print(driver.find_element(By.CSS_SELECTOR, ".mui-style-1himidv-MuiFormHelperText-root.Mui-error").text)
+        
     except:
-        print("Logged in Successfully using Username:", username,"Password:",password)
+        try:
+            alert = Alert(driver)
+            print(alert.text)
+            alert.accept()
+        except:
+            print("Logged in Successfully using Username:", username,"Password:",password)
 
 def main():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
