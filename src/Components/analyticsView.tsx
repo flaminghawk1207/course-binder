@@ -131,19 +131,19 @@ const AnalyticsView = ({ level, maxDepth, dept }: { level: string, maxDepth: num
     }
     return (
         <>
-            <div className="flex bg-red-300 p-5">
+            <div className="bg-tertiary-color h-1/5">
                 <div className="flex flex-grow">
-                    <Button
-                        variant="outlined"
-                        className="bg-primary-color border-primary-color text-primary-txt rounded my-4"
-                        startIcon={<ArrowBackIcon />}
-                        onClick={ReduceLevelPointer}
-                        disabled={levelPointerArray.length <= 1}
+                    <Button 
+                        variant="outlined" 
+                        className="bg-secondary-color border-secondary-color hover:bg-hovercolor text-primary-txt rounded my-4" 
+                        startIcon={<ArrowBackIcon/>} 
+                        onClick={ReduceLevelPointer} 
+                        disabled={levelPointerArray.length <= 1} 
                     >
                         Previous
                     </Button>
                 </div>
-                <div className="flex flex-grow "><h1 className="text-4xl"><b>FILE SUBMISSION PROGRESS PIECHART</b></h1></div>
+                <div className="flex flex-grow "><h1 className="text-4xl ml-80"><b>FILE SUBMISSION PROGRESS PIECHART</b></h1></div>
             </div>
             <div className="relative">
                 {isLoading ? (
