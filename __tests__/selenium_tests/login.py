@@ -8,22 +8,25 @@ from selenium.webdriver.common.alert import Alert
 
 def fillLoginCredentials(driver,username, password, url):
     driver.get(url)
-    time.sleep(2)
+    driver.implicitly_wait(20)
 
     email_elem = driver.find_element(By.NAME, "email").send_keys(username)
     pass_elem = driver.find_element(By.NAME, "password").send_keys(password)
     driver.find_element(By.CSS_SELECTOR,"button, [type=\'button\'], [type=\'reset\'], [type=\'submit\']").click()
 
     try:
-        time.sleep(3)
-        alert = Alert(driver)
-        print(alert.text)
-        alert.accept()
-    except:
-        print("Logged in Successfully using Username:", username,"Password:",password)
+        print(driver.find_element(By.CSS_SELECTOR, ".mui-style-1himidv-MuiFormHelperText-root.Mui-error").text)
+        print("TEST CASE FAILED!")
 
-    time.sleep(1)
-        
+    except:
+        try:
+            alert = Alert(driver)
+            print(alert.text)
+            alert.accept()
+        except:
+            print("Logged in Successfully using Username:", username,"Password:",password)
+            print("TEST CASE PASSED!")
+
 def main():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     fillLoginCredentials(driver,"jayanthmenons@gmail.com","qwerty1234",const.BASE_URL)
