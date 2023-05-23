@@ -1,0 +1,133 @@
+LOGIN TESTING
+---------------------------
+TEST 1: Empty Email Address
+
+DevTools listening on ws://127.0.0.1:60375/devtools/browser/fa9adb00-eb97-45e5-8f6c-7391ce4e4a0c
+This field is Required
+TEST CASE PASSED!
+---------------------------
+TEST 2: Invalid Email Address
+
+DevTools listening on ws://127.0.0.1:60392/devtools/browser/f6b9f4d1-b646-426a-aeae-ae0cf6913397
+Invalid email address
+TEST CASE PASSED!
+---------------------------
+TEST 3: Invalid Password
+
+DevTools listening on ws://127.0.0.1:60413/devtools/browser/e051140b-d175-4a69-872c-2fdf8b306e5f
+Incorrect password
+TEST CASE PASSED!
+---------------------------
+TEST 4: Correct Credentials
+
+DevTools listening on ws://127.0.0.1:60435/devtools/browser/262f3942-a60d-4148-98c1-c3fceeecf4c5
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+
+
+FORGOT PASSWORD TESTING
+---------------------------
+TEST 1: Invalid Email
+
+DevTools listening on ws://127.0.0.1:60461/devtools/browser/b56601df-bd48-4e00-b77f-414649668923
+TEST CASE PASSED!
+---------------------------
+TEST 2: Unregistered Email
+
+DevTools listening on ws://127.0.0.1:60484/devtools/browser/f23e1c45-0965-42e8-ab20-66dca72a54a2
+Email Address 'randomperson@gmail.com' not registered
+---------------------------
+TEST 3: Valid Email
+
+DevTools listening on ws://127.0.0.1:60507/devtools/browser/fe63276f-4b6e-4706-878b-4502b50a1279
+Reset Password Link sent to jayanthmenon007@gmail.com
+TEST CASE PASSED!
+
+
+ADMIN CREATE CHANNEL
+---------------------------
+Test 1: Empty Input
+
+DevTools listening on ws://127.0.0.1:60531/devtools/browser/04383b14-a34c-4f8d-8c60-37afd8bd9b25
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+TESTCASE PASSED!!
+Department Name is required
+---------------------------
+Test 2: Course Creation
+
+DevTools listening on ws://127.0.0.1:60561/devtools/browser/ad48b79d-2fc9-4e1d-9359-2f1cfbdf674f
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+TEST SUBJECT Created!!
+TESTCASE PASSED!!
+---------------------------
+Test 3: Lab Creation
+
+DevTools listening on ws://127.0.0.1:60617/devtools/browser/4ccba761-f5c1-481d-a006-00b1e3466409
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+TEST LAB Created!!
+TESTCASE PASSED!!
+ADMIN CREATE USER
+---------------------------
+Test 1: Empty Input
+
+DevTools listening on ws://127.0.0.1:60672/devtools/browser/d5b25955-5eca-4a78-9e86-af373741e549
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+TESTCASE PASSED!!
+First Name is required
+---------------------------
+Test 2: Invalid Input
+
+DevTools listening on ws://127.0.0.1:60700/devtools/browser/a2b60f1f-b326-454b-a20b-4fb1c426a6fb
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+TESTCASE PASSED!!
+Invalid email address
+---------------------------
+Test 3: Valid Input
+
+DevTools listening on ws://127.0.0.1:60732/devtools/browser/4da4c82e-5c89-40e8-a601-7a9b88af5b30
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+User has been created
+TEST CASE PASSED!
+
+
+ADD USERS TO CHANNEL
+---------------------------
+Test 1: Empty Input
+
+DevTools listening on ws://127.0.0.1:60774/devtools/browser/54d8666d-b6cd-4cde-a415-62a293e01440
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+Lakshya not addded to
+TEST CASE PASSED!
+---------------------------
+Test 2: Valid Input
+
+DevTools listening on ws://127.0.0.1:60808/devtools/browser/87b9d03c-e5e1-4451-b614-c7e5af629946
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+Lakshya has been added to POPL as course_mentor
+TEST CASE PASSED!
+
+
+ADD CHANNEL TO USERS
+---------------------------
+Test 1: Empty Input
+
+DevTools listening on ws://127.0.0.1:60842/devtools/browser/0c378ca2-a7d5-4278-ab8c-50c36df5244d
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+ not added to POPL
+TEST CASE PASSED!
+---------------------------
+Test 2: Valid Input
+
+DevTools listening on ws://127.0.0.1:60868/devtools/browser/7c5f0e4d-5da0-4b8b-8bf7-92edabc1fc5c
+Logged in Successfully using Username: jayanthmenon007@gmail.com Password: Hello@12345
+TEST CASE PASSED!
+Add Lakshya to CompSec?

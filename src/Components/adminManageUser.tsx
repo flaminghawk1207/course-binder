@@ -177,6 +177,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                     <DialogContent className="bg-tertiary-color">
                     <Box> 
                         <Autocomplete
+                            id="channelNameAutoComplete"
                             key={suggestedChannels?.length || 0}
                             options={suggestedChannels || []}
                             open={autoCompleteOpen}
@@ -223,7 +224,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                     </Box> 
                 <DialogActions className="w-full">
                     <Button variant="outlined" onClick={closeDialog} className="w-1/2 bg-secondary-color text-primary-txt hover:bg-hovercolor" sx={{mt:4}}>Close</Button>
-                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel as Channel, data.role))} className="w-1/2 bg-secondary-color text-primary-txt hover:bg-hovercolor" sx={{mt:4}}>Add Channel</Button>
+                    <Button id="submitAddChannel" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel as Channel, data.role))} className="w-1/2 bg-secondary-color text-primary-txt hover:bg-hovercolor" sx={{mt:4}}>Add Channel</Button>
                 </DialogActions>
                 </DialogContent>
             </Dialog>
@@ -425,10 +426,12 @@ const AdminManageUser: NextPage = () => {
             <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-tertiary-color">
                 <Autocomplete
                     options={users}
+                    id = "searchUsersAutoComplete"
                     getOptionLabel={(option: User) => option.firstName}
                     renderInput={(params) => <TextField {...params} 
                                                 label="Search Users"
-                                                variant="outlined"/>}
+                                                variant="outlined" 
+                                                required/>}
                     onChange={(event, value) => {setSelectedUser(value)}}
                     defaultValue={null}
                     className="m-auto ml-10 w-2/5"

@@ -178,6 +178,7 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                 <DialogContent className="bg-tertiary-color">
                     <Box> 
                         <Autocomplete
+                            id="userNameAutoComplete"
                             key={suggestedUsers?.length || 0}
                             options={suggestedUsers || []}
                             open={autoCompleteOpen}
@@ -221,11 +222,12 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                                 <MenuItem value="faculty">Faculty</MenuItem>
                                 <MenuItem value="course_mentor">Course Mentor</MenuItem>
                             </Select>
+
                         </FormControl>
                     </Box> 
                 <DialogActions className="w-full">
                     <Button variant="outlined" onClick={closeDialog} className="w-1/2 bg-secondary-color hover:bg-hovercolor text-primary-txt" sx={{mt:4}}>Close</Button>
-                    <Button variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} className="w-1/2 bg-secondary-color hover:bg-hovercolor text-primary-txt" sx={{mt:4}}>Add User</Button>
+                    <Button id="submitAddUser" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} className="w-1/2 bg-secondary-color hover:bg-hovercolor text-primary-txt" sx={{mt:4}}>Add User</Button>
                 </DialogActions>
                 </DialogContent>
             </Dialog>
@@ -388,6 +390,7 @@ const AdminManageChannel: NextPage = () => {
         <div id="main-view" className="flex flex-col h-screen w-full">
             <div id="search-adduser" className="h-1/5 flex flex-row w-full bg-tertiary-color">
                 <Autocomplete
+                    id = "searchChannelAutoComplete"
                     options={channels}
                     getOptionLabel={(option: Channel) => option.channel_name}
                     renderInput={(params) => <TextField {...params} 
