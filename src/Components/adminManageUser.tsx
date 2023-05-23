@@ -166,7 +166,7 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
             }
             
             <Box>
-            <Button id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Channel Name</Button>
+            <Button id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
             <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
                 <DialogTitle>
                     <Typography align="center">
