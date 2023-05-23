@@ -170,12 +170,12 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             <div className="flex flex justify-center">
             <Button  className="bg-primary-color text-primary-txt hover:bg-hovercolor w-4/5 absolute bottom-0 mb-10" id="addUserChannel" variant="contained" onClick={handleClickOpen}>Add User</Button>
             <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
-                <DialogTitle>
+                <DialogTitle className="bg-tertiary-color">
                     <Typography align="center">
                         Add Users
                     </Typography>
                 </DialogTitle>
-                <DialogContent className="ml-10 mr-10 mt-5 mb-5">
+                <DialogContent className="bg-tertiary-color">
                     <Box> 
                         <Autocomplete
                             id="userNameAutoComplete"
@@ -226,8 +226,8 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
                         </FormControl>
                     </Box> 
                 <DialogActions className="w-full">
-                    <Button variant="outlined" onClick={closeDialog} className="w-1/2" sx={{mt:4}}>Close</Button>
-                    <Button id="submitAddUser" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} className="w-1/2" sx={{mt:4}}>Add User</Button>
+                    <Button variant="outlined" onClick={closeDialog} className="w-1/2 bg-secondary-color hover:bg-hovercolor text-primary-txt" sx={{mt:4}}>Close</Button>
+                    <Button id="submitAddUser" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.name as User, data.channelRole))} className="w-1/2 bg-secondary-color hover:bg-hovercolor text-primary-txt" sx={{mt:4}}>Add User</Button>
                 </DialogActions>
                 </DialogContent>
             </Dialog>
@@ -361,8 +361,8 @@ const CreateChannelButtonDialog = ({refreshChannels}: {refreshChannels: () => vo
                 }
             </DialogContent>
             <DialogActions className="bg-tertiary-color">
-            <Button className="bg-secondary-color text-primary-txt" id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
-            <Button className="bg-secondary-color text-primary-txt" id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
+            <Button className="bg-secondary-color text-primary-txt hover:bg-hovercolor" id="createChannelCancelButton" onClick={closeDialog}>Cancel</Button>
+            <Button className="bg-secondary-color text-primary-txt hover:bg-hovercolor" id="createChannelButton" onClick={handleSubmit(createChannelandClose)}>Create</Button>
             </DialogActions>
         </Dialog>
         </div>

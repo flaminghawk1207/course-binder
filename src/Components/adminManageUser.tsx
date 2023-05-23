@@ -169,12 +169,12 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                 <div className="flex flex justify-center">
                     <Button className="bg-primary-color text-primary-txt hover:bg-hovercolor w-4/5 absolute bottom-0 mb-10" id="addUserChannel" variant="contained" onClick={() => setOpen(true)}>Add Channel</Button>
                     <Dialog open={open} onClose={closeDialog} fullWidth maxWidth="sm">
-                    <DialogTitle>
+                    <DialogTitle className="bg-tertiary-color">
                         <Typography align="center">
                             Add Channel
                         </Typography>
                     </DialogTitle>
-                    <DialogContent className="ml-10 mr-10 mt-5 mb-5">
+                    <DialogContent className="bg-tertiary-color">
                     <Box> 
                         <Autocomplete
                             id="channelNameAutoComplete"
@@ -223,8 +223,8 @@ const ChannelsList = ({selectedUser}: { selectedUser: User | null }) => {
                         </FormControl>
                     </Box> 
                 <DialogActions className="w-full">
-                    <Button variant="outlined" onClick={closeDialog} className="w-1/2" sx={{mt:4}}>Close</Button>
-                    <Button id="submitAddChannel" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel as Channel, data.role))} className="w-1/2" sx={{mt:4}}>Add Channel</Button>
+                    <Button variant="outlined" onClick={closeDialog} className="w-1/2 bg-secondary-color text-primary-txt hover:bg-hovercolor" sx={{mt:4}}>Close</Button>
+                    <Button id="submitAddChannel" variant="outlined" onClick={handleSubmit((data) => addUserToChannel(data.channel as Channel, data.role))} className="w-1/2 bg-secondary-color text-primary-txt hover:bg-hovercolor" sx={{mt:4}}>Add Channel</Button>
                 </DialogActions>
                 </DialogContent>
             </Dialog>
@@ -396,8 +396,8 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
 
             </DialogContent>
             <DialogActions className="bg-tertiary-color" >
-            <Button className="bg-secondary-color text-black" id="createUserCancelButton" onClick={closeDialog}>Cancel</Button>
-            <Button className="bg-secondary-color text-black" id="createUserButton" onClick={handleSubmit(createUserandClose)}>Create</Button>
+            <Button className="bg-secondary-color text-primary-txt hover:bg-hovercolor" id="createUserCancelButton" onClick={closeDialog}>Cancel</Button>
+            <Button className="bg-secondary-color text-primary-txt hover:bg-hovercolor" id="createUserButton" onClick={handleSubmit(createUserandClose)}>Create</Button>
             </DialogActions>
         </Dialog>
         </div>

@@ -9,7 +9,7 @@ export const LogOut = () => {
     const router = useRouter();
 
     return (
-        <div className="my-10 ml-5 bg-primary-color rounded w-4/5 justify-center">
+        <div className="my-10 ml-5 bg-primary-color hover:bg-hovercolor rounded w-4/5 justify-center">
             <Button id="userLogOutButton" 
                 endIcon={<LogoutIcon/>}
                 variant="contained"
