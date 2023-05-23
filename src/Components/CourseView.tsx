@@ -1,4 +1,4 @@
-import { Button, Tab, Tabs, TextField } from "@mui/material";
+import { Button, IconButton, Tab, Tabs, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton"
 import { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
@@ -11,6 +11,7 @@ import { UserContext } from "~/contexts/UserProvider";
 import UploadIcon from '@mui/icons-material/Upload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LoopIcon from '@mui/icons-material/Loop';
 
 import * as React from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -431,6 +432,12 @@ const CourseView = ({ channel }: { channel: Channel }) => {
         setSelectedFileExtensions([]);
         setSelectedFileUploadCategory([]);
     }
+
+    async function handleRefreshClick() {        
+        setFSLoading(true)
+        await refreshCompleteDir()
+        setFSLoading(false)
+    }
     return (
         <div className="h-4/5 my-10 mx-10 mt-15">
             <div className="flex w-full relative">
@@ -464,6 +471,12 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                         >
                             Back
                         </Button>
+                        <IconButton 
+                            className="bg-primary-color ml-5 border-primary-color text-primary-txt rounded my-4" 
+                            onClick={handleRefreshClick}
+                        >
+                            <LoopIcon/>
+                        </IconButton>
                         <div className="flex justify-end absolute right-0">
                             <div ><MultipleSelectCheckmarks tag = {"File Type"} menuDisplayValue={AllFileExtensions} selectedValue={selectedFileExtensions} setSelectedValue={setSelectedFileExtensions}></MultipleSelectCheckmarks></div>
                             <div ><MultipleSelectCheckmarks tag = {"Upload status"} menuDisplayValue={fileUploadStatus} selectedValue={selectedFileUploadCategory} setSelectedValue={setSelectedFileUploadCategory}></MultipleSelectCheckmarks></div>
