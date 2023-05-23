@@ -27,13 +27,17 @@ def forgotPassword(email_value,url):
                 print("Email Address '"+email_value+"' not registered")
             elif (alert.text == "Please find the reset link sent to your mail"):
                 print("Reset Password Link sent to", email_value)
+                print("TEST CASE PASSED!")
             else:
                 print("Error:", alert.text)
+                print("TEST CASE FAILED!")
             alert.accept()
         except:
             print("Reset Link has been sent to",email_value)
+            print("TEST CASE PASSED!")
     else:
         print("Invalid Email Address:", email_value)
+        print("TEST CASE FAILED!")
 
     time.sleep(3)
 

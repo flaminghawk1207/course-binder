@@ -41,14 +41,18 @@ def addChannel(adminName, adminPassword, username, channelName, channelRole, url
                 alert.accept()
                 alert = Alert(driver)
                 print(username, "added to", channelName)
+                print("TEST CASE PASSED!")
+
             else:
-                print("Error:", alert.text)
+                print(alert.text)
 
         except:
             print(username, "not added to", channelName)
+            print("TEST CASE FAILED!")
 
     except:
         print(username, "not addded to", channelName)
+        print("TEST CASE FAILED!")
 
     return
 

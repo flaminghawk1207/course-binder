@@ -57,19 +57,19 @@ def main ():
 
 
     # # --------- CREATE CHANNEL -----------
-    # print("ADMIN CREATE CHANNEL")
+    print("ADMIN CREATE CHANNEL")
 
-    # print("---------------------------")
-    # print("Test 1: Empty Input")
-    # adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, "", "course", "III", const.BASE_URL)
+    print("---------------------------")
+    print("Test 1: Empty Input")
+    adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, "", "course", "III", const.BASE_URL)
 
-    # print("---------------------------")
-    # print("Test 2: Course Creation")
-    # adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, const.TEST_CHANNEL_DEPARTMENT, "course", "III", const.BASE_URL)
+    print("---------------------------")
+    print("Test 2: Course Creation")
+    adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, const.TEST_CHANNEL_DEPARTMENT, "course", "III", const.BASE_URL)
 
-    # print("---------------------------")
-    # print("Test 3: Lab Creation")
-    # adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_LAB_NAME, const.TEST_CHANNEL_CODE, const.TEST_CHANNEL_DEPARTMENT, "lab", "", const.BASE_URL)
+    print("---------------------------")
+    print("Test 3: Lab Creation")
+    adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_LAB_NAME, const.TEST_CHANNEL_CODE, const.TEST_CHANNEL_DEPARTMENT, "lab", "", const.BASE_URL)
 
 
     # ---------- CREATE USER -------------

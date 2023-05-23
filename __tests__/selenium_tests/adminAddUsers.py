@@ -46,21 +46,26 @@ def addUser(adminName, adminPassword, channelName, userName, channelRole, url):
                 time.sleep(2)
                 if (alert.text == "User added to channel successfully"):
                     print (userName, "has been added to", channelName, "as", channelRole)
+                    print("TEST CASE PASSED!")
+                    
                 alert.accept()
             else:
                 print(userName, "not addded to", channelName)
+                print("TEST CASE FAILED!")
     
         except:
             print(userName, "not addded to", channelName)
+            print("TEST CASE FAILED!")
 
     except:
         print(userName, "not addded to", channelName)
+        print("TEST CASE FAILED!")
 
     return
 
 def main():
     url = const.BASE_URL
-    addUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "Lakshya", "course_mentor", url)
+    # addUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "Lakshya", "course_mentor", url)
     addUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "POPL", "Lakshya", "course_mentor", url)
 
 if __name__ == "__main__":

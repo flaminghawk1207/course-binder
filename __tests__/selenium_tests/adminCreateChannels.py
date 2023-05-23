@@ -49,7 +49,7 @@ def createChannel(adminName, adminPassword, channelName, channelCode, department
             driver.find_element(By.ID,"channelYearSelect").click()
             press_keys(driver, Keys.DOWN, Keys.DOWN, Keys.DOWN, Keys.ENTER)
         else:
-            return "Invalid Year Value"
+            print("Invalid Year Value")
 
 
     elif type_value == "lab":
@@ -58,19 +58,15 @@ def createChannel(adminName, adminPassword, channelName, channelCode, department
         time.sleep(2)
 
     time.sleep(2)
-    # driver.find_element(By.ID,"createChannelButton").click()
-    # time.sleep(2)
 
     try:
         driver.find_element(By.ID,"createChannelButton").click()
+        time.sleep(2)
 
     except UnexpectedAlertPresentException as e:
         alert_text = e.alert_text
         print("Unexpected alert opened:", alert_text)
-
-        # Handle the alert as per your requirements
-        # For example, you can accept the alert:
-        driver.switch_to.alert.accept()
+        press_keys(Keys.ENTER)
 
     except UnexpectedAlertPresentException:  # type: ignore[call-arg]
         pass
@@ -79,6 +75,7 @@ def createChannel(adminName, adminPassword, channelName, channelCode, department
         driver.find_element(By.CSS_SELECTOR,".mui-style-6ebt62-MuiFormHelperText-root.Mui-error")
     except:
         print(channelName, "Created!!")
+        print("TESTCASE PASSED!!")
     else:
         print(driver.find_element(By.CSS_SELECTOR,".mui-style-6ebt62-MuiFormHelperText-root.Mui-error").text)
 
@@ -87,7 +84,7 @@ def createChannel(adminName, adminPassword, channelName, channelCode, department
 def main():
     # url = const.BASE_URL
     # createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, "", "course", "III", url)
-    # createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, const.TEST_CHANNEL_DEPARTMENT, "course", "III", url)
+    # createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, const.TEST_CHANNEL_DEPARTMENT, "course", "III", const.BASE_URL)
     createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_LAB_NAME, const.TEST_CHANNEL_CODE, const.TEST_CHANNEL_DEPARTMENT, "lab", "", const.BASE_URL)
 
 if __name__ == "__main__":

@@ -16,7 +16,8 @@ def fillLoginCredentials(driver,username, password, url):
 
     try:
         print(driver.find_element(By.CSS_SELECTOR, ".mui-style-1himidv-MuiFormHelperText-root.Mui-error").text)
-        
+        print("TEST CASE FAILED!")
+
     except:
         try:
             alert = Alert(driver)
@@ -24,6 +25,7 @@ def fillLoginCredentials(driver,username, password, url):
             alert.accept()
         except:
             print("Logged in Successfully using Username:", username,"Password:",password)
+            print("TEST CASE PASSED!")
 
 def main():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))

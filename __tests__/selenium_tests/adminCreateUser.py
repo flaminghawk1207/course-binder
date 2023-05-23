@@ -9,6 +9,8 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import UnexpectedAlertPresentException
+
 
 def press_keys(driver, *args):
     actions = ActionChains(driver)
@@ -49,25 +51,26 @@ def createUser(adminName, adminPassword, firstName, lastName, email, password, r
         time.sleep(2)
 
     time.sleep(2)
-    driver.find_element(By.ID,"createUserButton").click()
-    time.sleep(2)
 
+    try:
+        driver.find_element(By.ID,"createUserButton").click()
+        time.sleep(4)
+    except UnexpectedAlertPresentException as e:
+        alert_text = e.alert_text
+        print("Unexpected alert opened:", alert_text)
+        press_keys(Keys.ENTER)
+    except UnexpectedAlertPresentException:  # type: ignore[call-arg]
+        pass 
 
     try:
         driver.find_element(By.CSS_SELECTOR,".mui-style-6ebt62-MuiFormHelperText-root.Mui-error")
-
     except:
         print("User has been created")
-        pass       
-
+        print("TEST CASE PASSED!")
+        pass
     else:
         print(driver.find_element(By.CSS_SELECTOR,".mui-style-6ebt62-MuiFormHelperText-root.Mui-error").text)
 
-    try:
-        print(driver.switch_to.alert.text)
-        driver.switch_to.alert.dismiss()
-    except:
-        pass
 
 
 def main():
