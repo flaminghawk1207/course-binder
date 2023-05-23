@@ -306,7 +306,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
             </DialogTitle>
             <DialogContent className="bg-tertiary-color text-primary-txt">
                 <Box display="flex" sx={{mt:1}}> 
-                    <TextField id="firstName"  sx={{ml:1}} size="small"
+                    <TextField id="firstName" size="small"
                         {...register("firstName", { 
                             required: "First Name is required", 
                         })}
@@ -317,7 +317,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Box>
 
                 <Box  display="flex" sx={{mt:1}}>
-                    <TextField id="lastName" sx={{ml:1}} size="small"
+                    <TextField id="lastName" size="small"
                         {...register("lastName", { 
                             required: "Last Name is required", 
                         })}
@@ -329,7 +329,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Box>
 
                 <Box display="flex" sx={{mt:1}}>
-                    <TextField id="emailTextField" sx={{ml:1.1, align:"right"}} size="small"
+                    <TextField id="emailTextField" size="small"
                         {...register("email", { 
                             required: "Email is required",
                             pattern: {
@@ -344,7 +344,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Box>
 
                 <Box display="flex" sx={{mt:1}}>
-                    <TextField id="passwordTextField" sx={{ml:1.2}} size="small"
+                    <TextField id="passwordTextField" size="small"
                         {...register("password", { 
                             required: "Password is required",
                             pattern: {
@@ -360,8 +360,9 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                 </Box>
 
                 <Box display="flex">
-                    {/* <FormControl> */}
-                        <Select id="roleSelect" sx={{ml:2, mt:1}} size="small" required style={{ width: "70%" }}
+                    <FormControl>
+                        <InputLabel>User Role</InputLabel>
+                        <Select id="roleSelect" sx={{mt:1, width: 120}} size="small" required
                             error={errors.role !== undefined}
                             placeholder="User Role"
                             // helperText={errors.role?.message}
@@ -373,14 +374,14 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
                             <MenuItem value="hod">HOD </MenuItem>
                             <MenuItem value="faculty">Faculty</MenuItem>
                         </Select>
-                        <br/>
-                    {/* </FormControl> */}
+                    </FormControl>
                 </Box>
 
                 {
                     hasDepartment &&
                     <Box display="flex">
-                        <TextField id="departmentTextField" sx={{ml:1.7}} size="small"
+                        <TextField id="departmentTextField" size="small"
+                            sx={{mt:1}}
                             {...register("department", {
                                 required: "Department is required",
                             })}

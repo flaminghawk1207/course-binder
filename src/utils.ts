@@ -71,118 +71,204 @@ export const tempObject = {
 }
 
 export const DEF_TEMPLATE = {
-    name : "",
-    type : "folder",
-    contents : [
+    "name": "",
+    "type": "folder",
+    "contents": [
         {
-            name : "quiz",
-            type : "folder",
-            contents : [
+            "name": "Faculty_details.xlsx",
+            "type": "file"
+        },
+        {
+            "name": "academic_calender.pdf",
+            "type": "file"
+        },
+        {
+            "name": "class_timetable.pdf",
+            "type": "file"
+        },
+        {
+            "name": "curriculum.docx",
+            "type": "file"
+        },
+        {
+            "name": "evaluationPattern.docx",
+            "type": "file"
+        },
+        {
+            "name": "internalAssessment.xlsx",
+            "type": "file"
+        },
+        {
+            "name": "exitSummary.docx",
+            "type": "file"
+        },
+        {
+            "name": "classCommitteeReport.docx",
+            "type": "file"
+        },
+        {
+            "name": "FullMarkList.docx",
+            "type": "file"
+        },
+        {
+            "name": "questions",
+            "type": "folder",
+            "contents": [
                 {
-                    name : "quiz1",
-                    type : "folder",
-                    contents : [
-                        {
-                            name : "marks_csea.xlsx",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_cseb.xlsx",
-                            type : "file",
-                        },
-                    ]
+                    "name": "quiz1.docx",
+                    "type": "file"
                 },
                 {
-                    name : "quiz2",
-                    type : "folder",
-                    contents : [
-                        {
-                            name : "marks_csea.xlsx",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_cseb.xlsx",
-                            type : "file",
-                        },
-                    ]
+                    "name": "quiz2.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "tutorial.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "midterm.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "endsem.docx",
+                    "type": "file"
                 }
             ]
+        },
+        {
+            "name": "studentNameList.pdf",
+            "type": "file"
         }
     ]
 }
 
 export const DEF_TEMPLATE2 = {
-    name : "",
-    type : "folder",
-    contents : [
+    "name": "",
+    "type": "folder",
+    "contents": [
         {
-            name : "assignment",
-            type : "folder",
-            contents : [
+            "name": "Faculty_details.xlsx",
+            "type": "file"
+        },
+        {
+            "name": "academic_calender.pdf",
+            "type": "file"
+        },
+        {
+            "name": "class_timetable.pdf",
+            "type": "file"
+        },
+        {
+            "name": "curriculum.docx",
+            "type": "file"
+        },
+        {
+            "name": "evaluationPattern.docx",
+            "type": "file"
+        },
+        {
+            "name": "internalAssessment.xlsx",
+            "type": "file"
+        },
+        {
+            "name": "exitSummary.docx",
+            "type": "file"
+        },
+        {
+            "name": "classCommitteeReport.docx",
+            "type": "file"
+        },
+        {
+            "name": "FullMarkList.docx",
+            "type": "file"
+        },
+        {
+            "name": "questions",
+            "type": "folder",
+            "contents": [
                 {
-                    name : "Asgn1",
-                    type : "folder",
-                    contents : [
-                        {
-                            name : "marks_csea.xlsx",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_cseb.xlsx",
-                            type : "file",
-                        },
-                    ]
+                    "name": "assignment1.docx",
+                    "type": "file"
                 },
                 {
-                    name : "Asgn2",
-                    type : "folder",
-                    contents : [
-                        {
-                            name : "marks_csea.xlsx",
-                            type : "file",
-                        },
-                        {
-                            name : "marks_cseb.xlsx",
-                            type : "file",
-                        },
-                    ]
+                    "name": "assignment2.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "labeval1.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "labeval2.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "tutorial.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "midterm.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "endsem.docx",
+                    "type": "file"
                 }
             ]
+        },
+        {
+            "name": "studentNameList.xlsx",
+            "type": "file"
         }
     ]
 }
 
 export const DEF_LAB_TEMPLATE = {
-    name : "",
-    type : "folder",
-    contents : [
+    "name": "",
+    "type": "folder",
+    "contents": [
         {
-            name : "phase1",
-            type : "folder",
-            contents : [                
+            "name": "Faculty_details.xlsx",
+            "type": "file"
+        },
+        {
+            "name": "academic_calender.pdf",
+            "type": "file"
+        },
+        {
+            "name": "lab_timetable.pdf",
+            "type": "file"
+        },
+        {
+            "name": "lab_equipments_record.docx",
+            "type": "file"
+        },
+        {
+            "name": "publications_list.docx",
+            "type": "file"
+        },
+        {
+            "name": "progress_reports",
+            "type": "folder",
+            "contents": [
                 {
-                    name : "progress_report.txt",
-                    type : "file",
+                    "name": "phase1.docx",
+                    "type": "file"
                 },
                 {
-                    name : "lab_activities.txt",
-                    type : "file",
+                    "name": "phase2.docx",
+                    "type": "file"
+                },
+                {
+                    "name": "phase3.docx",
+                    "type": "file"
                 },
             ]
         },
         {
-            name : "phase2",
-            type : "folder",
-            contents : [                
-                {
-                    name : "progress_report.txt",
-                    type : "file",
-                },
-                {
-                    name : "lab_activities.txt",
-                    type : "file",
-                },
-            ]
+            "name": "studentNameList.xlsx",
+            "type": "file"
         }
     ]
 }
