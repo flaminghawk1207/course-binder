@@ -14,19 +14,19 @@ def main ():
     print("---------------------------")
     print("TEST 1: Empty Email Address")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    login.fillLoginCredentials(driver,"","Anish@1207",const.BASE_URL)
+    login.fillLoginCredentials(driver,"","Anish@1207",const.BASE_URL, shouldFail=True)
     driver.close()
 
     print("---------------------------")
     print("TEST 2: Invalid Email Address")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    login.fillLoginCredentials(driver,"jayantasd","Anish@1207",const.BASE_URL)
+    login.fillLoginCredentials(driver,"jayantasd","Anish@1207",const.BASE_URL, shouldFail=True)
     driver.close()
 
     print("---------------------------")
     print("TEST 3: Invalid Password")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    login.fillLoginCredentials(driver,const.ADMIN_USER,"Anish@1207",const.BASE_URL)
+    login.fillLoginCredentials(driver,const.ADMIN_USER,"Anish@1207",const.BASE_URL, shouldFail=True)
     driver.close()
 
     print("---------------------------")
@@ -43,11 +43,11 @@ def main ():
     
     print("---------------------------")
     print("TEST 1: Invalid Email")
-    forgotPassword.forgotPassword("asdsd", const.BASE_URL)
+    forgotPassword.forgotPassword("asdsd", const.BASE_URL, shouldFail=True)
         
     print("---------------------------")
     print("TEST 2: Unregistered Email")
-    forgotPassword.forgotPassword("randomperson@gmail.com", const.BASE_URL)
+    forgotPassword.forgotPassword("randomperson@gmail.com", const.BASE_URL, shouldFail=True)
         
     print("---------------------------")
     print("TEST 3: Valid Email")
@@ -61,7 +61,7 @@ def main ():
 
     print("---------------------------")
     print("Test 1: Empty Input")
-    adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, "", "course", "III", const.BASE_URL)
+    adminCreateChannels.createChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, const.TEST_COURSE_NAME, const.TEST_CHANNEL_CODE, "", "course", "III", const.BASE_URL, shouldFail=True)
 
     print("---------------------------")
     print("Test 2: Course Creation")
@@ -77,11 +77,11 @@ def main ():
 
     print("---------------------------")
     print("Test 1: Empty Input")
-    adminCreateUser.createUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "TEST", "TEST.com", "Test@12345", "admin", "TEST DEPARTMENT", const.BASE_URL)
+    adminCreateUser.createUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "TEST", "TEST.com", "Test@12345", "admin", "TEST DEPARTMENT", const.BASE_URL, shouldFail=True)
     
     print("---------------------------")
     print("Test 2: Invalid Input")
-    adminCreateUser.createUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "TEST", "TEST", "TEST.com", "Test@12345", "admin", "TEST DEPARTMENT", const.BASE_URL)
+    adminCreateUser.createUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "TEST", "TEST", "TEST.com", "Test@12345", "admin", "TEST DEPARTMENT", const.BASE_URL, shouldFail=True)
     
     print("---------------------------")
     print("Test 3: Valid Input")
@@ -95,7 +95,7 @@ def main ():
 
     print("---------------------------")
     print("Test 1: Empty Input")
-    adminAddUsers.addUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "Lakshya", "course_mentor", const.BASE_URL)
+    adminAddUsers.addUser(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "Lakshya", "course_mentor", const.BASE_URL, shouldFail=True)
 
     print("---------------------------")
     print("Test 2: Valid Input")
@@ -108,7 +108,7 @@ def main ():
     print("ADD CHANNEL TO USERS")
     print("---------------------------")
     print("Test 1: Empty Input")
-    adminAddChannels.addChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "POPL", "course_mentor", const.BASE_URL)
+    adminAddChannels.addChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, "", "POPL", "course_mentor", const.BASE_URL, shouldFail=True)
     
     print("---------------------------")
     print("Test 2: Valid Input")

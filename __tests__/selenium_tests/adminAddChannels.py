@@ -11,7 +11,7 @@ import login
 import time
 
 
-def addChannel(adminName, adminPassword, username, channelName, channelRole, url):
+def addChannel(adminName, adminPassword, username, channelName, channelRole, url, shouldFail = False):
     try:
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         login.fillLoginCredentials(driver, adminName, adminPassword, url)
@@ -47,18 +47,27 @@ def addChannel(adminName, adminPassword, username, channelName, channelRole, url
                 print(alert.text)
 
         except:
-            print(username, "not added to", channelName)
-            print("TEST CASE FAILED!")
+            if shouldFail:
+                print(username, "not added to", channelName)
+                print("TEST CASE PASSED!")
+            else:
+                print(username, "not added to", channelName)
+                print("TEST CASE FAILED!")
+
 
     except:
-        print(username, "not addded to", channelName)
-        print("TEST CASE FAILED!")
+        if shouldFail:
+            print(username, "not added to", channelName)
+            print("TEST CASE PASSED!")
+        else:
+            print(username, "not added to", channelName)
+            print("TEST CASE FAILED!")
 
     return
 
 def main():
     url = const.BASE_URL
-    addChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, "Lakshya", "POPL", "", url)
+    addChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, "Lakshya", "POPL", "", url, shouldFail=True)
     addChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, "Lakshya", "POPL", "course_mentor", url)
 
 if __name__ == "__main__":

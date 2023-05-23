@@ -18,7 +18,7 @@ def press_keys(driver, *args):
         actions.send_keys(key)
     actions.perform()
 
-def createUser(adminName, adminPassword, firstName, lastName, email, password, role, department, url):
+def createUser(adminName, adminPassword, firstName, lastName, email, password, role, department, url, shouldFail=False):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     login.fillLoginCredentials(driver, adminName, adminPassword, url)
 
@@ -64,6 +64,10 @@ def createUser(adminName, adminPassword, firstName, lastName, email, password, r
 
     try:
         driver.find_element(By.CSS_SELECTOR,".mui-style-6ebt62-MuiFormHelperText-root.Mui-error")
+        if shouldFail:
+            print("TESTCASE PASSED!!")
+        else:
+            print("TESTCASE FAILED!!")
     except:
         print("User has been created")
         print("TEST CASE PASSED!")

@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 import constants as const
 from selenium.webdriver.common.alert import Alert
 
-def fillLoginCredentials(driver,username, password, url):
+def fillLoginCredentials(driver,username, password, url, shouldFail = False):
     driver.get(url)
     driver.implicitly_wait(20)
 
@@ -16,7 +16,10 @@ def fillLoginCredentials(driver,username, password, url):
 
     try:
         print(driver.find_element(By.CSS_SELECTOR, ".mui-style-1himidv-MuiFormHelperText-root.Mui-error").text)
-        print("TEST CASE FAILED!")
+        if shouldFail:
+            print("TEST CASE PASSED!")
+        else:
+            print("TEST CASE FAILED!")
 
     except:
         try:
@@ -25,24 +28,19 @@ def fillLoginCredentials(driver,username, password, url):
             alert.accept()
         except:
             print("Logged in Successfully using Username:", username,"Password:",password)
-            print("TEST CASE PASSED!")
+        print("TEST CASE PASSED!")
 
 def main():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    fillLoginCredentials(driver,"jayanthmenons@gmail.com","qwerty1234",const.BASE_URL)
+    fillLoginCredentials(driver,"","Anish@1207",const.BASE_URL, shouldFail=True)
     driver.close()
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    fillLoginCredentials(driver,"jayanthmenons@gmail.com","qwerty12345",const.BASE_URL)
-    driver.close()
-    
-
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    fillLoginCredentials(driver,"anishayyagari@gmail.com","Anish@1207",const.BASE_URL)
+    fillLoginCredentials(driver,"jayantasd","Anish@1207",const.BASE_URL, shouldFail=True)
     driver.close()
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    fillLoginCredentials(driver,"anishayyagari@gmail.com","Anish7",const.BASE_URL)
+    fillLoginCredentials(driver,const.ADMIN_USER,const.ADMIN_PASSWORD,const.BASE_URL)
     driver.close()
     
 
