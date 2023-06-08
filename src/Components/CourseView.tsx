@@ -278,6 +278,7 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
 }
 
 const CourseView = ({ channel }: { channel: Channel }) => { 
+    const [message, setMessage] = useState('');
     const { user } = useContext(UserContext);
     const [channelUserRole, setChannelUserRole] = useState<string>("faculty");
 
@@ -289,7 +290,8 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     const [selectedFileExtensions, setSelectedFileExtensions] = useState<string[]>([])
 
     const [selectedFileUploadCategory, setSelectedFileUploadCategory] = useState<string[]>([])
-
+    //anish's part
+    const [responseMessage, setResponseMessage] = useState('');
     let finalDisplayItems = currDirObject?.children;
     let AllFileExtensions: string[] = []
 
@@ -315,6 +317,8 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                 console.log("Value: ", value)
             );
         };
+       
+        
 
         return (
             <div>
@@ -438,6 +442,39 @@ const CourseView = ({ channel }: { channel: Channel }) => {
         await refreshCompleteDir()
         setFSLoading(false)
     }
+//anish's part
+async function handleButtonClick() {
+    const email = user?.email;
+    const chnl =channel.channel_code;
+    const success =await apiReq("channels", {
+        type: "SEND_MESSAGE",
+        channel: chnl,
+        email:email,
+        message:message
+        
+    });
+  
+    if (success) {
+      console.log('Message uploaded successfully!');
+    } else {
+      console.log('Failed to upload message.');
+    }
+  }
+  
+  async function prevMessages(){
+    const chnl=channel.channel_code;
+    const respon=await apiReq("channels",{
+        type:"PRINT_MESSAGES",
+        channel:'LABCSE1',
+    });
+    if (respon){
+        setResponseMessage(respon);
+    }
+    else{
+        setResponseMessage('Failed to upload message.');
+
+    }
+  }
     return (
         <div className="h-4/5 my-10 mx-10 mt-15">
             <div className="flex w-full relative">
@@ -504,6 +541,15 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                     </div>
                 </div>
             </div>
+            {/* anish's part */}
+            <div>
+      <input type="text" value={message} onChange={e => setMessage(e.target.value)} />
+      <button onClick={handleButtonClick}>Send Message</button>
+      <div>
+      <button onClick={prevMessages}>  refresh chats</button>
+      {responseMessage}
+      </div>
+    </div>
         </div>
     );
 }
