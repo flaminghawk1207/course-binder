@@ -75,3 +75,12 @@ export interface checkBoxFields {
     label: string;
     checked: boolean;
 }
+
+export interface task {
+    channelCode: string;
+    assignedBy: string;
+    assignedTo: string;
+    taskName: string;
+    dueTime: number;
+    status: string;
+}

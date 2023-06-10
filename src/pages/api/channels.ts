@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, uploadMessage, getPrevmessages } from "~/server/db";
-import { Channel } from "~/types";
+import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, uploadMessage, getPrevmessages, getUserTaskList, getAllTaskList, addTaskToUser, removeTaskFromList, updateTask } from "~/server/db";
+import { Channel, task } from "~/types";
 import { constructPercentageDict } from "~/utils";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -52,6 +52,30 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     else if(req.body.type=="PRINT_MESSAGES"){
         const recieveMessages=await getPrevmessages(req.body.channel);
         res.json(recieveMessages);
+    }
+
+    //task list 
+    else if(req.body.type == "USER_TASKS"){
+        const userTaskList = await getUserTaskList(req.body.user_email, req.body.channel_code)
+        res.json(userTaskList)
+    }
+
+    else if(req.body.type =="ALL_TASKS"){
+        const allTaskList = await getAllTaskList(req.body.channel_code)
+        res.json(allTaskList)
+    }
+
+    else if(req.body.type == "ADD_TASK"){
+        const status = await addTaskToUser(req.body.channelCode, req.body.assignedBy, req.body.assignedTo, req.body.dueTime, req.body.taskMessage, req.body.taskStatus)
+        res.json(status) 
+    }
+    else if(req.body.type == "REMOVE_TASK"){
+        const status = await removeTaskFromList(req.body.channelCode, req.body.assignedBy, req.body.assignedTo, req.body.dueTime, req.body.taskMessage, req.body.taskStatus)
+        res.json(status) 
+    }
+    else if(req.body.type == "UPDATE_TASK"){
+        const status = await updateTask(req.body.data as task)
+        res.json(status)
     }
     else {
         res.json({
