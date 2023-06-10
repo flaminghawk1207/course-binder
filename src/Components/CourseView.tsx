@@ -1,4 +1,4 @@
-import { Button, IconButton, Tab, Tabs, TextField } from "@mui/material";
+import { Button, DialogTitle, IconButton, Tab, Tabs, TextField, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton"
 import { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
@@ -12,7 +12,6 @@ import UploadIcon from '@mui/icons-material/Upload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LoopIcon from '@mui/icons-material/Loop';
-
 import * as React from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -21,6 +20,12 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
+import ChatIcon from '@mui/icons-material/Chat';
+import CloseIcon from '@mui/icons-material/Close';
+import SyncIcon from '@mui/icons-material/Sync';
+import SendIcon from '@mui/icons-material/Send';
+import { ClassNames } from "@emotion/react";
+import { Avatar, Paper } from '@mui/material';
 
 const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
     return (
@@ -302,6 +307,11 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
 }
 
 const CourseView = ({ channel }: { channel: Channel }) => { 
+    type responseType = {
+        email : String,
+        message : String
+    }
+    const [message, setMessage] = useState('');
     const { user } = useContext(UserContext);
     const [channelUserRole, setChannelUserRole] = useState<string>("faculty");
 
@@ -313,7 +323,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     const [selectedFileExtensions, setSelectedFileExtensions] = useState<string[]>([])
 
     const [selectedFileUploadCategory, setSelectedFileUploadCategory] = useState<string[]>([])
-
+    const [responseMessage, setResponseMessage] = useState<Array<responseType>>([]);
     let finalDisplayItems = currDirObject?.children;
     let AllFileExtensions: string[] = []
 
@@ -462,6 +472,49 @@ const CourseView = ({ channel }: { channel: Channel }) => {
         await refreshCompleteDir()
         setFSLoading(false)
     }
+    async function handleButtonClick() {
+        const email = user?.email;
+        const chnl =channel.channel_code;
+        const success =await apiReq("channels", {
+            type: "SEND_MESSAGE",
+            channel: chnl,
+            email:email,
+            message:message
+            
+        });
+      
+        if (success) {
+          console.log('Message uploaded successfully!');
+        } else {
+          console.log('Failed to upload message.');
+        }
+      }
+      
+      async function prevMessages(){
+        const chnl=channel.channel_code;
+        const respon=await apiReq("channels",{
+            type:"PRINT_MESSAGES",
+            channel:chnl,
+        });
+        if (respon){
+            console.log("resp ", respon);
+            setResponseMessage(respon);
+            console.log("var_resp", responseMessage);
+    
+        }
+        else{
+            console.log('failed to recieve messages');
+    
+        }
+      }
+      const [open, setOpen] = useState(false);
+      const handleClickOpen = () => {
+        setOpen(true);
+    };
+    
+    const closeDialog = () => {
+        setOpen(false);
+    }
     return (
         <div className="h-4/5 my-10 mx-10 mt-15">
             <div className="flex w-full relative">
@@ -528,6 +581,54 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                     </div>
                 </div>
             </div>
+            <div className="h-400">
+      
+      <>
+      <Button 
+                variant="contained" 
+                className="bg-[#F68888] text-black" 
+                onClick={handleClickOpen}
+                startIcon={<ChatIcon/>}
+            >
+                chat
+            </Button>
+            <div className="h-10" style={{ width: '50%'}}>
+            <Dialog open={open} onClose={closeDialog}>
+  <DialogTitle className="text-center">Channel Chat</DialogTitle>
+  <DialogContent className="h-200 bg-[#F68888]" style={{ overflowY: 'auto' }}>
+    <div className="bg-white mt-10" style={{ maxHeight: '150px', overflowY: 'auto' }}>
+      {responseMessage.map(item => {
+        const isMe = item.email === 'me@example.com';
+        const bubbleClassName = `bubble ${isMe ? 'bubble-me' : 'bubble-other'}`;
+
+        return (
+          <div className={`${bubbleClassName} mb-2`}>
+            <div className="flex items-center">
+              <Avatar className="mr-2">{item.email.charAt(0)}</Avatar>
+              <Typography variant="subtitle2">{item.email}</Typography>
+            </div>
+            <Paper className="p-2">{item.message}</Paper>
+          </div>
+        );
+      })}
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <input type="text" value={message} onChange={e => setMessage(e.target.value)} style={{ width: '100%' }} />
+      <Button variant="contained" onClick={handleButtonClick} startIcon={<SendIcon/>}></Button>
+      <Button variant="contained" onClick={prevMessages} startIcon={<SyncIcon/>} style={{ marginLeft: '8px' }}></Button>
+    </div>
+  </DialogContent>
+  <DialogActions className="bg-[#F68888]">
+    <Button onClick={closeDialog} startIcon={<CloseIcon/>}>Close</Button>
+  </DialogActions>
+</Dialog>
+
+
+
+
+            </div>
+        </>
+    </div>
         </div>
     );
 }
