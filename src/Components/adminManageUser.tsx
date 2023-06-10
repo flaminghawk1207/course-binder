@@ -270,7 +270,7 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
     };
 
     const createUserandClose = async (data: FormValues) => {
-        const status = await apiReq("users", {
+        const res = await apiReq("users", {
             type: "CREATE_USER",
             data: {
                 email: data.email,
@@ -281,10 +281,11 @@ const CreateUserButtonDialog = ({refreshUsers}: {refreshUsers: () => void}) => {
             },
             password: data.password
         });
-        if(status) {
+        if(!res.error) {
             alert("User created successfully")
         } else {
-            alert("User creation failed")
+            alert(res.message)
+            return;
         }
         refreshUsers();
         closeDialog();

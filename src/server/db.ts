@@ -330,11 +330,14 @@ export const createUser = async (user: User, password: string) => {
                                 return userCredential.user;
                             })
                             .catch((error) => {
-                                throw new Error(error.message);
+                                return {
+                                    error: true,
+                                    message: error.message
+                                }
                             });
 
-    if(!authUser) {
-        throw new Error("Auth user not created");
+    if(authUser.hasOwnProperty("error")) {
+        return authUser;
     }
 
     const status = await addDoc(collection(firestore_db, "users"), user);
