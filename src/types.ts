@@ -75,3 +75,11 @@ export interface checkBoxFields {
     label: string;
     checked: boolean;
 }
+
+export interface Notification {
+    email: string;
+    message: string;
+    channel: string;
+    time: number;
+    viewed: boolean;
+}

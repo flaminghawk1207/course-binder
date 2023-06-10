@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile } from "~/server/db";
+import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, notifyChannel } from "~/server/db";
 import { Channel } from "~/types";
 import { constructPercentageDict } from "~/utils";
 
@@ -43,6 +43,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     } else if(req.body.type == "GET_PERCENTAGE_DICT") {
         const percentageDict = await constructPercentageDict(req.body.level, req.body.maxDepth, req.body.dept);
         res.json(percentageDict);
+    } else if (req.body.type == "NOTIFY_CHANNEL") {
+        const status = await notifyChannel(req.body.channel_code, req.body.message);
+        res.json(status);
     } else {
         res.json({
             error: "Invalid request"

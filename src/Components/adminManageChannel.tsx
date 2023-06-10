@@ -112,6 +112,14 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             } else {
                 alert("User added to channel successfully");
             }
+
+            // Notify channel members about new addition
+            apiReq("channels", {
+                type: "NOTIFY_CHANNEL",
+                channel_code: selectedChannel.channel_code,
+                message: `${user.firstName} has been added to the channel`,
+            })
+
             await refreshChannelUsers();
             await refreshSuggestedUsers();
         }
@@ -136,6 +144,14 @@ const UsersList = ({selectedChannel}: { selectedChannel: Channel | null }) => {
             } else {
                 alert("User removed from channel successfully");
             }
+
+            // Notify channel members about removal
+            apiReq("channels", {
+                type: "NOTIFY_CHANNEL",
+                channel_code: selectedChannel.channel_code,
+                message: `${user.firstName} has been removed from the channel`,
+            })
+
             await refreshChannelUsers();
             await refreshSuggestedUsers();
         }
