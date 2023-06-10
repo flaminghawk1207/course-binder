@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, getDocs, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, getDocs, query, serverTimestamp, updateDoc, where, limit, orderBy } from "firebase/firestore";
 import { firebase_app, firebase_file_storage, firestore_db } from "./firebase";
 import { Channel, CHANNEL_ROLE, CourseBinderError, ERROR_TYPE, FirebaseFile, FirebaseFolder, User, task } from "~/types";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
@@ -471,6 +471,71 @@ export const uploadMessage = async (email: string, message: string, channel: Cha
     }
     return true;
 }
+
+export const getNotifications = async (email: string, limit_count: number) => {
+    const notificationsSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "notifications"),
+            where("email", "==", email),
+            orderBy("time", "desc"),
+            limit(limit_count)
+        )
+    );
+
+    if (!notificationsSnapshot) {
+        throw new Error("Firestore error when retrieving notifications");
+    }
+
+    const notifications = notificationsSnapshot.docs.map(doc => doc.data()) as any[];
+
+    return notifications;
+}
+
+export const markNotificationsViewed = async (email: string) => {
+    const notificationsSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "notifications"),
+            where("email", "==", email),
+            where("viewed", "==", false)
+        )
+    );
+
+    if (!notificationsSnapshot) {
+        throw new Error("Firestore error when retrieving notifications");
+    }
+
+    notificationsSnapshot.docs.forEach(async (doc) => {
+        const docRef = doc.ref;
+        await updateDoc(docRef, {
+            viewed: true
+        });
+    });
+
+    return true;
+}
+
+export const sendNotifications = async (email_list: string[], channel: string, message: string) => {
+    console.log(email_list, channel, message)
+    const notifications = email_list.map((email) => {
+        return {
+            email,
+            channel,
+            message,
+            time: new Date(),
+            viewed: false
+        }
+    });
+
+    const status = await Promise.all(notifications.map(async (notification) => {
+        const status = await addDoc(collection(firestore_db, "notifications"), notification);
+        return status;
+    }));
+
+    if (!status) {
+        return false;
+    }
+    return true;
+}
 export const getPrevmessages = async (channel: Channel) => {
     console.log("channel name", channel)
 
@@ -510,7 +575,7 @@ export const getUserTaskList = async (email: string, channel_code: string) => {
     const userTaskList: { id: number, assignedBy: string, assignedTo: string, taskName: string, dueTime: number, taskStatus: string }[] = [];
     taskFromDB.forEach((doc) => {
         const { id, assignedBy, assignedTo, taskName, dueTime, taskStatus } = doc.data();
-        userTaskList.push({id, assignedBy, assignedTo, taskName, dueTime, taskStatus });
+        userTaskList.push({ id, assignedBy, assignedTo, taskName, dueTime, taskStatus });
     })
     console.log(userTaskList);
     return userTaskList;
@@ -546,7 +611,7 @@ export const addTaskToUser = async (channelCode: string, assignedBy: string, ass
     if (!status) {
         return false;
     }
-    return true;   
+    return true;
 }
 
 export const removeTaskFromList = async (channelCode: string, assignedBy: string, assignedTo: string, dueTime: number, taskName: string, taskStatus: string) => {
@@ -595,11 +660,43 @@ export const updateTask = async (task: task) => {
     }
 
     taskToBeUpdated.forEach(async (doc) => {
-        const { assignedBy, assignedTo, taskName, dueTime, taskMessage, taskStatus} = doc.data();
+        const { assignedBy, assignedTo, taskName, dueTime, taskMessage, taskStatus } = doc.data();
         await removeTaskFromList(task.channelCode, task.assignedBy, task.assignedTo, task.dueTime, task.taskName, taskStatus);
     })
 
-    await addTaskToUser(task.channelCode, task.assignedBy, task.assignedTo, task.dueTime, task.taskName, task.status);
-    
+    await addTaskToUser(task.channelCode, task.assignedBy, task.assignedTo, task.dueTime, task.taskName, task.status)
     return true;
+}
+
+export const notifyChannel = async (channel_code: string, message: string) => {
+    console.log(channel_code, message)
+    const channelMembersSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "channelMemberRelationship"),
+            where("channel_code", "==", channel_code)
+        )
+    );
+
+    if (!channelMembersSnapshot) {
+        throw new Error("Firestore error when retrieving channel members");
+    }
+
+    const channelMembers = channelMembersSnapshot.docs.map(doc => doc.data()) as User[];
+    const email_list = channelMembers.map((channelMember) => channelMember.email);
+    const status = await sendNotifications(email_list, channel_code, message);
+    return status;
+}
+
+export const notifyAllUsers = async (message: string) => {
+    const usersSnapshot = await getDocs(
+        collection(firestore_db, "users")
+    );
+
+    if (!usersSnapshot) {
+        throw new Error("Firestore error when retrieving users");
+    }
+    const users = usersSnapshot.docs.map(doc => doc.data()) as User[];
+    const email_list = users.map((user) => user.email);
+    const status = await sendNotifications(email_list, "General", message);
+    return status;
 }

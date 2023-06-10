@@ -3,6 +3,7 @@ import { NavItem } from '~/types';
 import { groupElements } from '~/utils';
 import { Button, Typography } from '@mui/material';
 import { LogOut } from './LogOut';
+import { AppNotifications } from './AppNotifications';
 
 const groupColors = [
     'bg-primary-color',
@@ -31,7 +32,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
 
     return (
         <div className = "flex h-screen">
-            <div className="w-1/6 h-full bg-secondary-color relative">
+            <div className="w-1/6 h-full bg-secondary-color relative text-center">
                 {
                     groupedItems?.map((group: any, group_index: number) =>
                         group.map((item: NavItem) => 
@@ -40,7 +41,7 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                                 key={item.label} 
                                 variant="contained"
                                 sx={{mt: 2}} 
-                                className= {`w-4/5 text-primary-txt hover:bg-hovercolor ml-3
+                                className= {`w-4/5 text-primary-txt hover:bg-hovercolor inline-block
                                     ${CurrentItem?.label === item.label ? groupColorsSelected[group_index]: groupColors[group_index]}`
                                 }
                                 onClick={() => setCurrentItem(item)}
@@ -51,9 +52,11 @@ const NavBar = ({items, items_differentiator } : {items : Array<NavItem>, items_
                         )
                     ).flat()
                 }
-                <Button className='absolute bottom-0 left-0 w-48'>
+                <div className="absolute bottom-0 w-full flex flex-col text-center">
+                    <AppNotifications/>
+
                     <LogOut/>
-                </Button>
+                </div>
             </div>
 
             <div className='w-full h-full bg-primary-color'>

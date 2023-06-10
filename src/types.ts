@@ -84,3 +84,11 @@ export interface task {
     dueTime: number;
     status: string;
 }
+
+export interface Notification {
+    email: string;
+    message: string;
+    channel: string;
+    time: number;
+    viewed: boolean;
+}

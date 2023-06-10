@@ -24,8 +24,9 @@ import Checkbox from '@mui/material/Checkbox';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SyncIcon from '@mui/icons-material/Sync';
-const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
+import { TaskManager } from './taskManager';
 
+const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
     return (
 
         <div className="bg-tertiary-color rounded my-2 h-16 flex px-2 items-center hover:cursor-pointer" onClick={() => moveIntoFolder(folder.name)}>
@@ -34,7 +35,8 @@ const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, m
     );
 }
 
-const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, refreshCompleteDir: any }) => {
+const FileUploadDialog = ({ channel, file, refreshCompleteDir }: { channel: Channel, file: FirebaseFile, refreshCompleteDir: any }) => {
+    const { user } = useContext(UserContext);
     const [uploadFile, setUploadFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false)
 
@@ -58,7 +60,7 @@ const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, 
         console.log(uploadFile);
         const formData = new FormData();
         formData.append("file", uploadFile as Blob, uploadFile?.name as string);
-        formData.append("fullPath", fullPath);
+        formData.append("fullPath", file.fullPath);
         const status = await fetch(`/api/uploadFile`, {
             method: "POST",
             body: formData,
@@ -67,6 +69,14 @@ const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, 
         await refreshCompleteDir();
         setLoading(false)
         alert("File uploaded successfully");
+
+        // Notify all users in channel about file upload
+        await apiReq("channels", {
+            type: "NOTIFY_CHANNEL",
+            channel_code: channel.channel_code,
+            message: `${file.name} has been uploaded by ${user?.firstName}.`,
+        });
+
         closeDialog();
     }
 
@@ -112,7 +122,8 @@ const FileUploadDialog = ({ fullPath, refreshCompleteDir }: { fullPath: string, 
     );
 }
 
-const FileComponent = ({ file, refreshCompleteDir }: { file: FirebaseFile, refreshCompleteDir: any }) => {
+const FileComponent = ({ channel, file, refreshCompleteDir }: { channel: Channel, file: FirebaseFile, refreshCompleteDir: any }) => {
+    const { user } = useContext(UserContext);
     const [loading, setLoading] = useState(false)
     const deleteFile = async () => {
         const ans = window.confirm(`Delete file ${file.name}?`)
@@ -123,6 +134,14 @@ const FileComponent = ({ file, refreshCompleteDir }: { file: FirebaseFile, refre
             type: "DELETE_FILE",
             fullPath: file.fullPath,
         });
+
+        // Notify all users in channel about file deletion
+        await apiReq("channels", {
+            type: "NOTIFY_CHANNEL",
+            channel_code: channel.channel_code,
+            message: `${file.name} has been deleted by ${user?.firstName}.`,
+        });
+
         await refreshCompleteDir();
         setLoading(false)
     }
@@ -134,7 +153,7 @@ const FileComponent = ({ file, refreshCompleteDir }: { file: FirebaseFile, refre
             <div className="bg-tertiary-color absolute right-0 h-full items-center rounded">
                 {
                     file.empty
-                        ? <FileUploadDialog fullPath={file.fullPath} refreshCompleteDir={refreshCompleteDir} />
+                        ? <FileUploadDialog channel={channel} file={file} refreshCompleteDir={refreshCompleteDir} />
 
                         :
                         <div className="flex h-full items-center space-x-5 mr-5">
@@ -158,6 +177,8 @@ const getCurrDirObject = (completeDir: FirebaseFolder, path: string[]) => {
 }
 
 const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refreshFileSys: any }) => {
+    const { user } = useContext(UserContext);
+
     const [customTemplate, setCustomTemplate] = useState<string>(""); // If using custom template
     const [tabIndex, setTabIndex] = useState<number>(0); // 0: Default Template 1, 1: Default Template 2, 2: Custom Template
 
@@ -212,9 +233,15 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
             new_template: new_template,
         });
         await refreshFileSys();
-        // await refreshChannels();
         channel.channel_template = new_template;
         alert("Template changed successfully")
+
+        // Notify all users in channel about template change
+        await apiReq("channels", {
+            type: "NOTIFY_CHANNEL",
+            channel_code: channel.channel_code,
+            message: `${user?.firstName} has changed the template of this channel.`,
+        });
         closeDialog();
     }
 
@@ -299,9 +326,6 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     const [selectedFileUploadCategory, setSelectedFileUploadCategory] = useState<string[]>([])
     //anish's part
     const [responseMessage, setResponseMessage] = useState<Array<responseType>>([]);
-
-    const [usertaskList, setUserTaskList] = useState<Array<task>>([])
-    const [allTaskList, setAllTaskList] = useState<Array<task>>([])
 
     let finalDisplayItems = currDirObject?.children;
     let AllFileExtensions: string[] = []
@@ -403,17 +427,11 @@ const CourseView = ({ channel }: { channel: Channel }) => {
         (async () => {
             await refreshFileSys(); //to be uncommented
             // if (user?.role as string == CHANNEL_ROLE.COURSE_MENTOR) {
-            await getAllTaskList();
-            // }
-            await getUserTaskList();
 
             //to be removed later
             //await addTasksToList("Kishore", "Jayanth", 1, "19CSE212", "Add UI", "pending");
 
             // await removeTasksFromList("Kishore", "Jayanth", 1, "19CSE212", "Add UI", "pending");
-
-            const task : task  = {assignedBy: "Kishore", assignedTo: "Kishore", channelCode: "19CSE212", dueTime: 2, status: "Pending", taskName: "UI for task page"};
-            await updateTask(task);
         })()
     }, []);
 
@@ -452,63 +470,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
         setCurrDir(currDir.slice(0, currDir.length - 1));
     }
 
-    const getUserTaskList = async () => {
-        const userTaskList = await apiReq("channels", {
-            type: "USER_TASKS",
-            user_email: "Ashwath", //to be changed
-            channel_code: "19CSE212" //to be changed
-        })
-        setUserTaskList(userTaskList)
-    }
-
-    const getAllTaskList = async () => {
-        const allTaskList = await apiReq("channels", {
-            type: "ALL_TASKS",
-            channel_code: "19CSE212" //to be changed
-        })
-        setAllTaskList(allTaskList)
-    }
-    console.log("All task list: ", allTaskList)
-    console.log("User task list: ", usertaskList)
-
-
-    const addTasksToList = async (assignedBy: string, assignedTo: string, dueTime: number, channelCode: string, taskMessage: string, taskStatus: string) => {
-        const status = await apiReq("channels", {
-            type: "ADD_TASK",
-            channelCode: "19CSE212",//channel.channel_code
-            assignedBy: assignedBy,
-            assignedTo: assignedTo,
-            dueTime: dueTime,
-            taskMessage: taskMessage,
-            taskStatus: taskStatus
-        })
-        console.log(status)
-    }
-
-    const removeTasksFromList = async (assignedBy: string, assignedTo: string, dueTime: number, channelCode: string, taskMessage: string, taskStatus: string) => {
-        const status = await apiReq ("channels", {
-            type: "REMOVE_TASK",
-            channelCode: "19CSE212",
-            assignedBy: assignedBy,
-            assignedTo: assignedTo,
-            dueTime: dueTime,
-            taskMessage: taskMessage,
-            taskStatus: taskStatus
-        })
-        console.log(status)
-    }
-    console.log(selectedFileExtensions);
-    console.log(selectedFileUploadCategory);
-
-    const updateTask = async (task: task) => {
-
-        const status = await apiReq ("channels", {
-            type: "UPDATE_TASK",
-            data: task
-        })
-
-        console.log(status)
-    }
+ 
     function handleBackClick() {
         moveOutOfFolder();
         setSelectedFileExtensions([]);
@@ -623,7 +585,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                                     if (child.type === "folder") {
                                         return <FolderComponent key={child.fullPath} folder={child} moveIntoFolder={moveIntoFolder} />
                                     } else {
-                                        return <FileComponent key={child.fullPath} file={child} refreshCompleteDir={refreshCompleteDir} />
+                                        return <FileComponent key={child.fullPath} file={child} refreshCompleteDir={refreshCompleteDir} channel={channel} />
                                     }
                                 })
                         }
@@ -660,7 +622,9 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                         </DialogActions>
                     </Dialog>
                 </>
+                <TaskManager channel = {channel}/>
             </div>
+            
 
         </div>
     );
