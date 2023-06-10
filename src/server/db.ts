@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, getDocs, limit, orderBy, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, getDocs, limit, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { firebase_app, firebase_file_storage, firestore_db } from "./firebase";
 import { Channel, CHANNEL_ROLE, CourseBinderError, ERROR_TYPE, FirebaseFile, FirebaseFolder, User } from "~/types";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
@@ -560,3 +560,44 @@ export const notifyAllUsers = async (message: string) => {
 
     return status;
 }
+export const uploadMessage = async (email: string, message: string, channel: Channel) => {
+    const currentTime = serverTimestamp();
+    const status = await addDoc(collection(firestore_db, "chats"), {
+        channel:channel,
+        email:email,
+        message:message,
+        timestamp: currentTime,
+    });
+
+    if(!status) {
+        return false;
+    }
+    return true;
+}
+export const getPrevmessages = async (channel: Channel) => {
+    console.log("channel name", channel)
+
+    const filesSnapshot = await getDocs(
+      query(
+        collection(firestore_db, "chats"),
+        where("channel", "==", channel)
+      )
+    );
+
+    // console.log("filesnapshot", filesSnapshot)
+    console.log("calc fileNames")
+    
+    const fileNames: { email: string, message: string, timestamp: number }[] = [];
+    filesSnapshot.forEach((doc) => {
+        console.log("doc data", doc.data())
+      const { channel,email,message,timestamp } = doc.data();
+      fileNames.push({email,message,timestamp});
+    });
+    fileNames.sort((a, b) => a.timestamp - b.timestamp);
+    console.log("filenames length: ", fileNames.length)
+    console.log(fileNames)
+    const sortedEmailsAndMessages = fileNames.map(({ email, message }) => ({ email, message }));
+    console.log(sortedEmailsAndMessages);
+    console.log(sortedEmailsAndMessages);
+    return sortedEmailsAndMessages;
+  };
