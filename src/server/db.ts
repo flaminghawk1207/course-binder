@@ -514,12 +514,11 @@ export const markNotificationsViewed = async (email: string) => {
     return true;
 }
 
-export const sendNotifications = async (email_list: string[], channel: string, message: string) => {
-    console.log(email_list, channel, message)
+export const sendNotifications = async (email_list: string[], channel_code: string, message: string) => {
     const notifications = email_list.map((email) => {
         return {
             email,
-            channel,
+            channel_code,
             message,
             time: new Date(),
             viewed: false
@@ -537,7 +536,6 @@ export const sendNotifications = async (email_list: string[], channel: string, m
     return true;
 }
 export const getPrevmessages = async (channel: Channel) => {
-    console.log("channel name", channel)
 
     const filesSnapshot = await getDocs(
         query(
@@ -546,21 +544,13 @@ export const getPrevmessages = async (channel: Channel) => {
         )
     );
 
-    // console.log("filesnapshot", filesSnapshot)
-    console.log("calc fileNames")
-
     const fileNames: { email: string, message: string, timestamp: number }[] = [];
     filesSnapshot.forEach((doc) => {
-        console.log("doc data", doc.data())
         const { channel, email, message, timestamp } = doc.data();
         fileNames.push({ email, message, timestamp });
     });
     fileNames.sort((a, b) => a.timestamp - b.timestamp);
-    console.log("filenames length: ", fileNames.length)
-    console.log(fileNames)
     const sortedEmailsAndMessages = fileNames.map(({ email, message }) => ({ email, message }));
-    console.log(sortedEmailsAndMessages);
-    console.log(sortedEmailsAndMessages);
     return sortedEmailsAndMessages;
 };
 
@@ -568,16 +558,12 @@ export const getUserTaskList = async (email: string, channel_code: string) => {
     const taskFromDB = await getDocs(
         query(
             collection(firestore_db, "task"),
-            where("assignedTo", "==", email), where("channelCode", "==", channel_code)
+            where("assignedToEmail", "==", email), 
+            where("channelCode", "==", channel_code)
         )
     );
 
-    const userTaskList: { id: number, assignedBy: string, assignedTo: string, taskName: string, dueTime: number, taskStatus: string }[] = [];
-    taskFromDB.forEach((doc) => {
-        const { id, assignedBy, assignedTo, taskName, dueTime, taskStatus } = doc.data();
-        userTaskList.push({ id, assignedBy, assignedTo, taskName, dueTime, taskStatus });
-    })
-    console.log(userTaskList);
+    const userTaskList = taskFromDB.docs.map(doc => doc.data()) as task[];
     return userTaskList;
 }
 
@@ -588,13 +574,7 @@ export const getAllTaskList = async (channel_code: string) => {
             where("channelCode", "==", channel_code)
         )
     );
-    //assignedBy: string, assignedTo: string, taskName: string, dueTime: number, taskStatus: string
-    const allTaskList: task[] = [];
-    taskFromDB.forEach((doc) => {
-        const task = doc.data() as task;
-        allTaskList.push(task);
-    })
-    console.log("All task list",allTaskList);
+    const allTaskList = taskFromDB.docs.map(doc => doc.data()) as task[];
     return allTaskList;
 }
 
@@ -612,8 +592,8 @@ export const removeTaskFromList = async (task: task) => {
         query(
             collection(firestore_db, "task"),
             where("channelCode", "==", task.channelCode),
-            where("assignedBy", "==", task.assignedByEmail),
-            where("assignedTo", "==", task.assignedToEmail),
+            where("assignedByEmail", "==", task.assignedByEmail),
+            where("assignedToEmail", "==", task.assignedToEmail),
             where("dueTime", "==", task.dueTime),
             where("taskName", "==", task.taskName),
             where("taskStatus", "==", task.taskStatus)
@@ -627,42 +607,43 @@ export const removeTaskFromList = async (task: task) => {
     const taskToBeRemovedRef = taskToBeRemoved.docs[0]?.ref;
 
     if (!taskToBeRemovedRef) {
-        throw new Error("Channel Ref not found");
+        throw new Error("Task Ref not found");
     }
 
     await deleteDoc(taskToBeRemovedRef);
     return true;
 }
 
-export const updateTask = async (task: task) => {
-    const taskToBeUpdated = await getDocs(
+export const completeTask = async (task: task) => {
+    const taskToBeCompleted = await getDocs(
         query(
             collection(firestore_db, "task"),
             where("channelCode", "==", task.channelCode),
-            where("assignedBy", "==", task.assignedByName),
-            where("assignedTo", "==", task.assignedToName),
+            where("assignedByEmail", "==", task.assignedByEmail),
+            where("assignedToEmail", "==", task.assignedToEmail),
             where("dueTime", "==", task.dueTime),
             where("taskName", "==", task.taskName),
+            where("taskStatus", "==", task.taskStatus)
         )
     );
 
-    console.log(taskToBeUpdated);
-
-    if (!taskToBeUpdated) {
+    if (!taskToBeCompleted) {
         throw new Error("Firestore error when retrieving channel docs");
     }
 
-    taskToBeUpdated.forEach(async (doc) => {
-        const taskToBeRemoved = doc.data() as task;
-        await removeTaskFromList(taskToBeRemoved);
-    })
+    const taskToBeCompletedRef = taskToBeCompleted.docs[0]?.ref;
 
-    await addTaskToUser(task)
+    if (!taskToBeCompletedRef) {
+        throw new Error("Task Ref not found");
+    }
+
+    await updateDoc(taskToBeCompletedRef, {
+        taskStatus: "Completed"
+    });
     return true;
 }
 
 export const notifyChannel = async (channel_code: string, message: string) => {
-    console.log(channel_code, message)
     const channelMembersSnapshot = await getDocs(
         query(
             collection(firestore_db, "channelMemberRelationship"),
@@ -693,4 +674,3 @@ export const notifyAllUsers = async (message: string) => {
     const status = await sendNotifications(email_list, "General", message);
     return status;
 }
-

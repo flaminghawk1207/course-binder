@@ -23,7 +23,7 @@ import Checkbox from '@mui/material/Checkbox';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SyncIcon from '@mui/icons-material/Sync';
-import { TaskManager } from './taskManager';
+import { TaskManager } from "./taskManager";
 import SendIcon from '@mui/icons-material/Send';
 import { ClassNames } from "@emotion/react";
 import { Avatar, Paper } from '@mui/material';
@@ -349,13 +349,8 @@ const CourseView = ({ channel }: { channel: Channel }) => {
             const {
                 target: { value },
             } = event;
-            setSelectedValue(
-                value,
-                console.log("Value: ", value)
-            );
+            setSelectedValue(value);
         };
-
-
 
         return (
             <div>
@@ -405,7 +400,6 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     else {
         fileUploadStatus = [];
     }
-    console.log("File extension type", AllFileExtensions);
 
     // status dropdown menu -> 
     finalDisplayItems = finalDisplayItems?.filter((item) => {
@@ -427,19 +421,12 @@ const CourseView = ({ channel }: { channel: Channel }) => {
 
     useEffect(() => {
         (async () => {
-            await refreshFileSys(); //to be uncommented
-            // if (user?.role as string == CHANNEL_ROLE.COURSE_MENTOR) {
-
-            //to be removed later
-            //await addTasksToList("Kishore", "Jayanth", 1, "19CSE212", "Add UI", "pending");
-
-            // await removeTasksFromList("Kishore", "Jayanth", 1, "19CSE212", "Add UI", "pending");
+            await refreshFileSys();
         })()
     }, []);
 
     const refreshFileSys = async () => {
         setFSLoading(true);
-        console.log("Refreshing File System");
         await refreshCompleteDir();
         setCurrDir([]);
         setFSLoading(false);
@@ -594,8 +581,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                     </div>
                 </div>
             </div>
-            <div className="h-400">
-
+            <div className="flex">
                 <>
                     <Button
                         variant="contained"
@@ -603,7 +589,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                         onClick={handleClickOpen}
                         startIcon={<ChatIcon />}
                     >
-                        chat
+                        Chat
                     </Button>
                     <div className="h-10" style={{ width: '50%' }}>
                         <Dialog open={open} onClose={closeDialog}>
@@ -636,11 +622,10 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                             </DialogActions>
                         </Dialog>
                     </div>
-                    <TaskManager channel = {channel}></TaskManager>
                 </>
-               
+                <TaskManager channel={channel}/>
             </div>
-            
+
         </div>
     );
 }

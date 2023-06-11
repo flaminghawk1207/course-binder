@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, uploadMessage, getPrevmessages, getUserTaskList, getAllTaskList, addTaskToUser, removeTaskFromList, updateTask, notifyChannel } from "~/server/db";
+import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, uploadMessage, getPrevmessages, getUserTaskList, getAllTaskList, addTaskToUser, removeTaskFromList, notifyChannel, completeTask } from "~/server/db";
 import { Channel, task } from "~/types";
 import { constructPercentageDict } from "~/utils";
 
@@ -73,8 +73,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         const status = await removeTaskFromList(req.body.data as task)
         res.json(status) 
     }
-    else if(req.body.type == "UPDATE_TASK"){
-        const status = await updateTask(req.body.data as task)
+    else if(req.body.type == "COMPLETE_TASK"){
+        const status = await completeTask(req.body.data as task)
         res.json(status)
     }
     else if (req.body.type == "NOTIFY_CHANNEL") {

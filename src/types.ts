@@ -90,7 +90,7 @@ export interface task {
 export interface Notification {
     email: string;
     message: string;
-    channel: string;
+    channel_code: string;
     time: number;
     viewed: boolean;
 }
