@@ -55,7 +55,7 @@ export const AppNotifications = () => {
 
         setNotifications(notifications);
 
-        setTimeout(() => refreshNotifications(), 5000);
+        // setTimeout(() => refreshNotifications(), 5000);
     }
 
     // Notification popup stuff
