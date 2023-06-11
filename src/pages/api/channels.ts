@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, notifyChannel, uploadMessage, getPrevmessages } from "~/server/db";
-import { Channel } from "~/types";
+import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, uploadMessage, getPrevmessages, getUserTaskList, getAllTaskList, addTaskToUser, removeTaskFromList, notifyChannel, completeTask } from "~/server/db";
+import { Channel, task } from "~/types";
 import { constructPercentageDict } from "~/utils";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -43,7 +43,41 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     } else if(req.body.type == "GET_PERCENTAGE_DICT") {
         const percentageDict = await constructPercentageDict(req.body.level, req.body.maxDepth, req.body.dept);
         res.json(percentageDict);
-    } else if (req.body.type == "NOTIFY_CHANNEL") {
+    }
+    //anish's part
+    else if(req.body.type=="SEND_MESSAGE"){
+        const sendMessage=await uploadMessage(req.body.email,req.body.message,req.body.channel);
+        res.json(sendMessage);
+    }
+    else if(req.body.type=="PRINT_MESSAGES"){
+        const recieveMessages=await getPrevmessages(req.body.channel);
+        res.json(recieveMessages);
+    }
+
+    //task list 
+    else if(req.body.type == "USER_TASKS"){
+        const userTaskList = await getUserTaskList(req.body.user_email, req.body.channel_code)
+        res.json(userTaskList)
+    }
+
+    else if(req.body.type =="ALL_TASKS"){
+        const allTaskList = await getAllTaskList(req.body.channel_code)
+        res.json(allTaskList)
+    }
+
+    else if(req.body.type == "ADD_TASK"){
+        const status = await addTaskToUser(req.body.data as task)
+        res.json(status) 
+    }
+    else if(req.body.type == "REMOVE_TASK"){
+        const status = await removeTaskFromList(req.body.data as task)
+        res.json(status) 
+    }
+    else if(req.body.type == "COMPLETE_TASK"){
+        const status = await completeTask(req.body.data as task)
+        res.json(status)
+    }
+    else if (req.body.type == "NOTIFY_CHANNEL") {
         const status = await notifyChannel(req.body.channel_code, req.body.message);
         res.json(status);
     } 

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getAllUsers, getUsersRolesInChannel, createUser, getUsersNotInChannel, getNotifications, markNotificationsViewed, notifyAllUsers } from "~/server/db";
+import { getAllUsers, getUsersRolesInChannel, createUser, getUsersNotInChannel, getNotifications, markNotificationsViewed, notifyAllUsers, sendNotifications } from "~/server/db";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     if(!req.body) {
@@ -28,6 +28,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         res.json(status);
     } else if (req.body.type == "NOTIFY_ALL_USERS") {
         const status = await notifyAllUsers(req.body.message);
+        res.json(status);
+    } else if (req.body.type == "NOTIFY_USERS") {
+        const status = await sendNotifications(req.body.user_emails, req.body.channel_code, req.body.message);
         res.json(status);
     } else {
         res.json({
