@@ -1,4 +1,4 @@
-import { Button, IconButton, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Button, DialogTitle, IconButton, Tab, Tabs, TextField, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton"
 import { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
@@ -12,7 +12,6 @@ import UploadIcon from '@mui/icons-material/Upload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LoopIcon from '@mui/icons-material/Loop';
-
 import * as React from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -25,6 +24,9 @@ import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SyncIcon from '@mui/icons-material/Sync';
 import { TaskManager } from './taskManager';
+import SendIcon from '@mui/icons-material/Send';
+import { ClassNames } from "@emotion/react";
+import { Avatar, Paper } from '@mui/material';
 
 const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
     return (
@@ -592,40 +594,54 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                     </div>
                 </div>
             </div>
-            {/* anish's part */}
-            <div>
+            <div className="h-400">
+      
+      <>
+      <Button 
+                variant="contained" 
+                className="bg-[#F68888] text-black" 
+                onClick={handleClickOpen}
+                startIcon={<ChatIcon/>}
+            >
+                chat
+            </Button>
+            <div className="h-10" style={{ width: '50%'}}>
+            <Dialog open={open} onClose={closeDialog}>
+  <DialogTitle className="text-center">Channel Chat</DialogTitle>
+  <DialogContent className="h-200 bg-[#F68888]" style={{ overflowY: 'auto' }}>
+    <div className="bg-white mt-10" style={{ maxHeight: '150px', overflowY: 'auto' }}>
+      {responseMessage.map(item => {
+        const isMe = item.email === 'me@example.com';
+        const bubbleClassName = `bubble ${isMe ? 'bubble-me' : 'bubble-other'}`;
 
-                <>
-                    <Button
-                        variant="contained"
-                        className="bg-[#F68888] text-black"
-                        onClick={handleClickOpen}
-                        startIcon={<ChatIcon />}
-                    >
-                        chat
-                    </Button>
-                    <Dialog open={open} onClose={closeDialog}>
-                        <DialogContent className="h-128">
-                            <input type="text" value={message} onChange={e => setMessage(e.target.value)} />
-                            <Button variant="contained" onClick={handleButtonClick}>Send Message</Button>
-                            <div>
-                                <Button variant="contained" onClick={prevMessages} startIcon={<SyncIcon />}>  refresh chats</Button>
-                                {/* {responseMessage} */}
-                                {responseMessage.map(item => {
-                                    return <Typography>{item.email}: {item.message}</Typography>;
-                                })}
-                            </div>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={closeDialog}
-                                startIcon={<CloseIcon />}>Close</Button>
-                        </DialogActions>
-                    </Dialog>
-                </>
-                <TaskManager channel = {channel}/>
+        return (
+          <div className={`${bubbleClassName} mb-2`}>
+            <div className="flex items-center">
+              <Avatar className="mr-2">{item.email.charAt(0)}</Avatar>
+              <Typography variant="subtitle2">{item.email}</Typography>
             </div>
-            
+            <Paper className="p-2">{item.message}</Paper>
+          </div>
+        );
+      })}
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <input type="text" value={message} onChange={e => setMessage(e.target.value)} style={{ width: '100%' }} />
+      <Button variant="contained" onClick={handleButtonClick} startIcon={<SendIcon/>}></Button>
+      <Button variant="contained" onClick={prevMessages} startIcon={<SyncIcon/>} style={{ marginLeft: '8px' }}></Button>
+    </div>
+  </DialogContent>
+  <DialogActions className="bg-[#F68888]">
+    <Button onClick={closeDialog} startIcon={<CloseIcon/>}>Close</Button>
+  </DialogActions>
+</Dialog>
 
+
+
+
+            </div>
+        </>
+    </div>
         </div>
     );
 }
