@@ -598,15 +598,8 @@ export const getAllTaskList = async (channel_code: string) => {
     return allTaskList;
 }
 
-export const addTaskToUser = async (channelCode: string, assignedBy: string, assignedTo: string, dueTime: number, taskName: string, taskStatus: string) => {
-    const status = await addDoc(collection(firestore_db, "task"), {
-        channelCode,
-        assignedBy,
-        assignedTo,
-        dueTime,
-        taskName,
-        taskStatus
-    });
+export const addTaskToUser = async (task : task) => {
+    const status = await addDoc(collection(firestore_db, "task"), task);
 
     if (!status) {
         return false;
@@ -614,16 +607,16 @@ export const addTaskToUser = async (channelCode: string, assignedBy: string, ass
     return true;
 }
 
-export const removeTaskFromList = async (channelCode: string, assignedBy: string, assignedTo: string, dueTime: number, taskName: string, taskStatus: string) => {
+export const removeTaskFromList = async (task: task) => {
     const taskToBeRemoved = await getDocs(
         query(
             collection(firestore_db, "task"),
-            where("channelCode", "==", channelCode),
-            where("assignedBy", "==", assignedBy),
-            where("assignedTo", "==", assignedTo),
-            where("dueTime", "==", dueTime),
-            where("taskName", "==", taskName),
-            where("taskStatus", "==", taskStatus)
+            where("channelCode", "==", task.channelCode),
+            where("assignedBy", "==", task.assignedByEmail),
+            where("assignedTo", "==", task.assignedToEmail),
+            where("dueTime", "==", task.dueTime),
+            where("taskName", "==", task.taskName),
+            where("taskStatus", "==", task.taskStatus)
         )
     );
 
@@ -660,11 +653,11 @@ export const updateTask = async (task: task) => {
     }
 
     taskToBeUpdated.forEach(async (doc) => {
-        const { assignedBy, assignedTo, taskName, dueTime, taskMessage, taskStatus } = doc.data();
-        await removeTaskFromList(task.channelCode, task.assignedByName, task.assignedToName, task.dueTime, task.taskName, taskStatus);
+        const taskToBeRemoved = doc.data() as task;
+        await removeTaskFromList(taskToBeRemoved);
     })
 
-    await addTaskToUser(task.channelCode, task.assignedByName, task.assignedToName, task.dueTime, task.taskName, task.taskStatus)
+    await addTaskToUser(task)
     return true;
 }
 

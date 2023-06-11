@@ -77,7 +77,6 @@ export interface checkBoxFields {
 }
 
 export interface task {
-    id: string;
     channelCode: string;
     assignedByEmail: string;
     assignedByName: string;

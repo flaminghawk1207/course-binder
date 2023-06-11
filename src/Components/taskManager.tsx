@@ -1,6 +1,6 @@
 import { Channel, task, CHANNEL_ROLE } from "~/types"
 import { apiReq } from "~/utils"
-import { useContext, useEffect, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { UserContext } from "~/contexts/UserProvider";
 
 
@@ -26,6 +26,8 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
     const [usertaskList, setUserTaskList] = useState<Array<task>>([])
     const [allTaskList, setAllTaskList] = useState<Array<task>>([])
     const [channelRole, setChannelRole] = useState<string>("")
+    const [allTaskListView, setAllTaskListView] = useState<Boolean>(false)
+    const [userTaskListView, setUserTaskListView] = useState<Boolean>(true)
 
     const getChannelRole = async () => {
         const role = await apiReq("channels", {
@@ -85,28 +87,20 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
     // console.log("User task list: ", usertaskList)
 
 
-    const addTasksToList = async (assignedBy: string, assignedTo: string, dueTime: number, channelCode: string, taskMessage: string, taskStatus: string) => {
+    const addTasksToList = async (task: task) => {
         const status = await apiReq("channels", {
             type: "ADD_TASK",
-            channelCode: "19CSE212",//channel.channel_code
-            assignedBy: assignedBy,
-            assignedTo: assignedTo,
-            dueTime: dueTime,
-            taskMessage: taskMessage,
-            taskStatus: taskStatus
+            channelCode: channel.channel_code,
+            data: task
         })
         console.log(status)
     }
 
-    const removeTasksFromList = async (assignedBy: string, assignedTo: string, dueTime: number, channelCode: string, taskMessage: string, taskStatus: string) => {
+    const removeTasksFromList = async (task: task) => {
         const status = await apiReq("channels", {
             type: "REMOVE_TASK",
-            channelCode: "19CSE212",
-            assignedBy: assignedBy,
-            assignedTo: assignedTo,
-            dueTime: dueTime,
-            taskMessage: taskMessage,
-            taskStatus: taskStatus
+            channelCode: channel.channel_code,
+            data: task
         })
         console.log(status)
     }
@@ -121,12 +115,28 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
         console.log(status)
     }
 
+    const setAllList = () => {
+        if (allTaskListView) {
+            setAllTaskListView(false)
+        }
+        else {
+            setAllTaskListView(true)
+        }
+    }
     return (
         <div>
+            { channelRole == "course_mentor" &&
+                <button onClick={setAllList}>Toggle View</button>
+            }
             {
-                allTaskList.map((task: task) =>
-                    <TaskItem task={task} />
-                )
+                allTaskListView ? (
+                    allTaskList.map((task: task) =>
+                        <TaskItem task={task} />
+                    )
+                ) : (
+                    usertaskList.map((task: task) =>
+                        <TaskItem task={task} />
+                ))
             }
         </div>
         // <div>Hello world!1</div>

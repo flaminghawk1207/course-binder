@@ -66,11 +66,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     }
 
     else if(req.body.type == "ADD_TASK"){
-        const status = await addTaskToUser(req.body.channelCode, req.body.assignedBy, req.body.assignedTo, req.body.dueTime, req.body.taskMessage, req.body.taskStatus)
+        const status = await addTaskToUser(req.body.data as task)
         res.json(status) 
     }
     else if(req.body.type == "REMOVE_TASK"){
-        const status = await removeTaskFromList(req.body.channelCode, req.body.assignedBy, req.body.assignedTo, req.body.dueTime, req.body.taskMessage, req.body.taskStatus)
+        const status = await removeTaskFromList(req.body.data as task)
         res.json(status) 
     }
     else if(req.body.type == "UPDATE_TASK"){
