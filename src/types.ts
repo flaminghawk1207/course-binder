@@ -77,12 +77,15 @@ export interface checkBoxFields {
 }
 
 export interface task {
+    id: string;
     channelCode: string;
-    assignedBy: string;
-    assignedTo: string;
+    assignedByEmail: string;
+    assignedByName: string;
+    assignedToEmail: string;
+    assignedToName: string;
     taskName: string;
     dueTime: number;
-    status: string;
+    taskStatus: string;
 }
 
 export interface Notification {

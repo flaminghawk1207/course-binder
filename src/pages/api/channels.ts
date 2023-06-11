@@ -1,11 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-<<<<<<< HEAD
 import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, uploadMessage, getPrevmessages, getUserTaskList, getAllTaskList, addTaskToUser, removeTaskFromList, updateTask, notifyChannel } from "~/server/db";
 import { Channel, task } from "~/types";
-=======
-import { addUserToChannel, createChannel, resetFile, getAllChannels, getAllFiles, getChannelsRolesWithUser, getChannelsWithoutUser, getUserRole, removeUserFromChannel, setNewTemplate, uploadFile, notifyChannel, uploadMessage, getPrevmessages } from "~/server/db";
-import { Channel } from "~/types";
->>>>>>> 97a8579a7ddd64cc8b19c5a86e31bf424c03d39f
 import { constructPercentageDict } from "~/utils";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {

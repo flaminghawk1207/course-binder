@@ -588,13 +588,13 @@ export const getAllTaskList = async (channel_code: string) => {
             where("channelCode", "==", channel_code)
         )
     );
-
-    const allTaskList: { assignedBy: string, assignedTo: string, taskName: string, dueTime: number, taskStatus: string }[] = [];
+    //assignedBy: string, assignedTo: string, taskName: string, dueTime: number, taskStatus: string
+    const allTaskList: task[] = [];
     taskFromDB.forEach((doc) => {
-        const { assignedBy, assignedTo, taskName, dueTime, taskStatus } = doc.data();
-        allTaskList.push({ assignedBy, assignedTo, taskName, dueTime, taskStatus });
+        const task = doc.data() as task;
+        allTaskList.push(task);
     })
-    console.log(allTaskList);
+    console.log("All task list",allTaskList);
     return allTaskList;
 }
 
@@ -646,8 +646,8 @@ export const updateTask = async (task: task) => {
         query(
             collection(firestore_db, "task"),
             where("channelCode", "==", task.channelCode),
-            where("assignedBy", "==", task.assignedBy),
-            where("assignedTo", "==", task.assignedTo),
+            where("assignedBy", "==", task.assignedByName),
+            where("assignedTo", "==", task.assignedToName),
             where("dueTime", "==", task.dueTime),
             where("taskName", "==", task.taskName),
         )
@@ -661,10 +661,10 @@ export const updateTask = async (task: task) => {
 
     taskToBeUpdated.forEach(async (doc) => {
         const { assignedBy, assignedTo, taskName, dueTime, taskMessage, taskStatus } = doc.data();
-        await removeTaskFromList(task.channelCode, task.assignedBy, task.assignedTo, task.dueTime, task.taskName, taskStatus);
+        await removeTaskFromList(task.channelCode, task.assignedByName, task.assignedToName, task.dueTime, task.taskName, taskStatus);
     })
 
-    await addTaskToUser(task.channelCode, task.assignedBy, task.assignedTo, task.dueTime, task.taskName, task.status)
+    await addTaskToUser(task.channelCode, task.assignedByName, task.assignedToName, task.dueTime, task.taskName, task.taskStatus)
     return true;
 }
 
