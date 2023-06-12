@@ -1,8 +1,9 @@
 import { addDoc, collection, deleteDoc, getDocs, limit, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { firebase_app, firebase_file_storage, firestore_db } from "./firebase";
-import { Channel, CHANNEL_ROLE, CourseBinderError, ERROR_TYPE, FirebaseFile, FirebaseFolder, User } from "~/types";
+import { Channel, CHANNEL_ROLE, CourseBinderError, ERROR_TYPE, FirebaseFile, FirebaseFolder, User, task } from "~/types";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { StorageReference, deleteObject, getDownloadURL, getMetadata, listAll, ref, uploadBytes, uploadString } from "firebase/storage";
+import { Task } from "@mui/icons-material";
 
 export const getUserInfo = async (email: string) => {
     const userInfoSnapshot = await getDocs(
@@ -12,19 +13,19 @@ export const getUserInfo = async (email: string) => {
         )
     );
 
-    if(!userInfoSnapshot || userInfoSnapshot.empty) {
+    if (!userInfoSnapshot || userInfoSnapshot.empty) {
         return {
             type: ERROR_TYPE.USER_NOT_FOUND,
             message: "User not found"
         } as CourseBinderError;
     }
-    
+
     const userInfo = userInfoSnapshot.docs[0]?.data();
 
     return userInfo;
 }
 
-export const getfacultyInfo = async (email:string) => {
+export const getfacultyInfo = async (email: string) => {
     const channelCodesSnapshot = await getDocs(
         query(
             collection(firestore_db, "channelMemberRelationship"),
@@ -32,13 +33,13 @@ export const getfacultyInfo = async (email:string) => {
         )
     );
 
-    if(!channelCodesSnapshot) {
+    if (!channelCodesSnapshot) {
         throw new Error("Firestore error when retrieving channel codes");
     }
 
     const channelCodes = channelCodesSnapshot.docs.map(doc => doc.data().channel_code) as string[];
 
-    if(channelCodes.length == 0) {
+    if (channelCodes.length == 0) {
         return [];
     }
 
@@ -49,12 +50,12 @@ export const getfacultyInfo = async (email:string) => {
         )
     );
 
-    if(!channelsInfoSnapshot) {
+    if (!channelsInfoSnapshot) {
         throw new Error("Firestore error when retrieving channel info");
     }
 
     const channelsInfo = channelsInfoSnapshot.docs.map(doc => doc.data()) as Channel[];
-    
+
     return channelsInfo;
 }
 
@@ -63,7 +64,7 @@ export const getAllChannels = async () => {
         collection(firestore_db, "channels")
     );
 
-    if(!channelsSnapshot) {
+    if (!channelsSnapshot) {
         throw new Error("Firestore error when retrieving channels");
     }
 
@@ -77,7 +78,7 @@ export const getAllUsers = async () => {
         collection(firestore_db, "users")
     );
 
-    if(!usersSnapshot) {
+    if (!usersSnapshot) {
         throw new Error("Firestore error when retrieving users");
     }
 
@@ -94,14 +95,14 @@ export const getUsersRolesInChannel = async (channel_code: string) => {
         )
     );
 
-    if(!userInChannelEmailsSnapshot) {
+    if (!userInChannelEmailsSnapshot) {
         throw new Error("Firestore error when retrieving user emails");
     }
 
     const userInChannelEmails = userInChannelEmailsSnapshot.docs.map(doc => doc.data().email) as string[];
 
-    if(userInChannelEmails.length == 0) {
-        return {channel_users: [], channel_roles: []};
+    if (userInChannelEmails.length == 0) {
+        return { channel_users: [], channel_roles: [] };
     }
 
     const userInfosSnapshot = await getDocs(
@@ -111,7 +112,7 @@ export const getUsersRolesInChannel = async (channel_code: string) => {
         )
     );
 
-    if(!userInfosSnapshot) {
+    if (!userInfosSnapshot) {
         throw new Error("Firestore error when retrieving user info");
     }
 
@@ -121,7 +122,7 @@ export const getUsersRolesInChannel = async (channel_code: string) => {
         const channelMemberRelationship = userInChannelEmailsSnapshot.docs.find(doc => doc.data().email == userInfo.email);
         return channelMemberRelationship?.data().channel_role;
     }) as CHANNEL_ROLE[];
-    return {channel_users: userInfos, channel_roles};
+    return { channel_users: userInfos, channel_roles };
 }
 
 export const getChannelsRolesWithUser = async (email: string) => {
@@ -132,14 +133,14 @@ export const getChannelsRolesWithUser = async (email: string) => {
         )
     );
 
-    if(!channelsWithUserSnapshot) {
+    if (!channelsWithUserSnapshot) {
         throw new Error("Firestore error when retrieving user emails");
     }
 
     const channelCodesWithUser = channelsWithUserSnapshot.docs.map(doc => doc.data().channel_code) as string[];
 
-    if(channelCodesWithUser.length == 0) {
-        return {user_channels: [], channel_roles: []};
+    if (channelCodesWithUser.length == 0) {
+        return { user_channels: [], channel_roles: [] };
     }
 
     const channelInfosSnapshot = await getDocs(
@@ -149,7 +150,7 @@ export const getChannelsRolesWithUser = async (email: string) => {
         )
     );
 
-    if(!channelInfosSnapshot) {
+    if (!channelInfosSnapshot) {
         throw new Error("Firestore error when retrieving user info");
     }
 
@@ -159,7 +160,7 @@ export const getChannelsRolesWithUser = async (email: string) => {
         const channelMemberRelationship = channelsWithUserSnapshot.docs.find(doc => doc.data().channel_code == channel.channel_code);
         return channelMemberRelationship?.data().channel_role;
     }) as CHANNEL_ROLE[];
-    return {user_channels: channelInfos, channel_roles};
+    return { user_channels: channelInfos, channel_roles };
 }
 
 export const getUserRole = async (channel_code: string, user_email: string) => {
@@ -172,10 +173,10 @@ export const getUserRole = async (channel_code: string, user_email: string) => {
         )
     );
 
-    if(!channelMemberRelationshipSnapshot) {
+    if (!channelMemberRelationshipSnapshot) {
         throw new Error("Firestore error when retrieving user role");
     }
-    
+
     const channelMemberRelationship = channelMemberRelationshipSnapshot.docs[0]?.data();
 
     return channelMemberRelationship?.channel_role;
@@ -189,16 +190,16 @@ export const getUsersNotInChannel = async (channel_code: string) => {
         )
     );
 
-    if(!userInChannelEmailsSnapshot) {
+    if (!userInChannelEmailsSnapshot) {
         throw new Error("Firestore error when retrieving user emails");
     }
 
     const userInChannelEmails = userInChannelEmailsSnapshot.docs.map(doc => doc.data().email) as string[];
 
-    if(userInChannelEmails.length == 0) {
+    if (userInChannelEmails.length == 0) {
         return getAllUsers();
     }
-    
+
     const userInfosSnapshot = await getDocs(
         query(
             collection(firestore_db, "users"),
@@ -206,7 +207,7 @@ export const getUsersNotInChannel = async (channel_code: string) => {
         )
     );
 
-    if(!userInfosSnapshot) {
+    if (!userInfosSnapshot) {
         throw new Error("Firestore error when retrieving user info");
     }
 
@@ -222,16 +223,16 @@ export const getChannelsWithoutUser = async (email: string) => {
         )
     );
 
-    if(!channelsWithUserSnapshot) {
+    if (!channelsWithUserSnapshot) {
         throw new Error("Firestore error when retrieving user emails");
     }
 
     const channelsCodesWithUser = channelsWithUserSnapshot.docs.map(doc => doc.data().channel_code) as string[];
 
-    if(channelsCodesWithUser.length == 0) {
+    if (channelsCodesWithUser.length == 0) {
         return getAllChannels();
     }
-    
+
     const channelInfosSnapshot = await getDocs(
         query(
             collection(firestore_db, "channels"),
@@ -239,7 +240,7 @@ export const getChannelsWithoutUser = async (email: string) => {
         )
     );
 
-    if(!channelInfosSnapshot) {
+    if (!channelInfosSnapshot) {
         throw new Error("Firestore error when retrieving user info");
     }
 
@@ -254,7 +255,7 @@ export const addUserToChannel = async (channel_code: string, email: string, chan
         channel_role
     });
 
-    if(!status) {
+    if (!status) {
         return false;
     }
     return true;
@@ -269,13 +270,13 @@ export const removeUserFromChannel = async (channel_code: string, email: string)
         )
     );
 
-    if(!channelDocsSnapshot) {
+    if (!channelDocsSnapshot) {
         throw new Error("Firestore error when retrieving channel docs");
     }
 
     const channelDocRef = channelDocsSnapshot.docs[0]?.ref;
 
-    if(!channelDocRef) {
+    if (!channelDocRef) {
         throw new Error("Channel Ref not found");
     }
 
@@ -288,7 +289,7 @@ export const createDir = async (dirName: string) => {
     // Till we figure out some way to create empty directories in firebase storage
     const storageRef = ref(firebase_file_storage, `${dirName}/_ghostfile`);
     await uploadBytes(storageRef, new Uint8Array())
-            .then((val) => console.log("DIR created: ", val.ref.name))
+        .then((val) => console.log("DIR created: ", val.ref.name))
 }
 
 export const createEmptyFile = async (pathName: string) => {
@@ -296,12 +297,12 @@ export const createEmptyFile = async (pathName: string) => {
     // Till we figure out some way to create empty directories in firebase storage
     const storageRef = ref(firebase_file_storage, pathName);
     await uploadBytes(storageRef, new Uint8Array())
-            .then((val) => console.log("FILE created: ", val.ref.name))
+        .then((val) => console.log("FILE created: ", val.ref.name))
 }
 
 export const getDirName = (channel: Channel) => {
     let dirName;
-    if(channel.channel_type == "course") {
+    if (channel.channel_type == "course") {
         dirName = `${channel.channel_department}/${channel.channel_year}/${channel.channel_code}`
     } else {
         dirName = `${channel.channel_department}/Labs/${channel.channel_code}`
@@ -316,8 +317,8 @@ export const createChannel = async (channel: Channel) => {
 
     await createDir(dirName);
     await createFolderStructureFromTemplate(dirName, channel.channel_template);
-    
-    if(!status) {
+
+    if (!status) {
         return false;
     }
     return true;
@@ -326,23 +327,23 @@ export const createChannel = async (channel: Channel) => {
 // TODO: Check if email already exists
 export const createUser = async (user: User, password: string) => {
     const authUser = await createUserWithEmailAndPassword(getAuth(firebase_app), user.email, password)
-                            .then((userCredential) => {
-                                return userCredential.user;
-                            })
-                            .catch((error) => {
-                                return {
-                                    error: true,
-                                    message: error.message
-                                }
-                            });
+        .then((userCredential) => {
+            return userCredential.user;
+        })
+        .catch((error) => {
+            return {
+                error: true,
+                message: error.message
+            }
+        });
 
-    if(authUser.hasOwnProperty("error")) {
+    if (authUser.hasOwnProperty("error")) {
         return authUser;
     }
 
     const status = await addDoc(collection(firestore_db, "users"), user);
 
-    if(!status) {
+    if (!status) {
         return false;
     }
     return true;
@@ -356,14 +357,14 @@ export const getAllFiles = async (channel: Channel) => {
     return files;
 }
 
-export async function getAllFilesRecursive (folderRef: StorageReference): Promise<FirebaseFolder> {
+export async function getAllFilesRecursive(folderRef: StorageReference): Promise<FirebaseFolder> {
     const list = await listAll(folderRef);
 
     let files = await Promise.all(list.items.map(async (fileRef) => {
         const fileSize = await getMetadata(fileRef).then((metadata) => metadata.size);
         const fileUrl = await getDownloadURL(fileRef);
 
-        return { 
+        return {
             name: fileRef.name,
             fullPath: fileRef.fullPath,
             type: "file",
@@ -371,7 +372,7 @@ export async function getAllFilesRecursive (folderRef: StorageReference): Promis
             downloadURL: fileUrl
         } as FirebaseFile
     }))
-    
+
     files = files.filter((file) => file.name != "_ghostfile")
 
     const folders = await Promise.all(list.prefixes.map(async (folderRef) => {
@@ -379,7 +380,7 @@ export async function getAllFilesRecursive (folderRef: StorageReference): Promis
         return nested_folders;
     }));
 
-    const children = (files as (FirebaseFile|FirebaseFolder)[]).concat(folders as (FirebaseFile|FirebaseFolder)[]);
+    const children = (files as (FirebaseFile | FirebaseFolder)[]).concat(folders as (FirebaseFile | FirebaseFolder)[]);
 
     return { name: folderRef.name, fullPath: folderRef.fullPath, children: children, type: "folder" } as FirebaseFolder;
 }
@@ -394,10 +395,10 @@ export const resetFile = async (fullPath: string) => {
 export const uploadFile = async (fileContent: Uint8Array, fileName: string) => {
     const storageRef = ref(firebase_file_storage, fileName);
     await uploadBytes(storageRef, fileContent)
-                        .then((val) => console.log("File uploaded: ", val.ref.name))
-                        .catch((error) => {
-                            throw new Error(error.message);
-                        });
+        .then((val) => console.log("File uploaded: ", val.ref.name))
+        .catch((error) => {
+            throw new Error(error.message);
+        });
     return true;
 }
 
@@ -406,7 +407,7 @@ const createFolderStructureFromTemplate = async (path: string, template: string)
 
     template_obj.contents.forEach(async (item: any) => {
         let newPath = path + "/" + item.name;
-        if(item.type == "folder") {
+        if (item.type == "folder") {
             await createFolderStructureFromTemplate(newPath, JSON.stringify(item));
         } else {
             await createEmptyFile(newPath);
@@ -422,7 +423,7 @@ export const deleteFolder = async (path: string) => {
 }
 
 export const deleteAllFilesRecursive = async (firebase_folder: FirebaseFolder | FirebaseFile) => {
-    if(firebase_folder.type == "file") {
+    if (firebase_folder.type == "file") {
         const fileRef = ref(firebase_file_storage, firebase_folder.fullPath);
         await deleteObject(fileRef);
     } else {
@@ -445,7 +446,7 @@ export const setNewTemplate = async (channel: Channel, newTemplate: string) => {
     );
     // Update the channel_template field
     const channelDocRef = channelDocsSnapshot.docs[0]?.ref;
-    if(!channelDocRef) {
+    if (!channelDocRef) {
         throw new Error("Channel Ref not found");
     }
     await updateDoc(channelDocRef, {
@@ -453,6 +454,21 @@ export const setNewTemplate = async (channel: Channel, newTemplate: string) => {
     });
     await deleteFolder(dirName);
     await createFolderStructureFromTemplate(dirName, newTemplate);
+    return true;
+}
+//anish's part 
+export const uploadMessage = async (email: string, message: string, channel: Channel) => {
+    const currentTime = serverTimestamp();
+    const status = await addDoc(collection(firestore_db, "chats"), {
+        channel: channel,
+        email: email,
+        message: message,
+        timestamp: currentTime,
+    });
+
+    if (!status) {
+        return false;
+    }
     return true;
 }
 
@@ -498,12 +514,11 @@ export const markNotificationsViewed = async (email: string) => {
     return true;
 }
 
-export const sendNotifications = async (email_list: string[], channel: string, message: string) => {
-    console.log(email_list, channel, message)
+export const sendNotifications = async (email_list: string[], channel_code: string, message: string) => {
     const notifications = email_list.map((email) => {
         return {
             email,
-            channel,
+            channel_code,
             message,
             time: new Date(),
             viewed: false
@@ -515,14 +530,120 @@ export const sendNotifications = async (email_list: string[], channel: string, m
         return status;
     }));
 
-    if(!status) {
+    if (!status) {
+        return false;
+    }
+    return true;
+}
+export const getPrevmessages = async (channel: Channel) => {
+
+    const filesSnapshot = await getDocs(
+        query(
+            collection(firestore_db, "chats"),
+            where("channel", "==", channel)
+        )
+    );
+
+    const fileNames: { email: string, message: string, timestamp: number }[] = [];
+    filesSnapshot.forEach((doc) => {
+        const { channel, email, message, timestamp } = doc.data();
+        fileNames.push({ email, message, timestamp });
+    });
+    fileNames.sort((a, b) => a.timestamp - b.timestamp);
+    const sortedEmailsAndMessages = fileNames.map(({ email, message }) => ({ email, message }));
+    return sortedEmailsAndMessages;
+};
+
+export const getUserTaskList = async (email: string, channel_code: string) => {
+    const taskFromDB = await getDocs(
+        query(
+            collection(firestore_db, "task"),
+            where("assignedToEmail", "==", email), 
+            where("channelCode", "==", channel_code)
+        )
+    );
+
+    const userTaskList = taskFromDB.docs.map(doc => doc.data()) as task[];
+    return userTaskList;
+}
+
+export const getAllTaskList = async (channel_code: string) => {
+    const taskFromDB = await getDocs(
+        query(
+            collection(firestore_db, "task"),
+            where("channelCode", "==", channel_code)
+        )
+    );
+    const allTaskList = taskFromDB.docs.map(doc => doc.data()) as task[];
+    return allTaskList;
+}
+
+export const addTaskToUser = async (task : task) => {
+    const status = await addDoc(collection(firestore_db, "task"), task);
+
+    if (!status) {
         return false;
     }
     return true;
 }
 
+export const removeTaskFromList = async (task: task) => {
+    const taskToBeRemoved = await getDocs(
+        query(
+            collection(firestore_db, "task"),
+            where("channelCode", "==", task.channelCode),
+            where("assignedByEmail", "==", task.assignedByEmail),
+            where("assignedToEmail", "==", task.assignedToEmail),
+            where("dueTime", "==", task.dueTime),
+            where("taskName", "==", task.taskName),
+            where("taskStatus", "==", task.taskStatus)
+        )
+    );
+
+    if (!taskToBeRemoved) {
+        throw new Error("Firestore error when retrieving channel docs");
+    }
+
+    const taskToBeRemovedRef = taskToBeRemoved.docs[0]?.ref;
+
+    if (!taskToBeRemovedRef) {
+        throw new Error("Task Ref not found");
+    }
+
+    await deleteDoc(taskToBeRemovedRef);
+    return true;
+}
+
+export const completeTask = async (task: task) => {
+    const taskToBeCompleted = await getDocs(
+        query(
+            collection(firestore_db, "task"),
+            where("channelCode", "==", task.channelCode),
+            where("assignedByEmail", "==", task.assignedByEmail),
+            where("assignedToEmail", "==", task.assignedToEmail),
+            where("dueTime", "==", task.dueTime),
+            where("taskName", "==", task.taskName),
+            where("taskStatus", "==", task.taskStatus)
+        )
+    );
+
+    if (!taskToBeCompleted) {
+        throw new Error("Firestore error when retrieving channel docs");
+    }
+
+    const taskToBeCompletedRef = taskToBeCompleted.docs[0]?.ref;
+
+    if (!taskToBeCompletedRef) {
+        throw new Error("Task Ref not found");
+    }
+
+    await updateDoc(taskToBeCompletedRef, {
+        taskStatus: "Completed"
+    });
+    return true;
+}
+
 export const notifyChannel = async (channel_code: string, message: string) => {
-    console.log(channel_code, message)
     const channelMembersSnapshot = await getDocs(
         query(
             collection(firestore_db, "channelMemberRelationship"),
@@ -530,16 +651,13 @@ export const notifyChannel = async (channel_code: string, message: string) => {
         )
     );
 
-    if(!channelMembersSnapshot) {
+    if (!channelMembersSnapshot) {
         throw new Error("Firestore error when retrieving channel members");
     }
 
     const channelMembers = channelMembersSnapshot.docs.map(doc => doc.data()) as User[];
-
     const email_list = channelMembers.map((channelMember) => channelMember.email);
-
     const status = await sendNotifications(email_list, channel_code, message);
-
     return status;
 }
 
@@ -548,56 +666,11 @@ export const notifyAllUsers = async (message: string) => {
         collection(firestore_db, "users")
     );
 
-    if(!usersSnapshot) {
+    if (!usersSnapshot) {
         throw new Error("Firestore error when retrieving users");
     }
-
     const users = usersSnapshot.docs.map(doc => doc.data()) as User[];
-
     const email_list = users.map((user) => user.email);
-
     const status = await sendNotifications(email_list, "General", message);
-
     return status;
 }
-export const uploadMessage = async (email: string, message: string, channel: Channel) => {
-    const currentTime = serverTimestamp();
-    const status = await addDoc(collection(firestore_db, "chats"), {
-        channel:channel,
-        email:email,
-        message:message,
-        timestamp: currentTime,
-    });
-
-    if(!status) {
-        return false;
-    }
-    return true;
-}
-export const getPrevmessages = async (channel: Channel) => {
-    console.log("channel name", channel)
-
-    const filesSnapshot = await getDocs(
-      query(
-        collection(firestore_db, "chats"),
-        where("channel", "==", channel)
-      )
-    );
-
-    // console.log("filesnapshot", filesSnapshot)
-    console.log("calc fileNames")
-    
-    const fileNames: { email: string, message: string, timestamp: number }[] = [];
-    filesSnapshot.forEach((doc) => {
-        console.log("doc data", doc.data())
-      const { channel,email,message,timestamp } = doc.data();
-      fileNames.push({email,message,timestamp});
-    });
-    fileNames.sort((a, b) => a.timestamp - b.timestamp);
-    console.log("filenames length: ", fileNames.length)
-    console.log(fileNames)
-    const sortedEmailsAndMessages = fileNames.map(({ email, message }) => ({ email, message }));
-    console.log(sortedEmailsAndMessages);
-    console.log(sortedEmailsAndMessages);
-    return sortedEmailsAndMessages;
-  };

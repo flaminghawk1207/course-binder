@@ -76,10 +76,21 @@ export interface checkBoxFields {
     checked: boolean;
 }
 
+export interface task {
+    channelCode: string;
+    assignedByEmail: string;
+    assignedByName: string;
+    assignedToEmail: string;
+    assignedToName: string;
+    taskName: string;
+    dueTime: number;
+    taskStatus: string;
+}
+
 export interface Notification {
     email: string;
     message: string;
-    channel: string;
+    channel_code: string;
     time: number;
     viewed: boolean;
 }

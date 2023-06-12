@@ -13,7 +13,7 @@ const NotificationItem = ({ notification }: { notification: Notification }) => {
     return (
         <div className={`w-full border-2 ${notification.viewed ? "bg-secondary-color" : "bg-hovercolor"}`}>
             <div className="w-full">
-                {notification.channel}
+                {notification.channel_code}
             </div>
                 {notification.message.length <= maxLengthNotTrucated
                     ? <div className="w-full h-full">
