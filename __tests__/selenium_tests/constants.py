@@ -1,7 +1,10 @@
 BASE_URL = "http://localhost:3000"
+
 ADMIN_USER = "jayanthmenon007@gmail.com"
 ADMIN_PASSWORD = "Hello@12345"
 
+FACULTY_USER = "jayanthmenons@gmail.com"
+FACULTY_PASSWORD = "qwerty@12345"
 
 TEST_COURSE_NAME = "TEST SUBJECT"
 TEST_LAB_NAME = "TEST LAB"

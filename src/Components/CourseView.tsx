@@ -84,19 +84,21 @@ const FileUploadDialog = ({ channel, file, refreshCompleteDir }: { channel: Chan
     return (
         <div className="h-full mr-5">
             <div className="h-full items-center">
-                <Button variant="contained" className="bg-secondary-color mt-3" onClick={handleClickOpen}>Upload File</Button>
+                <Button id="uploadFileButton" variant="contained" className="bg-secondary-color mt-3" onClick={handleClickOpen}>Upload File</Button>
             </div>
             <Dialog open={open} onClose={closeDialog}>
-                <DialogContent>
+                <DialogContent> 
                     {
                         uploadFile ?
                             <p>{uploadFile?.name}</p>
                         :
                             <Dropzone onDrop={handleDrop}>
                                 {({ getRootProps, getInputProps }) => (
-                                    <section>
+                                    <section 
+                                        // id="fileDropZone"
+                                    >
                                         <div {...getRootProps()}>
-                                            <input {...getInputProps()} />
+                                            <input id="fileDropZone" {...getInputProps()} />
                                             <p>Drag a file here, or click to select a file</p>
                                         </div>
                                     </section>
@@ -107,6 +109,7 @@ const FileUploadDialog = ({ channel, file, refreshCompleteDir }: { channel: Chan
                 </DialogContent>
                 <DialogActions>
                     <LoadingButton
+                        id="fileUploadSubmit"
                         loading={loading}
                         loadingPosition="start"
                         startIcon={<UploadIcon />}
@@ -157,8 +160,8 @@ const FileComponent = ({ channel, file, refreshCompleteDir }: { channel: Channel
 
                         :
                         <div className="flex h-full items-center space-x-5 mr-5"> 
-                            <Button variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={()=>window.open(file.downloadURL, '_blank')}>Download</Button>
-                            <Button variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={deleteFile}>Delete</Button>
+                            <Button id="fileDownloadButton" variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={()=>window.open(file.downloadURL, '_blank')}>Download</Button>
+                            <Button id="fileDeleteButton" variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={deleteFile}>Delete</Button>
                         </div>
                 }
             </div>
@@ -549,6 +552,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                             Back
                         </Button>
                         <IconButton 
+                            id="refreshDirectoryButton"
                             className="bg-primary-color ml-5 border-primary-color text-primary-txt rounded my-4" 
                             onClick={handleRefreshClick}
                         >
@@ -585,43 +589,44 @@ const CourseView = ({ channel }: { channel: Channel }) => {
       
       <>
       <Button 
+                id = "chatButton"
                 variant="contained" 
                 className="bg-[#F68888] text-black" 
                 onClick={handleClickOpen}
                 startIcon={<ChatIcon/>}
             >
                 chat
-            </Button>
-            <div className="h-10" style={{ width: '50%'}}>
+        </Button>
+        <div className="h-10" style={{ width: '50%'}}>
             <Dialog open={open} onClose={closeDialog}>
-  <DialogTitle className="text-center">Channel Chat</DialogTitle>
-  <DialogContent className="h-200 bg-[#F68888]" style={{ overflowY: 'auto' }}>
-    <div className="bg-white mt-10" style={{ maxHeight: '150px', overflowY: 'auto' }}>
-      {responseMessage.map(item => {
-        const isMe = item.email === 'me@example.com';
-        const bubbleClassName = `bubble ${isMe ? 'bubble-me' : 'bubble-other'}`;
+                <DialogTitle className="text-center">Channel Chat</DialogTitle>
+                <DialogContent className="h-200 bg-[#F68888]" style={{ overflowY: 'auto' }}>
+                        <div className="bg-white mt-10" style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                        {responseMessage.map(item => {
+                            const isMe = item.email === 'me@example.com';
+                            const bubbleClassName = `bubble ${isMe ? 'bubble-me' : 'bubble-other'}`;
 
-        return (
-          <div className={`${bubbleClassName} mb-2`}>
-            <div className="flex items-center">
-              <Avatar className="mr-2">{item.email.charAt(0)}</Avatar>
-              <Typography variant="subtitle2">{item.email}</Typography>
-            </div>
-            <Paper className="p-2">{item.message}</Paper>
-          </div>
-        );
-      })}
-    </div>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <input type="text" value={message} onChange={e => setMessage(e.target.value)} style={{ width: '100%' }} />
-      <Button variant="contained" onClick={handleButtonClick} startIcon={<SendIcon/>}></Button>
-      <Button variant="contained" onClick={prevMessages} startIcon={<SyncIcon/>} style={{ marginLeft: '8px' }}></Button>
-    </div>
-  </DialogContent>
-  <DialogActions className="bg-[#F68888]">
-    <Button onClick={closeDialog} startIcon={<CloseIcon/>}>Close</Button>
-  </DialogActions>
-</Dialog>
+                            return (
+                            <div className={`${bubbleClassName} mb-2`}>
+                                <div className="flex items-center">
+                                <Avatar className="mr-2">{item.email.charAt(0)}</Avatar>
+                                <Typography variant="subtitle2">{item.email}</Typography>
+                                </div>
+                                <Paper className="p-2">{item.message}</Paper>
+                            </div>
+                            );
+                        })}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <input id="chatTypeMessage" type="text" value={message} onChange={e => setMessage(e.target.value)} style={{ width: '100%' }} />
+                        <Button id="chatSendButton" variant="contained" onClick={handleButtonClick} startIcon={<SendIcon/>}></Button>
+                        <Button id="chatRefreshButton" variant="contained" onClick={prevMessages} startIcon={<SyncIcon/>} style={{ marginLeft: '8px' }}></Button>
+                        </div>
+                </DialogContent>
+                <DialogActions className="bg-[#F68888]">
+                    <Button onClick={closeDialog} startIcon={<CloseIcon/>}>Close</Button>
+                </DialogActions>
+            </Dialog>
 
 
 
