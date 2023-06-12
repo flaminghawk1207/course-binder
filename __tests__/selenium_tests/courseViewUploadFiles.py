@@ -34,7 +34,6 @@ def uploadFile(adminName, adminPassword, url, filepath, shouldFail=False):
         driver.find_element(By.ID, "fileDeleteButton").click()
         time.sleep(3)
         WebDriverWait(driver, 10).until(EC.alert_is_present())
-        # Switch to the alert and handle it
         alert = driver.switch_to.alert
         alert.accept()
         print("File Deletion Successful!!")
