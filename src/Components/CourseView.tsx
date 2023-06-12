@@ -28,7 +28,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { ClassNames } from "@emotion/react";
 import { Avatar, Paper } from '@mui/material';
 
-const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
+export const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
     return (
 
         <div className="bg-tertiary-color rounded my-2 h-16 flex px-2 items-center hover:cursor-pointer" onClick={() => moveIntoFolder(folder.name)}>
@@ -168,8 +168,8 @@ const FileComponent = ({ channel, file, refreshCompleteDir }: { channel: Channel
     );
 }
 
-const getCurrDirObject = (completeDir: FirebaseFolder, path: string[]) => {
-    if (!completeDir) return null;
+export const getCurrDirObject = (completeDir: FirebaseFolder, path: string[]) => {
+    if (!completeDir.name) return null;
 
     let currDir = completeDir;
     path.forEach((folder) => {

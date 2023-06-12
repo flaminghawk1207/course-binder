@@ -6,7 +6,7 @@ import { Notification } from "~/types";
 import { apiReq } from "~/utils";
 import { UserContext } from "~/contexts/UserProvider";
 
-const NotificationItem = ({ notification }: { notification: Notification }) => {
+export const NotificationItem = ({ notification }: { notification: Notification }) => {
     const [expanded, setExpanded] = useState(false);
 
     const maxLengthNotTrucated = 25;
