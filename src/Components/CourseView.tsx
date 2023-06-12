@@ -518,6 +518,34 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     const closeDialog = () => {
         setOpen(false);
     }
+
+  const isCourseMentor = channelUserRole === "course_mentor";
+  async function approvemessage() {
+    const approval=await apiReq("channels", {
+        type: "NOTIFY_CHANNEL",
+        channel_code: channel.channel_code,
+        message: `the exit summary is approved by  ${user?.firstName}.`,
+    });
+
+    if (approval) {
+        console.log('exit summary approved!');
+    } else {
+        console.log('Failed');
+    }
+}
+async function rejectmessage() {
+    const approval=await apiReq("channels", {
+        type: "NOTIFY_CHANNEL",
+        channel_code: channel.channel_code,
+        message: `the exit summary is rejected by  ${user?.firstName}.`,
+    });
+
+    if (approval) {
+        console.log('exit summary rejected!');
+    } else {
+        console.log('Failed');
+    }
+}
     return (
         <div className="h-4/5 my-10 mx-10 mt-15">
             <div className="flex w-full relative">
@@ -587,6 +615,16 @@ const CourseView = ({ channel }: { channel: Channel }) => {
             </div>
             <div className="flex">
                 <>
+                {isCourseMentor && (
+        <Button variant="contained" className="bg-[#F68888] text-black" onClick={approvemessage}>
+          Approve Exit Summary
+        </Button>
+      )}
+      {isCourseMentor && (
+        <Button variant="contained" className="bg-[#F68888] text-black" onClick={rejectmessage}>
+          Reject Exit Summary
+        </Button>
+      )}
                     <Button
                         id = "chatButton"
                         variant="contained"
