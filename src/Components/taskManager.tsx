@@ -13,7 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
-const TaskItem = ({ task, updateTaskLists, mentor_view }: { task: task, updateTaskLists: any, mentor_view: boolean }) => {
+export const TaskItem = ({ task, updateTaskLists, mentor_view }: { task: task, updateTaskLists: any, mentor_view: boolean }) => {
     
     const removeTasksFromList = async (task: task) => {
         const status = await apiReq("channels", {
