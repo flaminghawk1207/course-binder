@@ -84,13 +84,13 @@ export const AppNotifications = () => {
     return (
         <ClickAwayListener onClickAway={handleNotificationClickAway}>
             <div className="w-full justify-center text-center">
-                <Button onClick={handleNotificationClick} className='inline-block bg-primary-color rounded-3xl'>
+                <Button onClick={handleNotificationClick} className='inline-block text-primary-txt hover:bg-hovercolor bg-primary-color rounded-3xl'>
                     <Badge badgeContent={numberUnread} color="error">
                         <NotificationsIcon />
                     </Badge>
                 </Button>
                 <Popper open={open} anchorEl={anchorEl} placement='right'>
-                    <div className="w-80 h-48 overflow-auto no-scrollbar bg-secondary-color">
+                    <div className="w-80 h-48 overflow-auto no-scrollbar bg-tertiary-color">
                             {
                                 notifications.map((notification: Notification) =>
                                     <NotificationItem notification={notification} />

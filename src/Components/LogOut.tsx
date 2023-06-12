@@ -18,7 +18,7 @@ export const LogOut = () => {
                     user.logout();
                     router.push('/login');
                  }} 
-                className="w-full text-primary-txt" 
+                className="w-full text-primary-txt hover:bg-hovercolor" 
             >
                 Log Out
             </Button>
