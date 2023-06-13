@@ -259,8 +259,8 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
                 Template Settings
             </Button>
             <Dialog open={open} onClose={closeDialog}>
-                <DialogContent className="h-128">
-                    <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
+                <DialogContent className="h-128 bg-primary-color">
+                    <Tabs className="bg-secondary-color" value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
                         <Tab label="Template 1" />
                         <Tab label="Template 2" />
                         <Tab label="Lab Template 1" />
@@ -300,9 +300,9 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
                     />
                     }
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={closeDialog}>Cancel</Button>
-                    <Button onClick={setTemplateAndClose}>Ok</Button>
+                <DialogActions className="bg-primary-color">
+                    <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={closeDialog}>Cancel</Button>
+                    <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={setTemplateAndClose}>Ok</Button>
                 </DialogActions>
             </Dialog>
         </>
@@ -592,7 +592,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                     >
                         Chat
                     </Button>
-                    <div className="h-100" style={{ width: '50%', maxWidth: "500px" }}>
+                    <div className="h-100" style={{ width: '50%'}}>
                         <Dialog open={open} onClose={closeDialog} >
                             <DialogTitle className="text-center bg-secondary-color">Channel Chat</DialogTitle>
                             <DialogContent className="h-200 bg-primary-color" style={{ overflowY: 'auto' }}>
