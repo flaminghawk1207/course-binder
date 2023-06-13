@@ -159,28 +159,28 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
             <Button
                 id="taskButton"
                 variant="contained"
-                className="bg-[#F68888] text-black"
+                className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 "
                 onClick={() => setOpen(true)}
                 startIcon={<AssignmentIcon />}
             >
                 Tasks
             </Button>
             <Dialog open={open} onClose={() => setOpen(false)}>
-                <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)}>
-                    <Tab label="My Tasks" className={`${channelRole == CHANNEL_ROLE.COURSE_MENTOR ? "w-1/3" : "w-full"}`} id="myTasksButton"/>
-                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Manage All Tasks" className="w-1/3" id="manageTasksButton"/>}
-                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Add Task" className="w-1/3" id="addTaskButton"/>}
+                <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} className="bg-secondary-color text-primary-txt">
+                    <Tab label="My Tasks" className={`${channelRole == CHANNEL_ROLE.COURSE_MENTOR ? "w-1/3 text-primary-txt hover:bg-hovercolor" : "w-full"}`} id="myTasksButton"/>
+                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Manage All Tasks" className="w-1/3 text-primary-txt hover:bg-hovercolor" id="manageTasksButton"/>}
+                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Add Task" className="w-1/3 text-primary-txt hover:bg-hovercolor" id="addTaskButton"/>}
                 </Tabs>
                 {
                     tabIndex == 0 &&
-                    <div className="w-96 h-96 no-scrollbar overflow-auto">
+                    <div className="w-96 h-96 no-scrollbar overflow-auto bg-primary-color">
                         {usertaskList.map((task) => {
                             return <TaskItem task={task} mentor_view={false} updateTaskLists={updateTaskLists} />
                         })}
                     </div>
                 }
                 {tabIndex == 1 && channelRole == CHANNEL_ROLE.COURSE_MENTOR &&
-                    <div className="w-96 h-96 no-scrollbar overflow-auto">
+                    <div className="w-96 h-96 no-scrollbar overflow-auto bg-primary-color">
                         {allTaskList.map((task) => {
                             return <TaskItem task={task} mentor_view={true} updateTaskLists={updateTaskLists} />
                         })}
@@ -188,8 +188,8 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
                 }
 
                 {tabIndex == 2 && channelRole == CHANNEL_ROLE.COURSE_MENTOR &&
-                    <div className="w-96 h-96">
-                        <TextField id="taskNameTextInput" label="Task Name" {...register("taskName", { required: true })} />
+                    <div className="w-96 h-96 bg-primary-color">
+                        <TextField className="w-3/5 ml-20 mt-4" id="taskNameTextInput" label="Task Name" {...register("taskName", { required: true })} />
                         <Autocomplete
                             id="userNameAutoComplete"
                             key={users?.length || 0}
@@ -208,7 +208,7 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
                             }}
                             defaultValue={null}
                             isOptionEqualToValue={(option, value) => option.email === value.email}
-                            renderInput={(params) => <TextField
+                            renderInput={(params) => <TextField className="w-3/5 ml-20 mt-4"
                                 {...params}
                                 label="User Name"
                                 InputProps={{
@@ -223,6 +223,7 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
                         />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
+                            className="w-3/5 ml-20 mt-4"
                                 slotProps={{
                                     textField: {
                                         required: true,
@@ -233,11 +234,13 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
                                 onChange={(newValue) => setValue("dueTime", newValue as number)}
                             />
                         </LocalizationProvider>
-                        <Button id="addTaskSubmitButton" onClick={handleSubmit(async (data) => {
+                        <div className="place-content-center">
+                        <Button id="addTaskSubmitButton" variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor ml-40 mt-10 " onClick={handleSubmit(async (data) => {
                             await addTasksToList(data);
                             await updateTaskLists();
                             reset();
                         })}>Add Task</Button>
+                        </div>
                     </div>
                 }
             </Dialog>

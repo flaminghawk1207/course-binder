@@ -2,6 +2,7 @@ import { Button, DialogTitle, IconButton, Tab, Tabs, TextField, Typography } fro
 import LoadingButton from "@mui/lab/LoadingButton"
 import { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
+import Box from '@mui/material/Box';
 import { CHANNEL_ROLE, Channel, FirebaseFile, FirebaseFolder, task, ROLE } from "~/types";
 import { DEF_LAB_TEMPLATE, DEF_TEMPLATE, DEF_TEMPLATE2, apiReq, check_template } from "~/utils";
 import Dialog from "@mui/material/Dialog";
@@ -86,7 +87,7 @@ const FileUploadDialog = ({ channel, file, refreshCompleteDir }: { channel: Chan
     return (
         <div className="h-full mr-5">
             <div className="h-full items-center">
-                <Button id="uploadFileButton" variant="contained" className="bg-secondary-color mt-3" onClick={handleClickOpen}>Upload File</Button>
+                <Button id="uploadFileButton" variant="contained" className="bg-secondary-color mt-3 hover:bg-hovercolor text-primary-txt" onClick={handleClickOpen}>Upload File</Button>
             </div>
             <Dialog open={open} onClose={closeDialog}>
                 <DialogContent> 
@@ -162,8 +163,8 @@ const FileComponent = ({ channel, file, refreshCompleteDir }: { channel: Channel
 
                         :
                         <div className="flex h-full items-center space-x-5 mr-5">
-                            <Button id="fileDownloadButton" variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={() => window.open(file.downloadURL, '_blank')}>Download</Button>
-                            <Button id="fileDeleteButton" variant="contained" className="bg-secondary-color inline-block align-middle text-white" onClick={deleteFile}>Delete</Button>
+                            <Button id="fileDownloadButton" variant="contained" className="bg-secondary-color inline-block align-middle text-primary-txt hover:bg-hovercolo" onClick={() => window.open(file.downloadURL, '_blank')}>Download</Button>
+                            <Button id="fileDeleteButton" variant="contained" className="bg-secondary-color inline-block align-middle text-primary-txt hover:bg-hovercolo" onClick={deleteFile}>Delete</Button>
                         </div>
                 }
             </div>
@@ -254,15 +255,15 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
         <>
             <Button
                 variant="contained"
-                className="bg-[#F68888] text-black"
+                className="bg-secondary-color text-primary-txt hover:bg-hovercolor"
                 onClick={handleClickOpen}
                 startIcon={<SettingsIcon />}
             >
                 Template Settings
             </Button>
             <Dialog open={open} onClose={closeDialog}>
-                <DialogContent className="h-128">
-                    <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
+                <DialogContent className="h-128 bg-primary-color">
+                    <Tabs className="bg-secondary-color" value={tabIndex} onChange={(e, val) => setTabIndex(val)} aria-label="basic tabs example">
                         <Tab label="Template 1" />
                         <Tab label="Template 2" />
                         <Tab label="Lab Template 1" />
@@ -302,9 +303,9 @@ const TemplateDialog = ({ channel, refreshFileSys }: { channel: Channel, refresh
                     />
                     }
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={closeDialog}>Cancel</Button>
-                    <Button onClick={setTemplateAndClose}>Ok</Button>
+                <DialogActions className="bg-primary-color">
+                    <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={closeDialog}>Cancel</Button>
+                    <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor" onClick={setTemplateAndClose}>Ok</Button>
                 </DialogActions>
             </Dialog>
         </>
@@ -549,7 +550,7 @@ async function rejectmessage() {
     return (
         <div className="h-4/5 my-10 mx-10 mt-15">
             <div className="flex w-full relative">
-                <div>
+                <div className="font-semibold text-2xl">
                     <p>Course Code: {channel.channel_code}</p>
                     <p>Course Name: {channel.channel_name}</p>
                     <p>Course Deparment: {channel.channel_department}</p>
@@ -572,7 +573,7 @@ async function rejectmessage() {
                     <div className="flex w-full relative">
                         <Button
                             variant="outlined"
-                            className="bg-primary-color border-primary-color text-primary-txt rounded my-4"
+                            className="bg-primary-color border-primary-color hover:bg-hovercolor text-primary-txt rounded my-4"
                             startIcon={<ArrowBackIcon />}
                             onClick={handleBackClick}
                             disabled={currDir.length == 0}
@@ -581,7 +582,7 @@ async function rejectmessage() {
                         </Button>
                         <IconButton
                             id="refreshDirectoryButton"
-                            className="bg-primary-color ml-5 border-primary-color text-primary-txt rounded my-4"
+                            className="bg-primary-color ml-5 border-primary-color text-primary-txt rounded my-4 hover:bg-hovercolor"
                             onClick={handleRefreshClick}
                         >
                             <LoopIcon />
@@ -616,28 +617,36 @@ async function rejectmessage() {
             <div className="flex">
                 <>
                 {isCourseMentor && (
-        <Button variant="contained" className="bg-[#F68888] text-black" onClick={approvemessage}>
+        <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 ml-2" onClick={approvemessage}>
           Approve Exit Summary
         </Button>
       )}
       {isCourseMentor && (
-        <Button variant="contained" className="bg-[#F68888] text-black" onClick={rejectmessage}>
+        <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 ml-2" onClick={rejectmessage}>
           Reject Exit Summary
         </Button>
       )}
                     <Button
                         id = "chatButton"
                         variant="contained"
-                        className="bg-[#F68888] text-black"
+                        className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 ml-2"
                         onClick={handleClickOpen}
                         startIcon={<ChatIcon />}
                     >
                         Chat
                     </Button>
-                    <div className="h-10" style={{ width: '50%' }}>
-                        <Dialog open={open} onClose={closeDialog}>
-                            <DialogTitle className="text-center">Channel Chat</DialogTitle>
-                            <DialogContent className="h-200 bg-[#F68888]" style={{ overflowY: 'auto' }}>
+                    <div className="h-100" style={{ width: '50%'}}>
+                        <Dialog open={open} onClose={closeDialog} >
+                            <DialogTitle className="text-center bg-secondary-color">Channel Chat</DialogTitle>
+                            <DialogContent className="h-200 bg-primary-color" style={{ overflowY: 'auto' }}>
+                               <Box noValidate
+                                    component="form"
+                                    sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    m: 'auto',
+                                    width: 'fit-content',
+                                }}></Box> 
                                 <div className="bg-white mt-10" style={{ maxHeight: '150px', overflowY: 'auto' }}>
                                     {responseMessage.map(item => {
                                         const isMe = item.email === 'me@example.com';
@@ -656,12 +665,12 @@ async function rejectmessage() {
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <input id="chatTypeMessage" type="text" value={message} onChange={e => setMessage(e.target.value)} style={{ width: '100%' }} />
-                                    <Button id="chatSendButton" variant="contained" onClick={handleButtonClick} startIcon={<SendIcon />}></Button>
-                                    <Button id="chatRefreshButton" variant="contained" onClick={prevMessages} startIcon={<SyncIcon />} style={{ marginLeft: '8px' }}></Button>
+                                    <Button id="chatSendButton" className="text-primary-txt bg-secondary-color hover:bg-hovercolor" variant="contained" onClick={handleButtonClick} startIcon={<SendIcon />}></Button>
+                                    <Button id="chatRefreshButton" className="text-primary-txt bg-secondary-color hover:bg-hovercolor" variant="contained" onClick={prevMessages} startIcon={<SyncIcon />} style={{ marginLeft: '8px' }}></Button>
                                 </div>
                             </DialogContent>
-                            <DialogActions className="bg-[#F68888]">
-                                <Button onClick={closeDialog} startIcon={<CloseIcon />}>Close</Button>
+                            <DialogActions className="bg-primary-color">
+                                <Button variant="contained" className="text-primary-txt bg-secondary-color hover:bg-hovercolor"onClick={closeDialog} startIcon={<CloseIcon />}>Close</Button>
                             </DialogActions>
                         </Dialog>
                     </div>
