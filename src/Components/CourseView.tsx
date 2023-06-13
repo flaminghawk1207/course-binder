@@ -29,7 +29,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { ClassNames } from "@emotion/react";
 import { Avatar, Paper } from '@mui/material';
 
-const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
+export const FolderComponent = ({ folder, moveIntoFolder }: { folder: FirebaseFolder, moveIntoFolder: any }) => {
     return (
 
         <div className="bg-tertiary-color rounded my-2 h-16 flex px-2 items-center hover:cursor-pointer" onClick={() => moveIntoFolder(folder.name)}>
@@ -87,19 +87,21 @@ const FileUploadDialog = ({ channel, file, refreshCompleteDir }: { channel: Chan
     return (
         <div className="h-full mr-5">
             <div className="h-full items-center">
-                <Button variant="contained" className="bg-secondary-color mt-3 hover:bg-hovercolor text-primary-txt" onClick={handleClickOpen}>Upload File</Button>
+                <Button id="uploadFileButton" variant="contained" className="bg-secondary-color mt-3 hover:bg-hovercolor text-primary-txt" onClick={handleClickOpen}>Upload File</Button>
             </div>
             <Dialog open={open} onClose={closeDialog}>
-                <DialogContent>
+                <DialogContent> 
                     {
                         uploadFile ?
                             <p>{uploadFile?.name}</p>
                             :
                             <Dropzone onDrop={handleDrop}>
                                 {({ getRootProps, getInputProps }) => (
-                                    <section>
+                                    <section 
+                                        // id="fileDropZone"
+                                    >
                                         <div {...getRootProps()}>
-                                            <input {...getInputProps()} />
+                                            <input id="fileDropZone" {...getInputProps()} />
                                             <p>Drag a file here, or click to select a file</p>
                                         </div>
                                     </section>
@@ -110,6 +112,7 @@ const FileUploadDialog = ({ channel, file, refreshCompleteDir }: { channel: Chan
                 </DialogContent>
                 <DialogActions>
                     <LoadingButton
+                        id="fileUploadSubmit"
                         loading={loading}
                         loadingPosition="start"
                         startIcon={<UploadIcon />}
@@ -160,8 +163,8 @@ const FileComponent = ({ channel, file, refreshCompleteDir }: { channel: Channel
 
                         :
                         <div className="flex h-full items-center space-x-5 mr-5">
-                            <Button variant="contained" className="bg-secondary-color inline-block align-middle text-primary-txt hover:bg-hovercolor" onClick={() => window.open(file.downloadURL, '_blank')}>Download</Button>
-                            <Button variant="contained" className="bg-secondary-color inline-block align-middle text-primary-txt hover:bg-hovercolor" onClick={deleteFile}>Delete</Button>
+                            <Button id="fileDownloadButton" variant="contained" className="bg-secondary-color inline-block align-middle text-primary-txt hover:bg-hovercolo" onClick={() => window.open(file.downloadURL, '_blank')}>Download</Button>
+                            <Button id="fileDeleteButton" variant="contained" className="bg-secondary-color inline-block align-middle text-primary-txt hover:bg-hovercolo" onClick={deleteFile}>Delete</Button>
                         </div>
                 }
             </div>
@@ -169,8 +172,8 @@ const FileComponent = ({ channel, file, refreshCompleteDir }: { channel: Channel
     );
 }
 
-const getCurrDirObject = (completeDir: FirebaseFolder, path: string[]) => {
-    if (!completeDir) return null;
+export const getCurrDirObject = (completeDir: FirebaseFolder, path: string[]) => {
+    if (!completeDir.name) return null;
 
     let currDir = completeDir;
     path.forEach((folder) => {
@@ -516,6 +519,34 @@ const CourseView = ({ channel }: { channel: Channel }) => {
     const closeDialog = () => {
         setOpen(false);
     }
+
+  const isCourseMentor = channelUserRole === "course_mentor";
+  async function approvemessage() {
+    const approval=await apiReq("channels", {
+        type: "NOTIFY_CHANNEL",
+        channel_code: channel.channel_code,
+        message: `the exit summary is approved by  ${user?.firstName}.`,
+    });
+
+    if (approval) {
+        console.log('exit summary approved!');
+    } else {
+        console.log('Failed');
+    }
+}
+async function rejectmessage() {
+    const approval=await apiReq("channels", {
+        type: "NOTIFY_CHANNEL",
+        channel_code: channel.channel_code,
+        message: `the exit summary is rejected by  ${user?.firstName}.`,
+    });
+
+    if (approval) {
+        console.log('exit summary rejected!');
+    } else {
+        console.log('Failed');
+    }
+}
     return (
         <div className="h-4/5 my-10 mx-10 mt-15">
             <div className="flex w-full relative">
@@ -550,6 +581,7 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                             Back
                         </Button>
                         <IconButton
+                            id="refreshDirectoryButton"
                             className="bg-primary-color ml-5 border-primary-color text-primary-txt rounded my-4 hover:bg-hovercolor"
                             onClick={handleRefreshClick}
                         >
@@ -584,9 +616,20 @@ const CourseView = ({ channel }: { channel: Channel }) => {
             </div>
             <div className="flex">
                 <>
+                {isCourseMentor && (
+        <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 ml-2" onClick={approvemessage}>
+          Approve Exit Summary
+        </Button>
+      )}
+      {isCourseMentor && (
+        <Button variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 ml-2" onClick={rejectmessage}>
+          Reject Exit Summary
+        </Button>
+      )}
                     <Button
+                        id = "chatButton"
                         variant="contained"
-                        className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3"
+                        className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 ml-2"
                         onClick={handleClickOpen}
                         startIcon={<ChatIcon />}
                     >
@@ -621,9 +664,9 @@ const CourseView = ({ channel }: { channel: Channel }) => {
                                     })}
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <input type="text" value={message} onChange={e => setMessage(e.target.value)} style={{ width: '100%' }} />
-                                    <Button variant="contained" className="text-primary-txt bg-secondary-color hover:bg-hovercolor" onClick={handleButtonClick} startIcon={<SendIcon />}></Button>
-                                    <Button variant="contained" className="text-primary-txt bg-secondary-color hover:bg-hovercolor" onClick={prevMessages} startIcon={<SyncIcon />} style={{ marginLeft: '8px' }}></Button>
+                                    <input id="chatTypeMessage" type="text" value={message} onChange={e => setMessage(e.target.value)} style={{ width: '100%' }} />
+                                    <Button id="chatSendButton" className="text-primary-txt bg-secondary-color hover:bg-hovercolor" variant="contained" onClick={handleButtonClick} startIcon={<SendIcon />}></Button>
+                                    <Button id="chatRefreshButton" className="text-primary-txt bg-secondary-color hover:bg-hovercolor" variant="contained" onClick={prevMessages} startIcon={<SyncIcon />} style={{ marginLeft: '8px' }}></Button>
                                 </div>
                             </DialogContent>
                             <DialogActions className="bg-primary-color">

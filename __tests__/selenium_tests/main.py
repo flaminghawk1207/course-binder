@@ -1,4 +1,4 @@
-import constants, login, forgotPassword, adminCreateChannels, adminAddChannels, adminAddUsers, adminCreateUser
+import login, forgotPassword, adminCreateChannels, adminAddChannels, adminAddUsers, adminCreateUser, courseViewUploadFiles, courseViewChat, courseViewTasks
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -36,7 +36,6 @@ def main ():
     driver.close()
 
     print("\n")
-
 
     # ----- FORGOT PASSWORD --------
     print("FORGOT PASSWORD TESTING")
@@ -113,6 +112,35 @@ def main ():
     print("---------------------------")
     print("Test 2: Valid Input")
     adminAddChannels.addChannel(const.ADMIN_USER, const.ADMIN_PASSWORD, "Lakshya", "POPL", "course_mentor", const.BASE_URL)
+
+    print("\n")
+
+
+    # ------------ UPLOAD FILES -----------------
+    print("UPLOAD FILES FOR A COURSE")
+    print("---------------------------")
+    print("Test 1: Valid Input")
+    filepath = "C:/Users/jayan/OneDrive/Pictures/amrita/sem6/19CSE314 Software Engineering/Project/course-binder/__tests__/selenium_tests/sample files/Faculty_details.xlsx"
+    courseViewUploadFiles.uploadFile(const.FACULTY_USER, const.FACULTY_PASSWORD, const.BASE_URL, filepath, shouldFail=False)
+     
+    print("\n")
+
+    # ----------- ADD CHANNEL TO USERS ------------
+    print("CHAT WITHIN CHANNEL")
+    print("---------------------------")
+    print("Test 1: Valid Input")
+    courseViewChat.chat(const.FACULTY_USER, const.FACULTY_PASSWORD, const.BASE_URL, shouldFail=False)
+
+    print("\n")
+
+
+    # ----------- ADD CHANNEL TO USERS ------------
+    print("ADD TASKS WITHIN CHANNEL")
+    print("---------------------------")
+    print("Test 1: Valid Input")
+    courseViewTasks.taskCheck(const.FACULTY_USER, const.FACULTY_PASSWORD, const.BASE_URL, shouldFail=False)
+
+    print("\n")
 
     return
 

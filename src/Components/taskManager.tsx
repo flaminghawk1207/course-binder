@@ -13,7 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
-const TaskItem = ({ task, updateTaskLists, mentor_view }: { task: task, updateTaskLists: any, mentor_view: boolean }) => {
+export const TaskItem = ({ task, updateTaskLists, mentor_view }: { task: task, updateTaskLists: any, mentor_view: boolean }) => {
     
     const removeTasksFromList = async (task: task) => {
         const status = await apiReq("channels", {
@@ -36,7 +36,7 @@ const TaskItem = ({ task, updateTaskLists, mentor_view }: { task: task, updateTa
             <div className="h-full w-1/4">
             {
                 mentor_view ?
-                    <IconButton onClick={() => { removeTasksFromList(task) }}>
+                    <IconButton id="deleteTask" onClick={() => { removeTasksFromList(task) }}>
                         <DeleteIcon />
                     </IconButton>
                     :
@@ -157,6 +157,7 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
     return (
         <div>
             <Button
+                id="taskButton"
                 variant="contained"
                 className="bg-secondary-color text-primary-txt hover:bg-hovercolor mt-3 "
                 onClick={() => setOpen(true)}
@@ -166,9 +167,9 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
             </Button>
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <Tabs value={tabIndex} onChange={(e, val) => setTabIndex(val)} className="bg-secondary-color text-primary-txt">
-                    <Tab label="My Tasks" className={`${channelRole == CHANNEL_ROLE.COURSE_MENTOR ? "w-1/3 text-primary-txt hover:bg-hovercolor" : "w-full"}`} />
-                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Manage All Tasks" className="w-1/3 text-primary-txt hover:bg-hovercolor" />}
-                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Add Task" className="w-1/3 text-primary-txt hover:bg-hovercolor" />}
+                    <Tab label="My Tasks" className={`${channelRole == CHANNEL_ROLE.COURSE_MENTOR ? "w-1/3 text-primary-txt hover:bg-hovercolor" : "w-full"}`} id="myTasksButton"/>
+                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Manage All Tasks" className="w-1/3 text-primary-txt hover:bg-hovercolor" id="manageTasksButton"/>}
+                    {channelRole == CHANNEL_ROLE.COURSE_MENTOR && <Tab label="Add Task" className="w-1/3 text-primary-txt hover:bg-hovercolor" id="addTaskButton"/>}
                 </Tabs>
                 {
                     tabIndex == 0 &&
@@ -188,7 +189,7 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
 
                 {tabIndex == 2 && channelRole == CHANNEL_ROLE.COURSE_MENTOR &&
                     <div className="w-96 h-96 bg-primary-color">
-                        <TextField className="w-3/5 ml-20 mt-4" label="Task Name" {...register("taskName", { required: true })} />
+                        <TextField className="w-3/5 ml-20 mt-4" id="taskNameTextInput" label="Task Name" {...register("taskName", { required: true })} />
                         <Autocomplete
                             id="userNameAutoComplete"
                             key={users?.length || 0}
@@ -221,13 +222,20 @@ export const TaskManager = ({ channel }: { channel: Channel }) => {
                             />}
                         />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateTimePicker className="w-3/5 ml-20 mt-4"
+                            <DateTimePicker
+                            className="w-3/5 ml-20 mt-4"
+                                slotProps={{
+                                    textField: {
+                                        required: true,
+                                        id: 'datePickerField'
+                                    }
+                                }} 
                                 label="Due date and time"
                                 onChange={(newValue) => setValue("dueTime", newValue as number)}
                             />
                         </LocalizationProvider>
                         <div className="place-content-center">
-                        <Button  variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor ml-40 mt-10 " onClick={handleSubmit(async (data) => {
+                        <Button id="addTaskSubmitButton" variant="contained" className="bg-secondary-color text-primary-txt hover:bg-hovercolor ml-40 mt-10 " onClick={handleSubmit(async (data) => {
                             await addTasksToList(data);
                             await updateTaskLists();
                             reset();
